@@ -1,0 +1,63 @@
+name: sync-upstream-weekly
+
+on:
+  schedule:
+    # Every Saturday 06:00 UTC
+    - cron: "0 6 * * 6"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "8b-is sync bot"
+          git config user.email "sync@8b-is.github.io"
+
+      - name: Add upstream
+        run: git remote add upstream https://github.com/huggingface/transformers.git
+
+      - name: Fetch upstream main
+        run: git fetch upstream main
+
+      - name: Fast-forward main to upstream
+        run: |
+          git checkout main
+          git merge upstream/main --ff-only || echo "NOT_FF=true" >> "$GITHUB_ENV"
+
+      - name: Push fast-forwarded main
+        if: env.NOT_FF != 'true'
+        run: git push origin main
+
+      - name: Create sync PR on conflict
+        if: env.NOT_FF == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git checkout -b sync/upstream-$(date +%Y%m%d)
+          git merge upstream/main --no-edit --no-ff || git add -A && git commit -m "merge: upstream main $(date +%Y%m%d)" || true
+          git push origin sync/upstream-$(date +%Y%m%d)
+          gh pr create \
+            --base main \
+            --head sync/upstream-$(date +%Y%m%d) \
+            --title "sync: upstream main $(date +%Y%m%d)" \
+            --body "Weekly sync from huggingface/transformers main. Merge conflicts need manual resolution." \
+            || echo "PR exists or cannot be created (banned account may need manual push)"
+
+      - name: Update main from PR head if mergeable
+        if: env.NOT_FF == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BR=sync/upstream-$(date +%Y%m%d)
+          gh pr merge $BR --merge --admin || echo "PR merge blocked — resolve conflicts manually"
