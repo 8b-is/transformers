@@ -130,6 +130,11 @@ class CompressedTensorsHfQuantizer(HfQuantizer):
     # NOTE: TP plan override for compressed tensors removed - unsupported styles were used.
     # TODO: Implement proper TP support for compressed tensors quantization
     def update_tp_plan(self, config):
+        # `weight_shape` and `weight_zero_point` are deliberately NOT in the plan: they are
+        # per-expert shape / dequantization metadata, not weights, and must always replicate,
+        # never be split. The keys below target the exact `.weight` name, so the expert
+        # `_packed` / `_shape` / `_zero_point` keys already fall outside the split — keep it
+        # that way (see huggingface/transformers#47956).
         additional_plan = {
             "layers.*.feed_forward.experts.*.gate_proj.weight": "colwise",
             "layers.*.feed_forward.experts.*.gate_proj.weight_scale": "colwise",

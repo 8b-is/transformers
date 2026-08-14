@@ -133,14 +133,33 @@ class DecompressExperts(ConversionOps):
             output = None
             for i, (quant, scale) in enumerate(zip(quantized, scales)):
                 # Prefer the checkpoint's stored per-expert `weight_shape`
-                # (out-dim, in-dim); it is exact for any bit width. Fall back to
-                # rebuilding from the packed tensor only when it is missing/empty,
-                # e.g. left empty on most ranks under TP/EP sharding.
+                # (out-dim, in-dim); it is exact for any bit width. Rebuild from the
+                # packed tensor only when it is missing/empty (e.g. left empty on most
+                # ranks under TP/EP sharding) — and only for bit widths where the packed
+                # shape is unambiguous, see the non-divisor error below.
                 stored_shape = None if shapes is None else shapes[i]
                 if stored_shape is not None and stored_shape.numel():
                     shape = stored_shape
-                else:
+                elif 32 % weights_args.num_bits == 0:
+                    # `packed_cols * pack_factor` recovers the unpacked in-dim exactly
+                    # only for bit widths that divide 32 (1/2/4/8-bit).
                     shape = torch.tensor([quant.shape[0], quant.shape[1] * pack_factor])
+                else:
+                    # 3/5/6/7-bit: the packed tensor alone is ambiguous. Dense
+                    # bit-continuous packing (`ceil(cols * num_bits / 32)`) and the
+                    # legacy padded layout are indistinguishable from metadata, so no
+                    # formula can recover the in-dim. `weight_shape` is required for
+                    # these checkpoints; it is missing/empty on this rank because it
+                    # was sharded away under TP/EP (see huggingface/transformers#47956).
+                    raise ValueError(
+                        "Cannot rebuild the unpacked expert weight shape from the packed "
+                        f"tensor for {weights_args.num_bits}-bit weights: the packed shape is "
+                        "ambiguous for bit widths that do not divide 32 (dense bit-continuous "
+                        "packing and the legacy padded layout are indistinguishable from "
+                        "metadata). The checkpoint's `weight_shape` tensor is required for "
+                        "these checkpoints but is missing/empty on this rank — it was sharded "
+                        "away under TP/EP. See huggingface/transformers#47956."
+                    )
                 module = DummyModule(quant, scale, shape)
                 module.quantization_scheme = quantization_scheme
                 compressor.decompress_module(module)
