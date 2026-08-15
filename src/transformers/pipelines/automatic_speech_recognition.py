@@ -424,10 +424,18 @@ class AutomaticSpeechRecognitionPipeline(ChunkPipeline):
         if not isinstance(inputs, (np.ndarray, torch.Tensor)):
             raise TypeError(f"We expect a numpy ndarray or torch tensor as input, got `{type(inputs)}`")
         if inputs.ndim != 1:
+            if inputs.ndim > 2:
+                raise ValueError(
+                    f"AutomaticSpeechRecognitionPipeline expects 1D or 2D audio input, got {inputs.ndim}D with shape {tuple(inputs.shape)}"
+                )
+            if isinstance(inputs, np.ndarray):
+                ch_axis = int(np.argmin(inputs.shape))
+            else:
+                ch_axis = int(torch.argmin(torch.tensor(inputs.shape)).item())
             logger.warning(
-                f"We expect a single channel audio input for AutomaticSpeechRecognitionPipeline, got {inputs.ndim}. Taking the mean of the channels for mono conversion."
+                f"We expect a single channel audio input for AutomaticSpeechRecognitionPipeline, got shape {tuple(inputs.shape)}. Taking the mean over axis {ch_axis} for mono conversion."
             )
-            inputs = inputs.mean(axis=0)
+            inputs = inputs.mean(axis=ch_axis)
 
         if chunk_length_s:
             if stride_length_s is None:

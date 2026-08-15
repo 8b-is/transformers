@@ -841,6 +841,20 @@ def pipeline(
     if model_kwargs is None:
         model_kwargs = {}
 
+    if device is not None:
+        if isinstance(device, str):
+            valid_prefixes = ("cpu", "cuda", "mps", "npu", "xpu", "hpu", "meta", "directml", "vulcan", "openvino")
+            dev_lower = device.lower().strip()
+            if not any(dev_lower == prefix or dev_lower.startswith(f"{prefix}:") for prefix in valid_prefixes):
+                raise ValueError(
+                    f"Invalid device '{device}'. Expected a valid device string (e.g., 'cpu', 'cuda', 'mps', 'npu', 'xpu'), "
+                    f"an integer device ordinal (e.g., 0), or a `torch.device` instance."
+                )
+        elif not isinstance(device, int) and (not is_torch_available() or not isinstance(device, torch.device)):
+            raise ValueError(
+                f"Invalid device type '{type(device)}'. Expected a valid device string, integer ordinal, or `torch.device`."
+            )
+
     code_revision = kwargs.pop("code_revision", None)
     commit_hash = kwargs.pop("_commit_hash", None)
     local_files_only = kwargs.get("local_files_only", False)

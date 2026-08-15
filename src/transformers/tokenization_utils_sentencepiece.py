@@ -231,6 +231,11 @@ class SentencePieceBackend(PreTrainedTokenizer):
 
     def convert_tokens_to_string(self, tokens: list[str]) -> str:
         """Converts a sequence of tokens (string) in a single string."""
+        if hasattr(self, "sp_model") and self.sp_model is not None:
+            try:
+                return self.sp_model.decode(tokens)
+            except Exception:
+                pass
         out_string = "".join(tokens).replace(SPIECE_UNDERLINE, " ").strip()
         return out_string
 

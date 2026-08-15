@@ -169,26 +169,34 @@ class DynamicLayer(CacheLayerMixin):
         """
         Remove `tokens_to_remove` tokens from the current cache layer.
         """
+        current_length = self.get_seq_length()
+        if current_length == 0:
+            return
+
         # Legacy path: `tokens_to_remove` represents the final absolute size that the cache should have
         if tokens_to_remove > 0:
             logger.warning_once(
                 "Calling `crop` with a positive value is deprecated and will be removed in version 5.18. Please use a negative "
                 "integer to remove that number of tokens from the cache instead."
             )
-            current_length = self.get_seq_length()
             # If the absolute value requested is larger than current length, just do nothing
             if tokens_to_remove >= current_length:
                 return
             else:
-                tokens_to_remove = self.get_seq_length() - tokens_to_remove
+                tokens_to_remove = current_length - tokens_to_remove
 
         # Nothing to do in this case
         if tokens_to_remove == 0:
             return
 
         # Crop the cache
-        self.keys = self.keys[..., : -abs(tokens_to_remove), :]
-        self.values = self.values[..., : -abs(tokens_to_remove), :]
+        num_remove = abs(tokens_to_remove)
+        if num_remove >= current_length:
+            self.keys = self.keys[..., :0, :]
+            self.values = self.values[..., :0, :]
+        else:
+            self.keys = self.keys[..., :-num_remove, :]
+            self.values = self.values[..., :-num_remove, :]
 
     def batch_repeat_interleave(self, repeats: int) -> None:
         """Repeat the cache `repeats` times in the batch dimension."""
@@ -390,9 +398,12 @@ class DynamicIndexedLayer(DynamicLayer):
             if tokens_to_remove >= current_length:
                 return
             tokens_to_remove = current_length - tokens_to_remove
-        if tokens_to_remove == 0:
-            return
-        self.indexer_keys = self.indexer_keys[:, : -abs(tokens_to_remove), :]
+        num_remove = abs(tokens_to_remove)
+        current_length = self.indexer_keys.shape[1]
+        if num_remove >= current_length:
+            self.indexer_keys = self.indexer_keys[:, :0, :]
+        else:
+            self.indexer_keys = self.indexer_keys[:, :-num_remove, :]
 
     def batch_repeat_interleave(self, repeats: int) -> None:
         super().batch_repeat_interleave(repeats)

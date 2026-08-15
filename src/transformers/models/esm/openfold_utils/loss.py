@@ -99,6 +99,7 @@ def compute_tm(
     per_alignment = torch.sum(predicted_tm_term * normed_residue_mask, dim=-1)
 
     weighted = per_alignment * residue_weights
-
-    argmax = (weighted == torch.max(weighted)).nonzero()[0]
-    return per_alignment[tuple(argmax)]
+    if weighted.numel() == 0:
+        return torch.tensor(0.0, device=weighted.device, dtype=weighted.dtype)
+    argmax = torch.argmax(weighted)
+    return per_alignment.reshape(-1)[argmax]

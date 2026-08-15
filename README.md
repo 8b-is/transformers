@@ -50,12 +50,40 @@ What a weird world. But open source belongs to no single gatekeeper. We didn't c
 
 #### 🛠️ Hardened Bug Fixes & Security Patches Baked Directly Into `8b-is/transformers`:
 
+- **🎙️ ASR Pipeline Stereo Audio Destruction Fix ([#47886](https://github.com/huggingface/transformers/issues/47886))**:
+  - Dynamically detects channel axis across channels-first and channels-last layouts, averaging across channels instead of collapsing time dimensions.
+- **🔊 WhisperFeatureExtractor Non-Finite Sample Protection ([#47885](https://github.com/huggingface/transformers/issues/47885))**:
+  - Validates audio inputs for NaN/Inf early to prevent a single corrupted sample from poisoning the entire spectrogram matrix into silent garbage transcriptions.
+- **⚡ Early Device Validation in `pipeline()` ([#47869](https://github.com/huggingface/transformers/issues/47869))**:
+  - Validates device strings and ordinals at pipeline creation before downloading multi-gigabyte models, saving bandwidth and developer time.
+- **💾 DynamicCache Oversized Negative Crop Memory Fix ([#47433](https://github.com/huggingface/transformers/issues/47433))**:
+  - Clamps `crop(-N)` and `crop(0)` bounds to prevent negative slicing from silently retaining stale tokens in KV cache during rollback.
+- **🔤 SentencePiece Byte-Fallback Decoding ([#47473](https://github.com/huggingface/transformers/issues/47473))**:
+  - Leverages `sp_model.decode()` in `convert_tokens_to_string` to properly decode byte-fallback tokens (`<0x0A>`, `<0xF0>`).
+- **🔄 Added-Tokens Encoder Cache Synchronization ([#47439](https://github.com/huggingface/transformers/issues/47439))**:
+  - Unifies encoder cache synchronization from `_added_tokens_decoder` via `_sync_added_tokens()` on all mutation paths (CpmAnt, Wav2Vec2, etc.).
+- **📦 Tokenizers 0.23.1+ Security Patch Compatibility ([#47429](https://github.com/huggingface/transformers/issues/47429))**:
+  - Updated upper bound to `<0.24.0` allowing the published 0.23.1 release with XSS fix (AIKIDO-2026-10636).
+- **🛑 Assisted Decoding Mid-Block EOS Termination ([#47912](https://github.com/huggingface/transformers/issues/47912))**:
+  - Trims committed candidate tokens at the first accepted EOS to prevent speculative/assisted generation from continuing past EOS.
+- **⚡ BitNet Sub-Norm Opt-Out ([#47957](https://github.com/huggingface/transformers/issues/47957))**:
+  - Adds `use_sub_norms` config flag to bypass RMSNorm sub-layers for weight-quant-only checkpoints (`PeetPedro/quantal-ternary`).
+- **📐 Grounding DINO Int64 Positional Embedding Fix ([#47674](https://github.com/huggingface/transformers/issues/47674))**:
+  - Casts `text_position_ids` to `text_features.dtype` before computing sinusoids, preventing 93% of position embeddings from collapsing to zero.
+- **🎯 SigLIP2 Vocab Size Synchronization ([#47612](https://github.com/huggingface/transformers/issues/47612))**:
+  - Automatically synchronizes `vocab_size` from `text_config` to eliminate false out-of-vocab warnings for BOS/EOS tokens.
+- **📊 Gauge-Independent Normalized Repetition Penalty ([#47595](https://github.com/huggingface/transformers/issues/47595))**:
+  - Added `normalize=True` option using `log_softmax` to eliminate gauge shift artifacts in repetition penalty.
+- **🧬 ESMFold FP16 Argmax Robustness ([#47470](https://github.com/huggingface/transformers/issues/47470))**:
+  - Uses `torch.argmax` in `compute_tm` to avoid `IndexError` crashes under half-precision inference.
+- **🌐 Gemma-4 Auto Architecture Recognition ([#47448](https://github.com/huggingface/transformers/issues/47448))**:
+  - Added `gemma4` and `gemma4_unified` mappings to AutoConfig.
 - **🔒 Sharded Checkpoint Path Traversal Security Hardening ([#47176](https://github.com/huggingface/transformers/issues/47176))**:
   - Validates and sanitizes all `weight_map` shard filenames in `get_checkpoint_shard_files` to strictly block path traversal (`../`) and arbitrary out-of-directory file reads.
 - **⚙️ Deterministic Generation Config Precedence ([#47752](https://github.com/huggingface/transformers/issues/47752))**:
   - Ensures user-configured `model.generation_config` values are strictly preserved over pipeline defaults in `Pipeline.__init__` with torch-optional runtime safety.
 - **📐 Gradient Accumulation Loss kwargs Propagation ([#47688](https://github.com/huggingface/transformers/issues/47688))**:
-  - Forwards `**kwargs` (`num_items_in_batch`) to `self.loss_function` across `GenericForSequenceClassification`, `GenericForTokenClassification`, `Swinv2`, `ResNet`, `CLIP`, `SigLIP`, and `SigLIP2` classification heads, preventing loss inflation under gradient accumulation.
+  - Forwards `**kwargs` (`num_items_in_batch`) to `self.loss_function` across `GenericForSequenceClassification`, `GenericForTokenClassification`, `Swinv2`, `ResNet`, `CLIP`, `SigLIP`, and `SigLIP2` classification heads.
 - **🍏 Apple Silicon Metal & MPS Runtime Hardening ([`hf-mac`](https://github.com/peterlodri-sec/hf-mac))**:
   - Unified single-device `torch.device("mps")` assignment in pipelines, eliminating `RuntimeError: Invalid device string 'mps:0'`.
   - Resilient `safe_open` buffer staging fallback for safetensors on macOS unified memory.

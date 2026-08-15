@@ -147,7 +147,7 @@ _deps = [
     "tomli",
     "tiktoken",
     "timm>=1.0.23",
-    "tokenizers>=0.22.0,<=0.23.0",
+    "tokenizers>=0.22.0,<0.24.0",
     "torch>=2.5",
     "torchaudio",
     "torchvision",
@@ -325,7 +325,7 @@ if __name__ == "__main__":
 
     setup(
         name=os.environ.get("TRANSFORMERS_PACKAGE_NAME", "transformers-ultra"),
-        version="4.58.0.post1",  # expected format is one of x.y.z.dev0, or x.y.z.rc1 or x.y.z (no to dashes, yes to dots)
+        version="4.58.0.post2",  # expected format is one of x.y.z.dev0, or x.y.z.rc1 or x.y.z (no to dashes, yes to dots)
         author="8b-is / Sovereign Transformers Team",
         author_email="peter@vaked.dev",
         description="Transformers-Ultra: ultra-fast, zero-overhead machine learning definitions with native 1.58b ternary packing, MEM8 wave associative memory, and MPS acceleration.",

@@ -18,6 +18,7 @@ reports/
 # Distribution / packaging
 .Python
 build/
+.wrangler/
 develop-eggs/
 dist/
 downloads/

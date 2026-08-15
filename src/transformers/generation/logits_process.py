@@ -363,7 +363,7 @@ class RepetitionPenaltyLogitsProcessor(LogitsProcessor):
 
     supports_continuous_batching = False
 
-    def __init__(self, penalty: float, prompt_ignore_length: int | None = None):
+    def __init__(self, penalty: float, prompt_ignore_length: int | None = None, normalize: bool = False):
         if not isinstance(penalty, float) or not (penalty > 0):
             raise ValueError(f"`penalty` has to be a strictly positive float, but is {penalty}")
 
@@ -374,11 +374,15 @@ class RepetitionPenaltyLogitsProcessor(LogitsProcessor):
 
         self.penalty = penalty
         self.prompt_ignore_length = prompt_ignore_length
+        self.normalize = normalize
         self.logits_indices = None
         self.cu_seq_lens_q = None
 
     @add_start_docstrings(LOGITS_PROCESSOR_INPUTS_DOCSTRING)
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
+        if self.normalize:
+            scores = torch.nn.functional.log_softmax(scores, dim=-1)
+
         if self.prompt_ignore_length:
             input_ids = input_ids[:, self.prompt_ignore_length :]
 

@@ -454,6 +454,12 @@ class PythonBackend(PreTrainedTokenizerBase):
     def is_fast(self) -> bool:
         return False
 
+    def _sync_added_tokens(self) -> None:
+        """Synchronizes `_added_tokens_encoder` from `_added_tokens_decoder`."""
+        self._added_tokens_encoder = {
+            str(tok): idx for idx, tok in sorted(self._added_tokens_decoder.items(), key=lambda item: item[0])
+        }
+
     @property
     def added_tokens_encoder(self) -> dict[str, int]:
         """
@@ -475,6 +481,7 @@ class PythonBackend(PreTrainedTokenizerBase):
     @added_tokens_decoder.setter
     def added_tokens_decoder(self, value: dict[int, AddedToken | str]) -> dict[int, AddedToken]:
         # Always raise an error if string because users should define the behavior
+        self._added_tokens_decoder = {}
         for index, token in value.items():
             if not isinstance(token, (str, AddedToken)) or not isinstance(index, int):
                 raise TypeError(
@@ -482,7 +489,7 @@ class PythonBackend(PreTrainedTokenizerBase):
                 )
 
             self._added_tokens_decoder[index] = AddedToken(token) if isinstance(token, str) else token
-            self._added_tokens_encoder[str(token)] = index
+        self._sync_added_tokens()
         self._update_total_vocab_size()
 
     def get_added_vocab(self) -> dict[str, int]:

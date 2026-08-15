@@ -113,6 +113,11 @@ class WhisperFeatureExtractor(SequenceFeatureExtractor):
                 "devices requires torch, which is not installed. Either set `device='cpu'`, or "
                 "install torch according to the official instructions: https://pytorch.org/get-started/locally/"
             )
+        if not np.all(np.isfinite(waveform_batch)):
+            raise ValueError(
+                "Input audio waveform contains non-finite values (NaN or Inf). "
+                "Please sanitize audio inputs before passing them to WhisperFeatureExtractor."
+            )
         log_spec_batch = []
         for waveform in waveform_batch:
             log_spec = spectrogram(
@@ -138,6 +143,11 @@ class WhisperFeatureExtractor(SequenceFeatureExtractor):
         yielding results similar to cpu computing with 1e-5 tolerance.
         """
         waveform = torch.from_numpy(waveform).to(device, torch.float32)
+        if not torch.all(torch.isfinite(waveform)):
+            raise ValueError(
+                "Input audio waveform contains non-finite values (NaN or Inf). "
+                "Please sanitize audio inputs before passing them to WhisperFeatureExtractor."
+            )
         window = torch.hann_window(self.n_fft, device=device)
 
         # Note: it would be better to dither the chunked waveform,

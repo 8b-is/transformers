@@ -3787,6 +3787,15 @@ class GenerationMixin(ContinuousMixin):
                 valid_tokens = valid_tokens[:, :tokens_budget]
                 n_matches = valid_tokens.shape[1] - 1
 
+            # If an accepted token in the middle of the committed block is an EOS token, trim at the first EOS
+            eos_tensor = generation_config._eos_token_tensor
+            if eos_tensor is not None and valid_tokens.shape[1] > 1:
+                eos_hits = torch.nonzero(torch.isin(valid_tokens[0], eos_tensor.to(valid_tokens.device)))
+                if eos_hits.numel() > 0:
+                    first_eos_idx = eos_hits[0].item()
+                    valid_tokens = valid_tokens[:, : first_eos_idx + 1]
+                    n_matches = valid_tokens.shape[1] - 1
+
             # 4. Update variables according to the number of matching assistant tokens. Remember: the token generated
             # by the model after the last candidate match is also valid, as it is generated from a correct sequence.
             # Because of this last token, assisted generation search reduces to a normal greedy search/sample if there
