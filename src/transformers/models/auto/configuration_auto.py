@@ -276,6 +276,7 @@ def replace_list_option_in_docstrings(
 
 
 class AutoConfig:
+    # AutoConfig registry with collision protection
     r"""
     This is a generic configuration class that will be instantiated as one of the configuration classes of the library
     when created with the [`~AutoConfig.from_pretrained`] class method.
