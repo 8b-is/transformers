@@ -46,15 +46,15 @@ What a weird world. But open source belongs to no single gatekeeper. We didn't c
 
 ### 🚀 What's New in `transformers-ultra`
 
-1. **2-Bit / 1.58-Bit Ternary Packing (`MLX-QUANT`)**:
-   - Integrated native ternary packing (`quantize_ternary_numpy`, `unpack_ternary_numpy`) in `transformers.integrations.bitnet_mlx`.
-   - Native Apple Silicon `MPS` accelerator detection and memory view fixes.
-2. **MEM8 Wave-Interference Associative Memory (`hf-mac`)**:
-   - Neural wave interference memory engine (`MEM8Wave`, `MEM8MemoryStore`) operating across four distinct cognitive frequency bands (Math $\Gamma$, Code $\text{B}$, Reasoning $\text{A}$, General $\Theta$).
+1. **2-Bit / 1.58-Bit Ternary Packing ([`MLX-QUANT`](https://github.com/peterlodri-sec/MLX-QUANT))**:
+   - Ported native ternary bitmask packing & unpacking (`quantize_ternary_numpy`, `unpack_ternary_numpy`) in [`src/transformers/integrations/bitnet_mlx.py`](src/transformers/integrations/bitnet_mlx.py) ([commit `476ebc6`](https://github.com/8b-is/transformers/commit/476ebc6380)).
+   - Native Apple Silicon `MPS` accelerator detection and memory view optimizations in [`src/transformers/quantizers/quantizer_bitnet.py`](src/transformers/quantizers/quantizer_bitnet.py).
+2. **MEM8 Wave-Interference Associative Memory ([`hf-mac`](https://github.com/peterlodri-sec/hf-mac))**:
+   - Neural wave interference memory engine (`MEM8Wave`, `MEM8MemoryStore`) operating across four distinct cognitive frequency bands (Math $\Gamma$, Code $\text{B}$, Reasoning $\text{A}$, General $\Theta$) in [`src/transformers/integrations/mem8_wave.py`](src/transformers/integrations/mem8_wave.py) ([commit `476ebc6`](https://github.com/8b-is/transformers/commit/476ebc6380)).
 3. **Hot Path Zero-Overhead Generation (>2.2× Speedup)**:
-   - Eliminated per-token `inspect.signature` AST parsing in `LogitsProcessorList.__call__` via class-level signature caching (`_cached_signatures`).
-   - Dimension-guarded RoPE embeddings across Llama, Gemma, Gemma2, Starcoder2, Mixtral, Cohere, Phi3, and GPT-NeoX to eliminate redundant `unsqueeze` memory view allocations.
-   - Dynamic KV Cache prefill bypasses `torch.cat` on empty tensors for direct tensor assignment.
+   - Eliminated per-token `inspect.signature` AST parsing in `LogitsProcessorList.__call__` via class-level signature caching (`_cached_signatures`) in [`src/transformers/generation/logits_process.py`](src/transformers/generation/logits_process.py) ([commit `476ebc6`](https://github.com/8b-is/transformers/commit/476ebc6380)).
+   - Dimension-guarded RoPE embeddings across Llama, Gemma, Gemma2, Starcoder2, Mixtral, Cohere, Phi3, and GPT-NeoX in [`src/transformers/models/`](src/transformers/models/) to eliminate redundant `unsqueeze` memory view allocations ([commit `f736202`](https://github.com/8b-is/transformers/commit/f736202a6a)).
+   - Dynamic KV Cache prefill bypasses `torch.cat` on empty tensors for direct tensor assignment in [`src/transformers/cache_utils.py`](src/transformers/cache_utils.py) ([commit `476ebc6`](https://github.com/8b-is/transformers/commit/476ebc6380)).
 
 ```bash
 # Install the ultra-fast fork
