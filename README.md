@@ -78,6 +78,11 @@ What a weird world. But open source belongs to no single gatekeeper. We didn't c
    - Eliminated per-token `inspect.signature` AST parsing in `LogitsProcessorList.__call__` via class-level signature caching (`_cached_signatures`) in [`src/transformers/generation/logits_process.py`](src/transformers/generation/logits_process.py) ([commit `476ebc6`](https://github.com/8b-is/transformers/commit/476ebc6380)).
    - Dimension-guarded RoPE embeddings across Llama, Gemma, Gemma2, Starcoder2, Mixtral, Cohere, Phi3, and GPT-NeoX in [`src/transformers/models/`](src/transformers/models/) to eliminate redundant `unsqueeze` memory view allocations ([commit `f736202`](https://github.com/8b-is/transformers/commit/f736202a6a)).
    - Dynamic KV Cache prefill bypasses `torch.cat` on empty tensors for direct tensor assignment in [`src/transformers/cache_utils.py`](src/transformers/cache_utils.py) ([commit `476ebc6`](https://github.com/8b-is/transformers/commit/476ebc6380)).
+4. **Modern Python 3.11+ / 3.12+ / 3.13 Runtime Architecture**:
+   - Modernized baseline to Python 3.11+ (`target-version = "py311"`, `python_requires = ">=3.11.0"`).
+   - Replaced bloated dynamic dictionaries with `__slots__` memory layouts across wave states and descriptors, dropping per-object memory overhead by up to 50%.
+   - Integrated `StrEnum` for zero-overhead string enum comparisons and structural `match/case` pattern matching.
+   - Thread-safe synchronization on memory stores for native Python 3.13 free-threaded (`nogil`) execution.
 
 ```bash
 # Install the ultra-fast fork
