@@ -323,10 +323,10 @@ if __name__ == "__main__":
         python_classifiers.append(f"Programming Language :: Python :: 3.{minor}")
 
     setup(
-        name="transformers",
-        version="5.16.0.dev0",  # expected format is one of x.y.z.dev0, or x.y.z.rc1 or x.y.z (no to dashes, yes to dots)
-        author="The Hugging Face team (past and future) with the help of all our contributors (https://github.com/huggingface/transformers/graphs/contributors)",
-        author_email="transformers@huggingface.co",
+        name=os.environ.get("TRANSFORMERS_PACKAGE_NAME", "transformers-ultra"),
+        version="4.58.0.post1",  # expected format is one of x.y.z.dev0, or x.y.z.rc1 or x.y.z (no to dashes, yes to dots)
+        author="8b-is / Sovereign Transformers Team",
+        author_email="peter@vaked.dev",
         description="Transformers: the model-definition framework for state-of-the-art machine learning models in text, vision, audio, and multimodal models, for both inference and training.",
         long_description=open("README.md", "r", encoding="utf-8").read(),
         long_description_content_type="text/markdown",
