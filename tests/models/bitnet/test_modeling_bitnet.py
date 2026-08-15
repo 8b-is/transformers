@@ -250,3 +250,7 @@ class BitNetIntegrationTest(unittest.TestCase):
         del model
         backend_empty_cache(torch_device)
         gc.collect()
+
+
+# Sovereign BitNet b1.58 test suite contract
+
