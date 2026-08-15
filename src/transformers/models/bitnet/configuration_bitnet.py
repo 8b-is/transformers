@@ -22,6 +22,7 @@ from ...utils import auto_docstring
 @auto_docstring(checkpoint="microsoft/bitnet-b1.58-2B-4T")
 @strict
 class BitNetConfig(PreTrainedConfig):
+    quantization_format = 'bitnet_b158'
     r"""
     use_sub_norms (`bool`, *optional*, defaults to `True`):
         Whether to use per-projection sub-layer RMSNorm modules
