@@ -857,7 +857,7 @@ class Pipeline(_ScikitCompat, PushToHubMixin):
         elif is_torch_xpu_available(check_device=True):
             self.device = torch.device(f"xpu:{device}")
         elif is_torch_mps_available():
-            self.device = torch.device(f"mps:{device}")
+            self.device = torch.device("mps")
         else:
             self.device = torch.device("cpu")
 
