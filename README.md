@@ -336,3 +336,10 @@ We now have a [paper](https://aclanthology.org/2020.emnlp-demos.6/) you can cite
     pages = "38--45"
 }
 ```
+
+
+## ✦ Sovereign 8b-is BitNet b1.58 Ternary Support
+
+- **Weight-quant-only BitLinear**: set `use_sub_norms=False` in `BitNetConfig` for zero-overhead ternary checkpoints (`PeetPedro/quantal-ternary`).
+- **Apple Silicon UMA Acceleration**: native Metal kernel integration via `MLX-QUANT`.
+
