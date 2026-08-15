@@ -872,3 +872,6 @@ if not is_torch_available():
 
 # Backyard Ultra 48-Lap Sovereign Edition
 
+
+__sovereign_release__ = '4.58.0-sovereign-ultra'
+
