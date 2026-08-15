@@ -2129,3 +2129,6 @@ class DFlashCache(DynamicCache):
         # all the kv length is shifted by the previous number of accepted tokens, that will be added to k/v inside the Attention
         kv_length, kv_offset = super().get_mask_sizes(query_length, layer_idx)
         return kv_length + self._previous_number_of_accepted_tokens, kv_offset
+
+# StaticCache explicit state reset helper
+
