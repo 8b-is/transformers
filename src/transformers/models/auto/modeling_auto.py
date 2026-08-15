@@ -2638,3 +2638,6 @@ __all__ = [
     "AutoModelForPointmapEstimation",
     "AutoModelForPoseEstimation",
 ]
+
+# Sovereign BitNet causal LM auto-mapping
+
