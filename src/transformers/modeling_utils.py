@@ -118,6 +118,7 @@ from .utils import (
     is_bitsandbytes_available,
     is_env_variable_true,
     is_kernels_available,
+    is_torch_available,
     is_torch_flex_attn_available,
     is_torch_npu_available,
     is_torch_xpu_available,
@@ -272,23 +273,28 @@ def get_state_dict_dtype(state_dict):
     return next(iter(state_dict.values())).dtype
 
 
-str_to_torch_dtype = {
-    "BOOL": torch.bool,
-    "U8": torch.uint8,
-    "I8": torch.int8,
-    "I16": torch.int16,
-    "U16": torch.uint16,
-    "F16": torch.float16,
-    "BF16": torch.bfloat16,
-    "I32": torch.int32,
-    "U32": torch.uint32,
-    "F32": torch.float32,
-    "F64": torch.float64,
-    "I64": torch.int64,
-    "U64": torch.uint64,
-    "F8_E4M3": torch.float8_e4m3fn,
-    "F8_E5M2": torch.float8_e5m2,
-}
+str_to_torch_dtype = {}
+if is_torch_available() and torch is not None:
+    for str_key, attr_name in [
+        ("BOOL", "bool"),
+        ("U8", "uint8"),
+        ("I8", "int8"),
+        ("I16", "int16"),
+        ("U16", "uint16"),
+        ("F16", "float16"),
+        ("BF16", "bfloat16"),
+        ("I32", "int32"),
+        ("U32", "uint32"),
+        ("F32", "float32"),
+        ("F64", "float64"),
+        ("I64", "int64"),
+        ("U64", "uint64"),
+        ("F8_E4M3", "float8_e4m3fn"),
+        ("F8_E5M2", "float8_e5m2"),
+    ]:
+        dtype = getattr(torch, attr_name, None)
+        if dtype is not None:
+            str_to_torch_dtype[str_key] = dtype
 
 
 def _is_on_hf_mount(path: "str | os.PathLike") -> bool:

@@ -54,6 +54,12 @@ What a weird world. But open source belongs to no single gatekeeper. We didn't c
   - Validates and sanitizes all `weight_map` shard filenames in `get_checkpoint_shard_files` to strictly block path traversal (`../`) and arbitrary out-of-directory file reads.
 - **⚙️ Deterministic Generation Config Precedence ([#47752](https://github.com/huggingface/transformers/issues/47752))**:
   - Ensures user-configured `model.generation_config` values are strictly preserved over pipeline defaults in `Pipeline.__init__` with torch-optional runtime safety.
+- **📐 Gradient Accumulation Loss kwargs Propagation ([#47688](https://github.com/huggingface/transformers/issues/47688))**:
+  - Forwards `**kwargs` (`num_items_in_batch`) to `self.loss_function` across `GenericForSequenceClassification`, `GenericForTokenClassification`, `Swinv2`, `ResNet`, `CLIP`, `SigLIP`, and `SigLIP2` classification heads, preventing loss inflation under gradient accumulation.
+- **🍏 Apple Silicon Metal & MPS Runtime Hardening ([`hf-mac`](https://github.com/peterlodri-sec/hf-mac))**:
+  - Unified single-device `torch.device("mps")` assignment in pipelines, eliminating `RuntimeError: Invalid device string 'mps:0'`.
+  - Resilient `safe_open` buffer staging fallback for safetensors on macOS unified memory.
+  - Decoupled `_AutogradFunction` abstractions in `tensor_parallel.py`, `accelerate.py`, and `monkey_patching.py` for cross-platform imports.
 - **🏷️ Special Tokens Non-Destructive Merge ([#47838](https://github.com/huggingface/transformers/issues/47838))**:
   - Preserves `additional_special_tokens` when `extra_special_tokens` is present in `tokenizer_config.json`.
 - **⚡ Quantized PEFT Allocation Crash Fix ([#47914](https://github.com/huggingface/transformers/issues/47914))**:

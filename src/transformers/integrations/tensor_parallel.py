@@ -31,6 +31,13 @@ if is_torch_available():
     import torch.distributed as dist
     from torch import nn
 
+    _AutogradFunction = torch.autograd.Function
+else:
+    torch = None
+    dist = None
+    nn = None
+    _AutogradFunction = object
+
 
 logger = logging.get_logger(__name__)
 
@@ -428,7 +435,7 @@ def _split_along_last_dim(x, world_size):
 # ===================
 
 
-class _AllReduceBackward(torch.autograd.Function):
+class _AllReduceBackward(_AutogradFunction):
     """Identity forward, all-reduce backward. Used before colwise layers (f in Megatron)."""
 
     @staticmethod
@@ -446,7 +453,7 @@ class _AllReduceBackward(torch.autograd.Function):
         return grad_output, None
 
 
-class _AllReduceForward(torch.autograd.Function):
+class _AllReduceForward(_AutogradFunction):
     """All-reduce forward, identity backward. Used after rowwise layers (g in Megatron)."""
 
     @staticmethod
@@ -461,7 +468,7 @@ class _AllReduceForward(torch.autograd.Function):
         return grad_output, None
 
 
-class _AllGather(torch.autograd.Function):
+class _AllGather(_AutogradFunction):
     """All-gather forward, split backward. Gathers sharded outputs."""
 
     @staticmethod
@@ -490,12 +497,15 @@ class _AllGather(torch.autograd.Function):
         if world_size == 1:
             return grad_output, None
 
+        last_dim = grad_output.dim() - 1
         rank = device_mesh.get_local_rank()
-        chunks = _split_along_last_dim(grad_output, world_size)
+
+        grad_output = grad_output.contiguous()
+        chunks = grad_output.chunk(world_size, dim=last_dim)
         return chunks[rank].contiguous(), None
 
 
-class _Split(torch.autograd.Function):
+class _Split(_AutogradFunction):
     """Split forward, all-gather backward. Scatters replicated input."""
 
     @staticmethod
@@ -506,8 +516,11 @@ class _Split(torch.autograd.Function):
         if world_size == 1:
             return x
 
+        last_dim = x.dim() - 1
         rank = device_mesh.get_local_rank()
-        chunks = _split_along_last_dim(x, world_size)
+
+        x = x.contiguous()
+        chunks = x.chunk(world_size, dim=last_dim)
         return chunks[rank].contiguous()
 
     @staticmethod
@@ -529,7 +542,7 @@ class _Split(torch.autograd.Function):
         return torch.cat(tensor_list, dim=last_dim).contiguous(), None
 
 
-class _ReduceScatter(torch.autograd.Function):
+class _ReduceScatter(_AutogradFunction):
     """Reduce-scatter forward, all-gather backward. For sequence parallel."""
 
     @staticmethod
