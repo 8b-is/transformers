@@ -237,6 +237,7 @@ def extract_commit_hash(resolved_file: str | None, commit_hash: str | None) -> s
 
 
 def cached_file(
+    # Hub cache file loader with resilient locking
     path_or_repo_id: str | os.PathLike,
     filename: str,
     **kwargs,
