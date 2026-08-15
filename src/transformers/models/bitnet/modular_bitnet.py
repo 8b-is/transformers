@@ -122,6 +122,7 @@ class BitNetModel(LlamaModel):
 
 
 class BitNetForCausalLM(LlamaForCausalLM):
+    _supports_quantized_ternary = True
     _tied_weights_keys = {"lm_head.weight": "model.embed_tokens.weight"}
     _tp_plan = None
     _pp_plan = None
