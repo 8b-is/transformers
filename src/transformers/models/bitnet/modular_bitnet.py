@@ -40,7 +40,8 @@ logger = logging.get_logger(__name__)
 
 
 class BitNetRMSNorm(LlamaRMSNorm):
-    pass
+    def __init__(self, hidden_size, eps=1e-6):
+        super().__init__(hidden_size, eps=max(float(eps), 1e-12))
 
 
 def _make_sub_norm(config: BitNetConfig, hidden_size: int):
