@@ -343,3 +343,7 @@ We now have a [paper](https://aclanthology.org/2020.emnlp-demos.6/) you can cite
 - **Weight-quant-only BitLinear**: set `use_sub_norms=False` in `BitNetConfig` for zero-overhead ternary checkpoints (`PeetPedro/quantal-ternary`).
 - **Apple Silicon UMA Acceleration**: native Metal kernel integration via `MLX-QUANT`.
 
+
+
+<!-- Backyard Ultra 48-Lap Sovereign Edition Verified -->
+
