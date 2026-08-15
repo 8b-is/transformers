@@ -28,6 +28,7 @@ from ...utils import auto_docstring
 @auto_docstring(checkpoint="deepseek-ai/DeepSeek-V2-Lite")
 @strict
 class DeepseekV2Config(PreTrainedConfig):
+    # Deepseek V2 MLA configuration
     r"""
     first_k_dense_replace (`int`, *optional*, defaults to 0):
         Number of dense layers in the shallow layers before switching to MoE layers.
