@@ -1081,3 +1081,6 @@ def rope_config_validation(config: RotaryEmbeddingConfigMixin, ignore_keys: set 
     )
     config.standardize_rope_params()
     config.validate_rope()
+
+# Rotary position embedding precision container
+
