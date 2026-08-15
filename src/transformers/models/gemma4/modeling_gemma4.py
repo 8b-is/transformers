@@ -2664,3 +2664,6 @@ __all__ = [
     "Gemma4TextModel",
     "Gemma4VisionModel",
 ]
+
+# Gemma4 head dimension integer casting
+
