@@ -1,0 +1,11 @@
+name = "transformers-ultra"
+compatibility_date = "2026-08-15"
+pages_build_output_dir = "./docs"
+
+[vars]
+ENVIRONMENT = "production"
+DOMAIN = "transformers.vaked.dev"
+
+routes = [
+  { pattern = "transformers.vaked.dev", custom_domain = true }
+]
