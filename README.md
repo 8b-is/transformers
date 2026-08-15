@@ -14,6 +14,55 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
+# ⚡ transformers-ultra
+
+> **The Sovereign, Ultra-Fast Fork of Transformers for Low-Bit, Ternary & Wave-Interference Intelligence.**  
+> Maintained with love by **[8b-is](https://github.com/8b-is)** & Peter Lodri.  
+> PyPI package: [`transformers-ultra`](https://pypi.org/project/transformers-ultra/) · Published via Trusted GitHub Actions.
+
+---
+
+### 📖 The Origin Story: Why `transformers-ultra` Exists
+
+```text
+Tired of lying in the sunshine, staying home to watch the rain
+And you are young and life is long, and there is time to kill today
+And then one day you find ten years have got behind you
+No one told you when to run, you missed the starting gun.
+                                        — Pink Floyd, Time
+```
+
+This fork was born from a moment of pure bureaucratic absurdity:
+
+Peter Lodri ([`@peterlodri-sec`](https://github.com/peterlodri-sec)) opened three PRs against the original upstream repository to fix critical, recurring bugs in 1-bit / 1.58-bit ternary models, BitNet quantization, and Apple Silicon MPS memory leaks. Instead of reviewing the math or benchmarking the speedup, an upstream gatekeeper remarked:
+
+> *"lol this idiot is spamming MY repo"*
+
+...and banned Peter from contributing.
+
+What a weird world. But open source belongs to no single gatekeeper. We didn't complain, we didn't wait for permission—we took the starting gun, fixed every hot path, integrated native Apple Silicon Metal & BitNet kernels, ported MEM8 wave-interference associative memory, eliminated Python reflection overhead from token generation loops, and released **`transformers-ultra`**.
+
+---
+
+### 🚀 What's New in `transformers-ultra`
+
+1. **2-Bit / 1.58-Bit Ternary Packing (`MLX-QUANT`)**:
+   - Integrated native ternary packing (`quantize_ternary_numpy`, `unpack_ternary_numpy`) in `transformers.integrations.bitnet_mlx`.
+   - Native Apple Silicon `MPS` accelerator detection and memory view fixes.
+2. **MEM8 Wave-Interference Associative Memory (`hf-mac`)**:
+   - Neural wave interference memory engine (`MEM8Wave`, `MEM8MemoryStore`) operating across four distinct cognitive frequency bands (Math $\Gamma$, Code $\text{B}$, Reasoning $\text{A}$, General $\Theta$).
+3. **Hot Path Zero-Overhead Generation (>2.2× Speedup)**:
+   - Eliminated per-token `inspect.signature` AST parsing in `LogitsProcessorList.__call__` via class-level signature caching (`_cached_signatures`).
+   - Dimension-guarded RoPE embeddings across Llama, Gemma, Gemma2, Starcoder2, Mixtral, Cohere, Phi3, and GPT-NeoX to eliminate redundant `unsqueeze` memory view allocations.
+   - Dynamic KV Cache prefill bypasses `torch.cat` on empty tensors for direct tensor assignment.
+
+```bash
+# Install the ultra-fast fork
+pip install transformers-ultra
+```
+
+---
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://huggingface.co/datasets/huggingface/documentation-images/raw/main/transformers-logo-dark.svg">
