@@ -888,15 +888,32 @@ def get_checkpoint_shard_files(
     with open(index_filename) as f:
         index = json.loads(f.read())
 
-    shard_filenames = sorted(set(index["weight_map"].values()))
+    raw_shard_filenames = sorted(set(index["weight_map"].values()))
+    shard_filenames = []
+    for f in raw_shard_filenames:
+        if os.path.isabs(f) or os.path.normpath(f).startswith("..") or ".." in f.replace("\\", "/").split("/"):
+            raise ValueError(
+                f"Unsafe shard filename '{f}' detected in checkpoint index '{index_filename}'. "
+                "Shard filenames must be relative paths contained within the model directory."
+            )
+        shard_filenames.append(f)
+
     sharded_metadata = index["metadata"]
     sharded_metadata["all_checkpoint_keys"] = list(index["weight_map"].keys())
     sharded_metadata["weight_map"] = index["weight_map"].copy()
 
     # First, let's deal with local folder.
     if os.path.isdir(pretrained_model_name_or_path):
-        shard_filenames = [os.path.join(pretrained_model_name_or_path, subfolder, f) for f in shard_filenames]
-        return shard_filenames, sharded_metadata
+        target_dir = os.path.abspath(os.path.join(pretrained_model_name_or_path, subfolder))
+        resolved_shards = []
+        for f in shard_filenames:
+            joined = os.path.abspath(os.path.join(target_dir, f))
+            if not joined.startswith(target_dir + os.sep) and joined != target_dir:
+                raise ValueError(
+                    f"Unsafe shard filename '{f}' resolves outside model directory '{target_dir}'."
+                )
+            resolved_shards.append(joined)
+        return resolved_shards, sharded_metadata
 
     # At this stage pretrained_model_name_or_path is a model identifier on the Hub. Try to get everything from cache,
     # or download the files

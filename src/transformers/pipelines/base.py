@@ -826,7 +826,7 @@ class Pipeline(_ScikitCompat, PushToHubMixin):
 
         if device == -1 and self.model.device is not None:
             device = self.model.device
-        if isinstance(device, torch.device):
+        if is_torch_available() and isinstance(device, torch.device):
             if (device.type == "xpu" and not is_torch_xpu_available(check_device=True)) or (
                 device.type == "hpu" and not is_torch_hpu_available()
             ):
@@ -839,7 +839,9 @@ class Pipeline(_ScikitCompat, PushToHubMixin):
             ):
                 raise ValueError(f'{device} is not available, you should use device="cpu" instead')
 
-            self.device = torch.device(device)
+            self.device = torch.device(device) if is_torch_available() else device
+        elif not is_torch_available():
+            self.device = device
         elif device < 0:
             self.device = torch.device("cpu")
         elif is_torch_mlu_available():
@@ -890,15 +892,16 @@ class Pipeline(_ScikitCompat, PushToHubMixin):
                 # 1. user-defined config options in `**kwargs`
                 # 2. model's generation config values
                 # 3. pipeline's default generation config values
-                # NOTE: _prepare_generation_config creates a deep copy of the generation config before updating it,
-                # and returns all kwargs that were not used to update the generation config
+                gen_config = copy.deepcopy(self.model.generation_config)
+                if default_pipeline_generation_config is not None:
+                    gen_config.update(**default_pipeline_generation_config.to_dict(), defaults_only=True)
                 prepared_generation_config, kwargs = self.model._prepare_generation_config(
-                    generation_config=default_pipeline_generation_config, **kwargs
+                    generation_config=gen_config, **kwargs
                 )
                 self.generation_config = prepared_generation_config
                 # if the `max_new_tokens` is set to the pipeline default, but `max_length` is set to a non-default
                 # value: let's honor `max_length`. E.g. we want Whisper's default `max_length=448` take precedence
-                # over over the pipeline's length default.
+                # over the pipeline's length default.
                 if (
                     default_pipeline_generation_config.max_new_tokens is not None  # there's a pipeline default
                     and self.generation_config.max_new_tokens == default_pipeline_generation_config.max_new_tokens

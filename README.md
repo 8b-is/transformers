@@ -44,6 +44,23 @@ What a weird world. But open source belongs to no single gatekeeper. We didn't c
 
 ---
 
+### 🛡️ Sovereign Hard Fork & Downstream Upgrades
+
+`8b-is/transformers` operates as a **100% sovereign, independent downstream distribution**. We maintain our own hardened mainline—incorporating critical community bugfixes, security patches, and Apple Silicon / low-bit acceleration without upstream gatekeeping delays.
+
+#### 🛠️ Hardened Bug Fixes & Security Patches Baked Directly Into `8b-is/transformers`:
+
+- **🔒 Sharded Checkpoint Path Traversal Security Hardening ([#47176](https://github.com/huggingface/transformers/issues/47176))**:
+  - Validates and sanitizes all `weight_map` shard filenames in `get_checkpoint_shard_files` to strictly block path traversal (`../`) and arbitrary out-of-directory file reads.
+- **⚙️ Deterministic Generation Config Precedence ([#47752](https://github.com/huggingface/transformers/issues/47752))**:
+  - Ensures user-configured `model.generation_config` values are strictly preserved over pipeline defaults in `Pipeline.__init__` with torch-optional runtime safety.
+- **🏷️ Special Tokens Non-Destructive Merge ([#47838](https://github.com/huggingface/transformers/issues/47838))**:
+  - Preserves `additional_special_tokens` when `extra_special_tokens` is present in `tokenizer_config.json`.
+- **⚡ Quantized PEFT Allocation Crash Fix ([#47914](https://github.com/huggingface/transformers/issues/47914))**:
+  - Resolves `caching_allocator_warmup` `AttributeError` when loading bitsandbytes quantized models with PEFT adapters.
+
+---
+
 ### 🚀 What's New in `transformers-ultra`
 
 1. **2-Bit / 1.58-Bit Ternary Packing ([`MLX-QUANT`](https://github.com/peterlodri-sec/MLX-QUANT))**:
