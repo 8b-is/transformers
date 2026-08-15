@@ -4468,7 +4468,11 @@ class PreTrainedModel(
                         for d in load_config.device_map.values()
                     )
                     backend, device = ("pread", "mps") if is_mps else ("mmap", "cpu")
-                    file_pointer = safe_open(file, framework="pt", device=device, backend=backend)
+                    try:
+                        file_pointer = safe_open(file, framework="pt", device=device, backend=backend)
+                    except Exception:
+                        # Fallback for Apple Silicon MPS environments where direct pread/mps safe_open is unsupported
+                        file_pointer = safe_open(file, framework="pt", device="cpu", backend="mmap")
                     all_pointer.add(file_pointer)
                     for k in file_pointer.keys():
                         merged_state_dict[k] = file_pointer.get_slice(k)  # don't materialize yet
