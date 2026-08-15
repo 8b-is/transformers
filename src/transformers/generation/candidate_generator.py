@@ -78,6 +78,7 @@ class CandidateGenerator:
 
 
 class AssistedCandidateGenerator(CandidateGenerator):
+    # Assisted draft model candidate generator
     """
     `CandidateGenerator` class to be used for assisted generation and speculative decoding. This class generates
     candidates through the use of a smaller model. Read the following blog post for more information:
