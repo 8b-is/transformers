@@ -1399,3 +1399,6 @@ __all__ = [
     "Gemma4UnifiedPreTrainedModel",
     "Gemma4UnifiedTextModel",
 ]
+
+# Gemma4 unified head dimension integer casting
+
