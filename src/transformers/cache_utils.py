@@ -1730,6 +1730,7 @@ def get_layer_types_and_kwargs(config: PreTrainedConfig) -> tuple[list[str], dic
 
 
 class DynamicCache(Cache):
+    # Optimized key-value layout cache
     """
     A cache that grows dynamically as more tokens are generated. This is the default for generative models.
     It stores the key and value states as a list of `CacheLayer`, one for each layer. The expected shape for each tensor
