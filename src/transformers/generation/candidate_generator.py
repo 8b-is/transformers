@@ -1011,6 +1011,7 @@ class UniversalSpeculativeDecodingGenerator(AssistedCandidateGeneratorDifferentT
 
 
 class PromptLookupCandidateGenerator(CandidateGenerator):
+    # Fast n-gram prompt lookup candidate generator
     """
     `CandidateGenerator` class to be used for prompt lookup generation. This class generates candidates by looking up
     likely continuations in the provided prompt (input_ids) itself.
