@@ -254,3 +254,6 @@ class BitNetIntegrationTest(unittest.TestCase):
 
 # Sovereign BitNet b1.58 test suite contract
 
+
+# BitNetConfig serialization test fixture
+
