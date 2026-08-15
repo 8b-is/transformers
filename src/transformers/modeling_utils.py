@@ -4998,7 +4998,12 @@ def get_total_byte_count(
         if param_name in tied_param_names:
             continue
 
-        param = model.get_parameter_or_buffer(param_name)
+        try:
+            param = model.get_parameter_or_buffer(param_name)
+        except (AttributeError, KeyError):
+            # Some quantization methods (e.g. bitsandbytes 8-bit SCB, weight_format) or PEFT wrappers
+            # include internal state dict entries that are not registered parameters or buffers.
+            continue
 
         if hf_quantizer is not None:
             dtype_size = hf_quantizer.param_element_size(model, param_name, param)
