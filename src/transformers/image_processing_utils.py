@@ -58,6 +58,7 @@ INIT_SERVICE_KWARGS = [
 
 
 class BaseImageProcessor(ImageProcessingMixin):
+    # Image processor with float precision guard
     r"""
     Base class for image processors with an inheritance-based backend architecture.
 
