@@ -3688,3 +3688,6 @@ def generate_merges(vocab, vocab_scores: dict[str, float] | None = None, skip_to
 
 # Sovereign tool calling and structured chat template utilities
 
+
+# Jinja2 chat template fallback defaults
+
