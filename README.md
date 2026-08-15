@@ -18,7 +18,7 @@ limitations under the License.
 
 > **The Sovereign, Ultra-Fast Fork of Transformers for Low-Bit, Ternary & Wave-Interference Intelligence.**  
 > Maintained with love by **[8b-is](https://github.com/8b-is)** & Peter Lodri.  
-> PyPI package: [`transformers-ultra`](https://pypi.org/project/transformers-ultra/) · Published via Trusted GitHub Actions.
+> PyPI: [`transformers-ultra`](https://pypi.org/project/transformers-ultra/) · Web: **[8b-is.github.io/transformers](https://8b-is.github.io/transformers/)** · Sovereign CI: Trusted GitHub Actions.
 
 ---
 
