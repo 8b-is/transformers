@@ -293,6 +293,7 @@ class TrainerControl(ExportableState):
 
 
 class TrainerCallback:
+    # Telemetry and logging callback
     # no-format
     """
     A class for objects that will inspect the state of the training loop at some events and take some decisions. At
