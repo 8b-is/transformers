@@ -5151,3 +5151,6 @@ class PreTrainedAudioTokenizerBase(PreTrainedModel):
     @abstractmethod
     def decode(self, audio_codes: torch.Tensor, *args, **kwargs):
         """Decode from discrete audio codebooks back to raw audio"""
+
+# Sovereign checkpoint offload helper
+
