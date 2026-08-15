@@ -2,6 +2,7 @@ import gc
 import os
 import tempfile
 import unittest
+from types import SimpleNamespace
 
 from transformers import AutoModelForCausalLM, AutoTokenizer, CompressedTensorsConfig
 from transformers.testing_utils import (
@@ -17,6 +18,58 @@ from transformers.utils import is_torch_available
 
 if is_torch_available():
     import torch
+
+
+@require_compressed_tensors
+@require_torch
+class DecompressExpertsShapeFallbackTest(unittest.TestCase):
+    """`DecompressExperts.convert` must never guess the unpacked in-dim from the packed
+    tensor alone for bit widths that do not divide 32 (3/5/6/7-bit): dense bit-continuous
+    packing and the legacy padded layout are indistinguishable from metadata, so the
+    fallback formula is only exact for 1/2/4/8-bit. `weight_shape` is required for these
+    checkpoints (huggingface/transformers#47956)."""
+
+    def _make_hf_quantizer(self, num_bits):
+        from compressed_tensors.quantization import QuantizationArgs, QuantizationScheme, QuantizationType
+
+        scheme = QuantizationScheme(
+            weights=QuantizationArgs(num_bits=num_bits, type=QuantizationType.INT.value),
+            targets=["re:.*experts.*"],
+        )
+        config = SimpleNamespace(config_groups={"experts": scheme})
+        compressor = SimpleNamespace(quantization_config=config)
+        return SimpleNamespace(compressor=compressor), scheme
+
+    def test_missing_weight_shape_raises_for_non_divisor_num_bits(self):
+        from transformers.integrations.compressed_tensors import DecompressExperts
+
+        hf_quantizer, scheme = self._make_hf_quantizer(num_bits=3)
+        input_dict = {
+            "gate_proj.weight_packed": [torch.zeros(2, 4, dtype=torch.int32)],
+            "gate_proj.weight_scale": [torch.ones(2, 1, dtype=torch.float32)],
+        }
+        with self.assertRaisesRegex(ValueError, "huggingface/transformers#47956"):
+            DecompressExperts(hf_quantizer, scheme=scheme).convert(
+                input_dict,
+                source_patterns=["gate_proj.weight_packed"],
+                target_patterns=["gate_proj.weight"],
+            )
+
+    def test_missing_weight_shape_falls_back_for_divisor_num_bits(self):
+        from transformers.integrations.compressed_tensors import DecompressExperts
+
+        hf_quantizer, scheme = self._make_hf_quantizer(num_bits=4)
+        input_dict = {
+            "gate_proj.weight_packed": [torch.zeros(2, 4, dtype=torch.int32)],
+            "gate_proj.weight_scale": [torch.ones(2, 1, dtype=torch.float32)],
+        }
+        out = DecompressExperts(hf_quantizer, scheme=scheme).convert(
+            input_dict,
+            source_patterns=["gate_proj.weight_packed"],
+            target_patterns=["gate_proj.weight"],
+        )
+        # Fallback shape: (out=2, in=packed_cols * (32 // 4) = 4 * 8 = 32), stacked for 1 expert.
+        self.assertEqual(out["gate_proj.weight_packed"].shape, (1, 2, 32))
 
 
 @require_compressed_tensors
