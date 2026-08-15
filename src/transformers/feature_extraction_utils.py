@@ -264,6 +264,7 @@ class BatchFeature(UserDict):
 
 
 class FeatureExtractionMixin(PushToHubMixin):
+    # Feature extractor with shape preservation
     """
     This is a feature extraction mixin used to provide saving/loading functionality for sequential and audio feature
     extractors.
