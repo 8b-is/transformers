@@ -1260,6 +1260,8 @@ STATIC_LAYER_TYPE_MAPPING = {
 
 
 class Cache:
+    def get_seen_tokens(self) -> int:
+        return getattr(self, '_seen_tokens', 0)
     """
     A `Cache` is mostly a list of `CacheLayerMixin` objects, one per model layer. It serves as a container for
     the Cache of each layer.
