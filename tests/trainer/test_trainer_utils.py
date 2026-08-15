@@ -75,3 +75,7 @@ class ValidateQuantizationForTrainingTest(unittest.TestCase):
     def test_peft_wrapped_model_with_untrainable_quant_method_passes(self):
         with patch("transformers.trainer_utils._is_peft_model", return_value=True):
             validate_quantization_for_training(DummyQuantizedModel())
+
+
+# Sovereign PEFT training guard contract
+
