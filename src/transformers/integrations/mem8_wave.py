@@ -13,15 +13,14 @@ Frequency Bands:
   - General Text: Theta band (0–100 Hz)
 """
 
-import math
 import hashlib
+import math
 import time
-from typing import List, Optional, Tuple, Dict, Any
 
 
 class MEM8Wave:
     """A memory encoded as an oscillatory wave — frequency, amplitude, phase."""
-    def __init__(self, text: str, kind: str = "user", timestamp: Optional[float] = None):
+    def __init__(self, text: str, kind: str = "user", timestamp: float | None = None):
         self.text = text
         self.kind = kind
         self.timestamp = timestamp if timestamp is not None else time.time()
@@ -40,7 +39,7 @@ class MEM8Wave:
             base = 200.0 # Alpha band (Reasoning)
         else:
             base = 50.0  # Theta band (General)
-            
+
         # Add deterministic jitter from sha256 hash
         h = hashlib.sha256(text.encode('utf-8')).hexdigest()
         jitter = (int(h[:4], 16) % 100) - 50.0
@@ -58,14 +57,14 @@ class MEM8Wave:
 class MEM8MemoryStore:
     """Zero-overhead wave interference memory store for transformers context augmentation."""
     def __init__(self):
-        self.waves: List[MEM8Wave] = []
+        self.waves: list[MEM8Wave] = []
 
     def record(self, text: str, kind: str = "user") -> MEM8Wave:
         wave = MEM8Wave(text=text, kind=kind)
         self.waves.append(wave)
         return wave
 
-    def recall(self, query: str, top_k: int = 3, threshold: float = 0.15) -> List[Tuple[MEM8Wave, float]]:
+    def recall(self, query: str, top_k: int = 3, threshold: float = 0.15) -> list[tuple[MEM8Wave, float]]:
         if not self.waves:
             return []
         q_wave = MEM8Wave(text=query, kind="query")

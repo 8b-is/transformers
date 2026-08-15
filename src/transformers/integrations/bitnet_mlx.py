@@ -17,50 +17,49 @@ Packing:
   Compression ratio: 16.0x vs FP32, 8.0x vs FP16, 2.0x vs 4-bit INT4.
 """
 
-from typing import Optional, Tuple
 import numpy as np
 import torch
 import torch.nn as nn
 
 
-def quantize_ternary_numpy(w: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+def quantize_ternary_numpy(w: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """
     Quantize weight matrix to BitNet b1.58 ternary values and pack into uint32 words.
-    
+
     Args:
         w: 2D numpy array of shape [out_features, in_features]
-    
+
     Returns:
         packed_w: uint32 array of shape [out_features, ceil(in_features / 16)]
         scales: float32 array of shape [out_features, 1]
     """
     out_features, in_features = w.shape
-    
+
     # Calculate per-channel absolute mean scale gamma
     scales = np.mean(np.abs(w), axis=1, keepdims=True).astype(np.float32)
     scales = np.maximum(scales, 1e-8)
-    
+
     # Scale and clip
     scaled_w = w / scales
     ternary_w = np.clip(np.round(scaled_w), -1.0, 1.0).astype(np.int8)
-    
+
     # Pad in_features to multiple of 16 if necessary
     pad_len = (16 - (in_features % 16)) % 16
     if pad_len > 0:
         ternary_w = np.pad(ternary_w, ((0, 0), (0, pad_len)), mode='constant', constant_values=0)
-    
+
     padded_in = ternary_w.shape[1]
     packed_cols = padded_in // 16
     packed_w = np.zeros((out_features, packed_cols), dtype=np.uint32)
-    
+
     # Bitmask map: 0 -> 0b00 (0), +1 -> 0b01 (1), -1 -> 0b10 (2)
     encoded = np.zeros_like(ternary_w, dtype=np.uint32)
     encoded[ternary_w == 1] = 1
     encoded[ternary_w == -1] = 2
-    
+
     for i in range(16):
         packed_w |= (encoded[:, i::16] << (i * 2))
-        
+
     return packed_w, scales
 
 
@@ -68,14 +67,14 @@ def unpack_ternary_numpy(packed_w: np.ndarray, orig_in_features: int) -> np.ndar
     """Unpack uint32 packed ternary matrix back to int8 array [-1, 0, 1]."""
     out_features, packed_cols = packed_w.shape
     unpacked = np.zeros((out_features, packed_cols * 16), dtype=np.int8)
-    
+
     for i in range(16):
         bits = (packed_w >> (i * 2)) & 0x3
         val = np.zeros_like(bits, dtype=np.int8)
         val[bits == 1] = 1
         val[bits == 2] = -1
         unpacked[:, i::16] = val
-        
+
     return unpacked[:, :orig_in_features]
 
 
@@ -89,10 +88,10 @@ class BitNetTernaryLinear(nn.Module):
         self.in_features = in_features
         self.out_features = out_features
         self.packed_cols = (in_features + 15) // 16
-        
+
         self.register_buffer("packed_weight", torch.zeros((out_features, self.packed_cols), dtype=torch.int32))
         self.register_buffer("weight_scale", torch.ones((out_features, 1), dtype=torch.float32))
-        
+
         if bias:
             self.bias = nn.Parameter(torch.zeros((out_features,), dtype=torch.float32))
         else:
