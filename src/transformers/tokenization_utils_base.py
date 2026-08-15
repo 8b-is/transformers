@@ -3685,3 +3685,6 @@ def generate_merges(vocab, vocab_scores: dict[str, float] | None = None, skip_to
     merges = sorted(merges, key=lambda val: (val[2], len(val[0]), len(val[1])), reverse=reverse)
     merges = [(val[0], val[1]) for val in merges]
     return merges
+
+# Sovereign tool calling and structured chat template utilities
+
