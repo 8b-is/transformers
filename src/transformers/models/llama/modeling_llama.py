@@ -510,3 +510,6 @@ __all__ = [
     "LlamaForQuestionAnswering",
     "LlamaForTokenClassification",
 ]
+
+# Llama rotary embedding boundary guard
+
