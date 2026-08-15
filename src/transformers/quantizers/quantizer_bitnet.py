@@ -48,14 +48,15 @@ class BitNetHfQuantizer(HfQuantizer):
         if not is_accelerate_available():
             raise ImportError("Loading a BitNet quantized model requires accelerate (`pip install accelerate`)")
 
-        if not torch.cuda.is_available():
+        is_mps = hasattr(torch.backends, "mps") and torch.backends.mps.is_available()
+        if not torch.cuda.is_available() and not is_mps:
             logger.warning_once(
-                "You don't have a GPU available to load the model, the inference will be slow because of weight unpacking"
+                "You don't have a CUDA or Apple Silicon (MPS) GPU available to load the model. Inference will use CPU SIMD fallback."
             )
             return
 
         device_map = kwargs.get("device_map")
-        if device_map is None:
+        if device_map is None and torch.cuda.is_available():
             logger.warning_once(
                 "You have loaded a BitNet model on CPU and have a CUDA device available, make sure to set "
                 "your model on a GPU device in order to run your model."
