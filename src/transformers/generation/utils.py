@@ -2506,6 +2506,8 @@ class GenerationMixin(ContinuousMixin):
 
         # 2. Set generation parameters if not already defined
         logits_processor = logits_processor if logits_processor is not None else LogitsProcessorList()
+        if not isinstance(logits_processor, LogitsProcessorList):
+            logits_processor = LogitsProcessorList(logits_processor)
         stopping_criteria = stopping_criteria if stopping_criteria is not None else StoppingCriteriaList()
 
         accepts_attention_mask = "attention_mask" in set(inspect.signature(self.forward).parameters.keys())
