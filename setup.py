@@ -39,6 +39,7 @@ To create the package for pypi.
 6. Have a core maintainer review and approve the deployment to pypi.
 """
 
+import os
 import re
 import shutil
 import sys
@@ -327,12 +328,12 @@ if __name__ == "__main__":
         version="4.58.0.post1",  # expected format is one of x.y.z.dev0, or x.y.z.rc1 or x.y.z (no to dashes, yes to dots)
         author="8b-is / Sovereign Transformers Team",
         author_email="peter@vaked.dev",
-        description="Transformers: the model-definition framework for state-of-the-art machine learning models in text, vision, audio, and multimodal models, for both inference and training.",
+        description="Transformers-Ultra: ultra-fast, zero-overhead machine learning definitions with native 1.58b ternary packing, MEM8 wave associative memory, and MPS acceleration.",
         long_description=open("README.md", "r", encoding="utf-8").read(),
         long_description_content_type="text/markdown",
-        keywords="machine-learning nlp python pytorch transformer llm vlm deep-learning inference training model-hub pretrained-models llama gemma qwen",
+        keywords="machine-learning nlp python pytorch transformer llm vlm deep-learning inference training model-hub pretrained-models llama gemma qwen bitnet ternary",
         license="Apache 2.0 License",
-        url="https://github.com/huggingface/transformers",
+        url="https://github.com/8b-is/transformers",
         package_dir={"": "src"},
         packages=find_packages("src"),
         include_package_data=True,
