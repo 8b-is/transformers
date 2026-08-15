@@ -3,7 +3,13 @@ import unittest
 import numpy as np
 import torch
 
-from transformers.integrations.bitnet_mlx import BitNetTernaryLinear, quantize_ternary_numpy, unpack_ternary_numpy
+from transformers.integrations.bitnet_mlx import (
+    BitNetTernaryLinear,
+    quantize_ternary_numpy,
+    quantize_ternary_torch,
+    unpack_ternary_numpy,
+    unpack_ternary_torch,
+)
 from transformers.integrations.mem8_wave import MEM8MemoryStore
 
 
@@ -21,6 +27,20 @@ class SovereignIntegrationsTest(unittest.TestCase):
         unpacked = unpack_ternary_numpy(packed, 16)
         self.assertEqual(unpacked.shape, (2, 16))
         self.assertTrue(np.all(np.isin(unpacked, [-1, 0, 1])))
+
+    def test_bitnet_torch_quantize_unpack_roundtrip(self):
+        w = torch.tensor([
+            [-0.8, -0.4, 0.0, 0.4, 0.9, -0.1, 0.0, 0.2, -0.9, 0.8, 0.0, -0.3, 0.5, -0.5, 0.1, -0.2],
+            [0.1, 0.2, -0.3, 0.4, -0.5, 0.6, -0.7, 0.8, -0.9, 1.0, 0.0, 0.0, -0.1, -0.2, 0.3, 0.4]
+        ], dtype=torch.float32)
+
+        packed, scales = quantize_ternary_torch(w)
+        self.assertEqual(packed.shape, (2, 1))
+        self.assertEqual(scales.shape, (2, 1))
+
+        unpacked = unpack_ternary_torch(packed, 16)
+        self.assertEqual(unpacked.shape, (2, 16))
+        self.assertTrue(torch.all(torch.isin(unpacked, torch.tensor([-1.0, 0.0, 1.0]))))
 
     def test_bitnet_ternary_linear_forward(self):
         layer = BitNetTernaryLinear(in_features=32, out_features=16)

@@ -78,10 +78,53 @@ def unpack_ternary_numpy(packed_w: np.ndarray, orig_in_features: int) -> np.ndar
     return unpacked[:, :orig_in_features]
 
 
+def quantize_ternary_torch(w: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+    """
+    Device-native PyTorch BitNet b1.58 ternary quantization directly on accelerator.
+    Returns (packed_int32, scales_float32).
+    """
+    out_features, in_features = w.shape
+    scales = torch.mean(torch.abs(w), dim=1, keepdim=True).clamp_min(1e-8)
+    scaled_w = w / scales
+    ternary_w = torch.clamp(torch.round(scaled_w), -1.0, 1.0).to(torch.int8)
+
+    pad_len = (16 - (in_features % 16)) % 16
+    if pad_len > 0:
+        ternary_w = torch.nn.functional.pad(ternary_w, (0, pad_len), value=0)
+
+    padded_in = ternary_w.shape[1]
+    packed_cols = padded_in // 16
+    packed_w = torch.zeros((out_features, packed_cols), dtype=torch.int32, device=w.device)
+
+    encoded = torch.zeros_like(ternary_w, dtype=torch.int32)
+    encoded[ternary_w == 1] = 1
+    encoded[ternary_w == -1] = 2
+
+    for i in range(16):
+        packed_w |= (encoded[:, i::16] << (i * 2))
+
+    return packed_w, scales
+
+
+def unpack_ternary_torch(packed_w: torch.Tensor, orig_in_features: int) -> torch.Tensor:
+    """Device-native PyTorch ternary matrix unpacking directly on accelerator."""
+    out_features, packed_cols = packed_w.shape
+    unpacked = torch.zeros((out_features, packed_cols * 16), dtype=torch.float32, device=packed_w.device)
+
+    for i in range(16):
+        bits = (packed_w >> (i * 2)) & 0x3
+        val = torch.zeros_like(bits, dtype=torch.float32)
+        val[bits == 1] = 1.0
+        val[bits == 2] = -1.0
+        unpacked[:, i::16] = val
+
+    return unpacked[:, :orig_in_features]
+
+
 class BitNetTernaryLinear(nn.Module):
     """
     PyTorch BitNet b1.58 Ternary Linear Layer with zero-copy UMA weight streaming.
-    Reuses the BitNet kernel architecture from MLX-QUANT.
+    Reuses the BitNet kernel architecture from MLX-QUANT with inference weight caching.
     """
     def __init__(self, in_features: int, out_features: int, bias: bool = False):
         super().__init__()
@@ -91,6 +134,7 @@ class BitNetTernaryLinear(nn.Module):
 
         self.register_buffer("packed_weight", torch.zeros((out_features, self.packed_cols), dtype=torch.int32))
         self.register_buffer("weight_scale", torch.ones((out_features, 1), dtype=torch.float32))
+        self._cached_weight = None
 
         if bias:
             self.bias = nn.Parameter(torch.zeros((out_features,), dtype=torch.float32))
@@ -98,20 +142,30 @@ class BitNetTernaryLinear(nn.Module):
             self.register_parameter("bias", None)
 
     def pack_from_float(self, weight_float: torch.Tensor):
-        w_np = weight_float.detach().cpu().numpy()
-        packed_np, scales_np = quantize_ternary_numpy(w_np)
-        self.packed_weight.copy_(torch.from_numpy(packed_np.view(np.int32)))
-        self.weight_scale.copy_(torch.from_numpy(scales_np))
+        if weight_float.is_cuda or weight_float.is_mps:
+            packed_t, scales_t = quantize_ternary_torch(weight_float)
+            self.packed_weight.copy_(packed_t)
+            self.weight_scale.copy_(scales_t)
+        else:
+            w_np = weight_float.detach().cpu().numpy()
+            packed_np, scales_np = quantize_ternary_numpy(w_np)
+            self.packed_weight.copy_(torch.from_numpy(packed_np.view(np.int32)))
+            self.weight_scale.copy_(torch.from_numpy(scales_np))
+        self._cached_weight = None
 
     def unpack_to_float(self) -> torch.Tensor:
-        packed_np = self.packed_weight.cpu().numpy().view(np.uint32)
-        unpacked_np = unpack_ternary_numpy(packed_np, self.in_features)
-        unpacked_float = torch.from_numpy(unpacked_np).to(self.weight_scale.device, dtype=self.weight_scale.dtype)
-        return unpacked_float * self.weight_scale
+        if self._cached_weight is not None:
+            return self._cached_weight
+        unpacked_float = unpack_ternary_torch(self.packed_weight, self.in_features)
+        w = unpacked_float * self.weight_scale
+        if not self.training:
+            self._cached_weight = w
+        return w
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         w = self.unpack_to_float()
-        out = torch.matmul(x, w.t())
+        out = torch.matmul(x, w.t().to(dtype=x.dtype))
         if self.bias is not None:
             out = out + self.bias
         return out
+
