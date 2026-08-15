@@ -354,7 +354,10 @@ class DynamicIndexedLayer(DynamicLayer):
         """
         if not self.is_indexer_initialized:
             self.lazy_initialization_indexer(indexer_key_states)
-        self.indexer_keys = torch.cat([self.indexer_keys, indexer_key_states], dim=1)
+        if self.indexer_keys.numel() == 0:
+            self.indexer_keys = indexer_key_states
+        else:
+            self.indexer_keys = torch.cat([self.indexer_keys, indexer_key_states], dim=1)
         return self.indexer_keys
 
     def offload(self):

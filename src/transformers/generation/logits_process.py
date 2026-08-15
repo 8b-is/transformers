@@ -67,6 +67,10 @@ class LogitsProcessorList(list):
     inputs.
     """
 
+    def __init__(self, *args):
+        super().__init__(*args)
+        self._cached_signatures = {}
+
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> torch.FloatTensor:
         r"""
         Args:
@@ -83,14 +87,18 @@ class LogitsProcessorList(list):
                 The processed prediction scores.
 
         """
+        if not self:
+            return scores
+
         for processor in self:
-            function_args = inspect.signature(processor.__call__).parameters
-            if len(function_args) > 2:
-                if not all(arg in kwargs for arg in list(function_args.keys())[2:]):
-                    raise ValueError(
-                        f"Make sure that all the required parameters: {list(function_args.keys())} for "
-                        f"{processor.__class__} are passed to the logits processor."
-                    )
+            cls = processor.__class__
+            if cls not in self._cached_signatures:
+                try:
+                    self._cached_signatures[cls] = len(inspect.signature(processor.__call__).parameters) > 2
+                except Exception:
+                    self._cached_signatures[cls] = False
+
+            if self._cached_signatures[cls]:
                 scores = processor(input_ids, scores, **kwargs)
             else:
                 scores = processor(input_ids, scores)
