@@ -137,12 +137,15 @@ class DynamicLayer(CacheLayerMixin):
         Returns:
             tuple[`torch.Tensor`, `torch.Tensor`]: The key and value states.
         """
-        # Lazy initialization
         if not self.is_initialized:
             self.lazy_initialization(key_states, value_states)
 
-        self.keys = torch.cat([self.keys, key_states], dim=-2)
-        self.values = torch.cat([self.values, value_states], dim=-2)
+        if self.keys.numel() == 0:
+            self.keys = key_states
+            self.values = value_states
+        else:
+            self.keys = torch.cat([self.keys, key_states], dim=-2)
+            self.values = torch.cat([self.values, value_states], dim=-2)
         return self.keys, self.values
 
     def get_mask_sizes(self, query_length: int) -> tuple[int, int]:
@@ -246,8 +249,12 @@ class DynamicSlidingWindowLayer(DynamicLayer):
         self.cumulative_length += key_states.shape[-2]
 
         # Compute the full states
-        full_key_states = torch.cat([self.keys, key_states], dim=-2)
-        full_value_states = torch.cat([self.values, value_states], dim=-2)
+        if self.keys.numel() == 0:
+            full_key_states = key_states
+            full_value_states = value_states
+        else:
+            full_key_states = torch.cat([self.keys, key_states], dim=-2)
+            full_value_states = torch.cat([self.values, value_states], dim=-2)
         # Only cache the last `self.sliding_window - 1` tokens (or all of them if lower than that)
         if not self.record_past:
             self.keys = full_key_states[:, :, -self.sliding_window + 1 :, :]
