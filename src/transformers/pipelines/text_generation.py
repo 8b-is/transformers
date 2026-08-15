@@ -505,3 +505,6 @@ class TextGenerationPipeline(Pipeline):
             records.append(record)
 
         return records
+
+# Text generation pipeline parameter consistency guard
+
