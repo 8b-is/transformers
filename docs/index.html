@@ -687,6 +687,26 @@
         </div>
         <div class="commit-timeline" id="commit-list">
           
+          <!-- Commit: Whisper, HuBERT, CB GPU Fixes -->
+          <div class="commit-row" data-search="whisper hubert continuous batching 47805 47739 47926 gpu t4 sm gating padding mask dtype">
+            <div class="commit-meta">
+              <span class="commit-hash" style="color: var(--accent-cyan)">d89ef41</span>
+              <span class="commit-tag tag-security">3 Upstream Fixes</span>
+              <span class="commit-tag tag-runtime">Issues #47805, #47739, #47926</span>
+              <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-mono)">2026-08-15</span>
+            </div>
+            <div class="commit-title">fix(whisper,hubert,generation): auto-align whisper-large-v3 input dtype, preserve zero-padding in HuBERT conv embeddings & gate FlashAttention on CUDA SM capability</div>
+            <div class="commit-details">
+              Auto-aligned float32 input features to float16 conv1 weights in WhisperEncoder (#47805). Propagated padding masks in HubertPositionalConvEmbedding with batch norm to prevent batch cross-contamination (#47739). Gated continuous batching FlashAttention on GPU SM capability (&ge; 8.0) to prevent crashes on T4/V100 (#47926).
+            </div>
+            <div class="commit-links">
+              <a href="https://github.com/8b-is/transformers/blob/main/tests/utils/test_ultra_upstream_fixes.py" target="_blank">Test Suite (14/14 Passed)</a> ·
+              <a href="https://github.com/huggingface/transformers/issues/47805" target="_blank">Upstream #47805</a> ·
+              <a href="https://github.com/huggingface/transformers/issues/47739" target="_blank">Upstream #47739</a> ·
+              <a href="https://github.com/huggingface/transformers/issues/47926" target="_blank">Upstream #47926</a>
+            </div>
+          </div>
+
           <!-- Release v4.58.0.post2 -->
           <div class="commit-row" data-search="release v4.58.0.post2 asr whisper device crop tokenizers sentencepiece bitnet grounding dino siglip2 repetition esmfold gemma4 47886 47885 47869 47433 47473 47439 47429 47912 47957 47674 47612 47595 47470 47448">
             <div class="commit-meta">

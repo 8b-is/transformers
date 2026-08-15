@@ -91,3 +91,35 @@ class UltraUpstreamFixesTest(unittest.TestCase):
         p1 = torch.softmax(proc(input_ids, scores), dim=-1)
         p2 = torch.softmax(proc(input_ids, scores + 100.0), dim=-1)
         self.assertTrue(torch.allclose(p1, p2, atol=1e-4))
+
+    @pytest.mark.skipif(not is_torch_available(), reason="PyTorch required")
+    def test_hubert_pos_conv_padding_mask(self):
+        """Fix #47739: HubertPositionalConvEmbedding preserves zeros on padded frames with batch norm."""
+        from transformers.models.hubert.configuration_hubert import HubertConfig
+        from transformers.models.hubert.modeling_hubert import HubertPositionalConvEmbedding
+
+        cfg = HubertConfig(
+            hidden_size=16,
+            num_conv_pos_embeddings=3,
+            num_conv_pos_embedding_groups=1,
+            feat_extract_activation="linear",
+            conv_pos_batch_norm=True,
+        )
+        layer = HubertPositionalConvEmbedding(cfg).eval()
+        inputs = torch.randn(2, 10, 16)
+        padding_mask = torch.tensor([[False] * 10, [False] * 5 + [True] * 5])
+        out = layer(inputs, padding_mask=padding_mask)
+        # Verify padded region is zeroed out
+        self.assertTrue(torch.all(out[1, 5:, :] == 0.0))
+
+    @pytest.mark.skipif(not is_torch_available(), reason="PyTorch required")
+    def test_whisper_encoder_dtype_alignment(self):
+        """Fix #47805: WhisperEncoder aligns float32 input_features to conv1 float16 weights."""
+        from transformers.models.whisper.configuration_whisper import WhisperConfig
+        from transformers.models.whisper.modeling_whisper import WhisperEncoder
+
+        cfg = WhisperConfig(d_model=64, encoder_layers=1, encoder_attention_heads=4, max_source_positions=100)
+        encoder = WhisperEncoder(cfg).eval().to(dtype=torch.float16)
+        input_features = torch.randn(1, cfg.num_mel_bins, 200, dtype=torch.float32)
+        out = encoder(input_features)
+        self.assertEqual(out.last_hidden_state.dtype, torch.float16)

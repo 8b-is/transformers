@@ -50,6 +50,12 @@ What a weird world. But open source belongs to no single gatekeeper. We didn't c
 
 #### 🛠️ Hardened Bug Fixes & Security Patches Baked Directly Into `8b-is/transformers`:
 
+- **🎧 Whisper Float16 Input Features Auto-Alignment ([#47805](https://github.com/huggingface/transformers/issues/47805))**:
+  - Automatically aligns `input_features` dtype to `conv1.weight.dtype` inside `WhisperEncoder.forward`, allowing seamless manual inference on `whisper-large-v3` and `whisper-large-v3-turbo` without `RuntimeError: Input type and bias type should be the same`.
+- **🔊 HuBERT Positional Conv Zero-Padding Preservation ([#47739](https://github.com/huggingface/transformers/issues/47739))**:
+  - Preserves zero padding in `HubertPositionalConvEmbedding` when `conv_pos_batch_norm=True` by strictly propagating padding masks to prevent cross-sample batch contamination.
+- **⚡ Continuous Batching Flash Attention Hardware Gating ([#47926](https://github.com/huggingface/transformers/issues/47926))**:
+  - Gates FlashAttention auto-switching on CUDA SM compute capability ($\ge 8.0$), preventing runtime crashes on pre-Ampere GPUs (Turing T4, Volta V100).
 - **🎙️ ASR Pipeline Stereo Audio Destruction Fix ([#47886](https://github.com/huggingface/transformers/issues/47886))**:
   - Dynamically detects channel axis across channels-first and channels-last layouts, averaging across channels instead of collapsing time dimensions.
 - **🔊 WhisperFeatureExtractor Non-Finite Sample Protection ([#47885](https://github.com/huggingface/transformers/issues/47885))**:

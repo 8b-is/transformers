@@ -639,11 +639,25 @@ class ContinuousBatchingManager:
         is_flash = is_flash_attention_requested(requested_attention_implementation=target_implem)
         is_paged = "paged|" in target_implem
         if not is_flash and not is_paged and model._supports_flash_attn:
-            # Try to use FA3, then FA2, then give up. Both regular package or kernels is fine.
-            if is_flash_attn_3_available(kernels_fallback_ok=True):
-                version = 3
-            elif is_flash_attn_2_available(kernels_fallback_ok=True):
-                version = 2
+            can_run_flash = True
+            if torch.cuda.is_available():
+                try:
+                    device = getattr(model, "device", None)
+                    device_idx = device.index if device and hasattr(device, "type") and device.type == "cuda" and device.index is not None else 0
+                    major, _ = torch.cuda.get_device_capability(device_idx)
+                    if major < 8:  # Flash attention requires Ampere (SM 8.0) or newer
+                        can_run_flash = False
+                except Exception:
+                    pass
+
+            if can_run_flash:
+                # Try to use FA3, then FA2, then give up. Both regular package or kernels is fine.
+                if is_flash_attn_3_available(kernels_fallback_ok=True):
+                    version = 3
+                elif is_flash_attn_2_available(kernels_fallback_ok=True):
+                    version = 2
+                else:
+                    version = None
             else:
                 version = None
             # Change and warn
