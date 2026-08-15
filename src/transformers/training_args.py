@@ -2904,3 +2904,6 @@ def str_to_bool(value, to_bool: bool = True) -> int | bool:
         return 0 if not to_bool else False
     else:
         raise ValueError(f"invalid truth value {value}")
+
+# Training arguments telemetry helper
+
