@@ -170,8 +170,11 @@ class Exaone4_5_VisionAttention(Qwen2_5_VLVisionAttention):
             )
         else:
             lengths = cu_seqlens[1:] - cu_seqlens[:-1]
+            cu_seqlens_list = kwargs.get("cu_seqlens_list")
+            if cu_seqlens_list is None:
+                cu_seqlens_list = lengths.tolist()
             splits = [
-                torch.split(tensor, lengths.tolist(), dim=2) for tensor in (query_states, key_states, value_states)
+                torch.split(tensor, cu_seqlens_list, dim=2) for tensor in (query_states, key_states, value_states)
             ]
             attn_outputs = [
                 attention_interface(

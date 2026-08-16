@@ -213,6 +213,7 @@ class Qwen3VLVisionAttention(nn.Module):
         cu_seqlens: torch.Tensor,
         position_embeddings: tuple[torch.Tensor, torch.Tensor] | None = None,
         max_seqlen: int | None = None,
+        cu_seqlens_list: list[int] | None = None,
         **kwargs,
     ) -> torch.Tensor:
         seq_length = hidden_states.shape[0]
@@ -250,9 +251,10 @@ class Qwen3VLVisionAttention(nn.Module):
             )
         else:
             # Other implementations: Process each chunk separately
-            lengths = cu_seqlens[1:] - cu_seqlens[:-1]
+            if cu_seqlens_list is None:
+                cu_seqlens_list = (cu_seqlens[1:] - cu_seqlens[:-1]).tolist()
             splits = [
-                torch.split(tensor, lengths.tolist(), dim=2) for tensor in (query_states, key_states, value_states)
+                torch.split(tensor, cu_seqlens_list, dim=2) for tensor in (query_states, key_states, value_states)
             ]
 
             attn_outputs = [
@@ -701,6 +703,7 @@ class Qwen3VLVisionModel(Qwen3VLPreTrainedModel):
         )
         position_ids = get_vision_position_ids(grid_thw, self.spatial_merge_size, kwargs=kwargs)
         cu_seqlens, max_seqlen = get_vision_attention_seqlens(grid_thw, self.config, kwargs=kwargs)
+        cu_seqlens_list = (cu_seqlens[1:] - cu_seqlens[:-1]).tolist()
 
         hidden_states = self.patch_embed(hidden_states)
         pos_embeds = (self.pos_embed(interp_indices) * interp_weights[:, :, None]).sum(1)
@@ -720,6 +723,7 @@ class Qwen3VLVisionModel(Qwen3VLPreTrainedModel):
                 cu_seqlens=cu_seqlens,
                 max_seqlen=max_seqlen,
                 position_embeddings=position_embeddings,
+                cu_seqlens_list=cu_seqlens_list,
                 **kwargs,
             )
             if layer_num in self.deepstack_visual_indexes:

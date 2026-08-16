@@ -25,17 +25,19 @@ from typing import Self
 
 class CognitiveBand(StrEnum):
     """Cognitive frequency bands for wave memory resonance."""
-    GAMMA = "gamma"    # 500–800 Hz: Math, formal proofs, symbolic equations
-    BETA = "beta"      # 300–500 Hz: Code, syntax, structure, schemas
-    ALPHA = "alpha"    # 100–300 Hz: Logic, reasoning, causal chains
-    THETA = "theta"    # 0–100 Hz: General text, narrative, dialogue
+
+    GAMMA = "gamma"  # 500–800 Hz: Math, formal proofs, symbolic equations
+    BETA = "beta"  # 300–500 Hz: Code, syntax, structure, schemas
+    ALPHA = "alpha"  # 100–300 Hz: Logic, reasoning, causal chains
+    THETA = "theta"  # 0–100 Hz: General text, narrative, dialogue
 
 
 class MEM8Wave:
     """A memory encoded as an oscillatory wave — frequency, amplitude, phase.
-    
+
     Optimized with `__slots__` for zero-overhead memory footprint and fast attribute dispatch.
     """
+
     __slots__ = ("text", "kind", "timestamp", "frequency", "amplitude", "phase", "band")
 
     def __init__(self, text: str, kind: str = "user", timestamp: float | None = None):
@@ -49,7 +51,7 @@ class MEM8Wave:
     def _compute_band_and_frequency(self, text: str) -> tuple[CognitiveBand, float]:
         # Domain classification using match/case pattern matching
         lower = text.lower()
-        
+
         is_code = any(w in lower for w in ["def ", "class ", "fn ", "struct ", "impl ", "import ", "const ", "let "])
         is_math = any(w in lower for w in ["\\frac", "\\int", "theorem", "lemma", "sigma", "delta", "alpha", "greek"])
         is_logic = any(w in lower for w in ["because", "therefore", "implies", "proof", "logic", "deduce", "axiom"])
@@ -93,9 +95,10 @@ class MEM8Wave:
 
 class MEM8MemoryStore:
     """Zero-overhead wave interference memory store for transformers context augmentation.
-    
+
     Equipped with `__slots__` and thread-safe lock for Python 3.13 free-threaded (nogil) execution.
     """
+
     __slots__ = ("waves", "_lock")
 
     def __init__(self):
@@ -113,7 +116,7 @@ class MEM8MemoryStore:
             if not self.waves:
                 return []
             current_waves = list(self.waves)
-        
+
         q_wave = MEM8Wave(text=query, kind="query")
         scored = [(w, q_wave @ w) for w in current_waves]
         scored = [item for item in scored if item[1] >= threshold]

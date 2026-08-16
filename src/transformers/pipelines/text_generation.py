@@ -506,5 +506,5 @@ class TextGenerationPipeline(Pipeline):
 
         return records
 
-# Text generation pipeline parameter consistency guard
 
+# Text generation pipeline parameter consistency guard

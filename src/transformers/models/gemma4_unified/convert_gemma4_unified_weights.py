@@ -859,7 +859,7 @@ def main(*args):
             if _INCLUDE_CHAT_TEMPLATE.value
             else config.get_text_config().eos_token_id
         ),
-        suppress_tokens=suppress_tokens if suppress_tokens else None,
+        suppress_tokens=suppress_tokens or None,
         temperature=1.0,
         do_sample=True,
         top_k=64,

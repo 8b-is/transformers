@@ -15,7 +15,7 @@ import os
 import re
 import shutil
 from collections.abc import Callable, Sequence
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 from typing import Any, Literal, Union, overload
 
@@ -155,7 +155,7 @@ ENCODE_PLUS_ADDITIONAL_KWARGS_DOCSTRING = r"""
 """
 
 
-class MistralTokenizerType(str, Enum):
+class MistralTokenizerType(StrEnum):
     """Enum for the different type of tokenizer."""
 
     spm = "spm"

@@ -19,7 +19,7 @@ import importlib.metadata
 import json
 import os
 from dataclasses import dataclass
-from enum import Enum
+from enum import Enum, StrEnum
 from typing import Any, Optional, Union
 
 from packaging import version
@@ -40,7 +40,7 @@ if is_torch_available():
 logger = logging.get_logger(__name__)
 
 
-class QuantizationMethod(str, Enum):
+class QuantizationMethod(StrEnum):
     BITS_AND_BYTES = "bitsandbytes"
     GPTQ = "gptq"
     AWQ = "awq"
@@ -67,14 +67,14 @@ class QuantizationMethod(str, Enum):
     GEMMA = "gemma"
 
 
-class AwqFormat(str, Enum):
+class AwqFormat(StrEnum):
     GEMM = "gemm"
     GEMV = "gemv"
     GEMV_FAST = "gemv_fast"
     LLM_AWQ = "llm-awq"
 
 
-class AwqBackend(str, Enum):
+class AwqBackend(StrEnum):
     LEGACY_AWQ = "autoawq"
     AUTO = "auto"
     AUTO_TRAINABLE = "auto_trainable"

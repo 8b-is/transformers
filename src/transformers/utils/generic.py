@@ -29,7 +29,7 @@ from collections import OrderedDict, UserDict
 from collections.abc import Callable, Iterable, MutableMapping
 from contextlib import AbstractContextManager, ExitStack, nullcontext
 from dataclasses import fields, is_dataclass
-from enum import Enum
+from enum import StrEnum
 from functools import partial, wraps
 from typing import TYPE_CHECKING, Any, TypedDict, TypeVar
 
@@ -104,7 +104,6 @@ def strtobool(val: str | bool | int) -> int:
             return 0
         case _:
             raise ValueError(f"invalid truth value {val!r}")
-
 
 
 def infer_framework_from_repr(x) -> str | None:
@@ -565,7 +564,7 @@ def _model_output_unflatten(
     return output_type(**dict(zip(context, values)))
 
 
-class ExplicitEnum(str, Enum):
+class ExplicitEnum(StrEnum):
     """
     Enum with more explicit error message for missing values.
     """

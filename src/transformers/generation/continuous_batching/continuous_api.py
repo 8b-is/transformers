@@ -643,7 +643,11 @@ class ContinuousBatchingManager:
             if torch.cuda.is_available():
                 try:
                     device = getattr(model, "device", None)
-                    device_idx = device.index if device and hasattr(device, "type") and device.type == "cuda" and device.index is not None else 0
+                    device_idx = (
+                        device.index
+                        if device and hasattr(device, "type") and device.type == "cuda" and device.index is not None
+                        else 0
+                    )
                     major, _ = torch.cuda.get_device_capability(device_idx)
                     if major < 8:  # Flash attention requires Ampere (SM 8.0) or newer
                         can_run_flash = False

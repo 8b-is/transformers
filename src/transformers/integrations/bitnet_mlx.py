@@ -46,7 +46,7 @@ def quantize_ternary_numpy(w: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     # Pad in_features to multiple of 16 if necessary
     pad_len = (16 - (in_features % 16)) % 16
     if pad_len > 0:
-        ternary_w = np.pad(ternary_w, ((0, 0), (0, pad_len)), mode='constant', constant_values=0)
+        ternary_w = np.pad(ternary_w, ((0, 0), (0, pad_len)), mode="constant", constant_values=0)
 
     padded_in = ternary_w.shape[1]
     packed_cols = padded_in // 16
@@ -58,7 +58,7 @@ def quantize_ternary_numpy(w: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     encoded[ternary_w == -1] = 2
 
     for i in range(16):
-        packed_w |= (encoded[:, i::16] << (i * 2))
+        packed_w |= encoded[:, i::16] << (i * 2)
 
     return packed_w, scales
 
@@ -101,7 +101,7 @@ def quantize_ternary_torch(w: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]
     encoded[ternary_w == -1] = 2
 
     for i in range(16):
-        packed_w |= (encoded[:, i::16] << (i * 2))
+        packed_w |= encoded[:, i::16] << (i * 2)
 
     return packed_w, scales
 
@@ -126,6 +126,7 @@ class BitNetTernaryLinear(nn.Module):
     PyTorch BitNet b1.58 Ternary Linear Layer with zero-copy UMA weight streaming.
     Reuses the BitNet kernel architecture from MLX-QUANT with inference weight caching.
     """
+
     def __init__(self, in_features: int, out_features: int, bias: bool = False):
         super().__init__()
         self.in_features = in_features
@@ -168,4 +169,3 @@ class BitNetTernaryLinear(nn.Module):
         if self.bias is not None:
             out = out + self.bias
         return out
-

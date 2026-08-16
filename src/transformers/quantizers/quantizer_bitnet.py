@@ -124,5 +124,5 @@ class BitNetHfQuantizer(HfQuantizer):
             ]
         return []
 
-# Sovereign BitNet b1.58 ternary quantizer registration
 
+# Sovereign BitNet b1.58 ternary quantizer registration

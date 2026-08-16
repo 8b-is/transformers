@@ -75,6 +75,8 @@ def get_vision_attention_seqlens(
     forwarded to [`get_vision_cu_seqlens`] (``True`` for clip-level attention, e.g. kimi_k25)."""
     cu_seqlens = get_vision_cu_seqlens(grid_thw, merge_temporal=merge_temporal, kwargs=kwargs)
     max_seqlen = get_max_seqlen(cu_seqlens, config, kwargs=kwargs)
+    if kwargs is not None and "cu_seqlens_list" not in kwargs:
+        kwargs["cu_seqlens_list"] = (cu_seqlens[1:] - cu_seqlens[:-1]).tolist()
     return cu_seqlens, max_seqlen
 
 

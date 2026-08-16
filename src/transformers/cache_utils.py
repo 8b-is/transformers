@@ -1282,7 +1282,8 @@ STATIC_LAYER_TYPE_MAPPING = {
 
 class Cache:
     def get_seen_tokens(self) -> int:
-        return getattr(self, '_seen_tokens', 0)
+        return getattr(self, "_seen_tokens", 0)
+
     """
     A `Cache` is mostly a list of `CacheLayerMixin` objects, one per model layer. It serves as a container for
     the Cache of each layer.
@@ -1756,6 +1757,7 @@ class DynamicCache(Cache):
         self.key_cache.clear()
         self.value_cache.clear()
         self._seen_tokens = 0
+
     """
     A cache that grows dynamically as more tokens are generated. This is the default for generative models.
     It stores the key and value states as a list of `CacheLayer`, one for each layer. The expected shape for each tensor
@@ -2151,5 +2153,5 @@ class DFlashCache(DynamicCache):
         kv_length, kv_offset = super().get_mask_sizes(query_length, layer_idx)
         return kv_length + self._previous_number_of_accepted_tokens, kv_offset
 
-# StaticCache explicit state reset helper
 
+# StaticCache explicit state reset helper

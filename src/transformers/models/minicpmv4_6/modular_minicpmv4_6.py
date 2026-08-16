@@ -209,8 +209,11 @@ class MiniCPMV4_6VisionAttention(VisionAttention):
         else:
             # Other implementations: Process each chunk separately
             lengths = cu_seqlens[1:] - cu_seqlens[:-1]
+            cu_seqlens_list = kwargs.get("cu_seqlens_list")
+            if cu_seqlens_list is None:
+                cu_seqlens_list = lengths.tolist()
             splits = [
-                torch.split(tensor, lengths.tolist(), dim=2) for tensor in (query_states, key_states, value_states)
+                torch.split(tensor, cu_seqlens_list, dim=2) for tensor in (query_states, key_states, value_states)
             ]
 
             attn_outputs = [
@@ -567,7 +570,7 @@ class MiniCPMV4_6Model(Lfm2VlModel):
             When set to `"4x"` the intermediate `vit_merger` is skipped so that each image keeps
             `4×` more visual tokens. Default `"16x"` mode applies the full merge pipeline.
         """
-        downsample_mode = downsample_mode if downsample_mode else self.config.downsample_mode
+        downsample_mode = downsample_mode or self.config.downsample_mode
         use_vit_merger = downsample_mode != "4x"
         pixel_values = pixel_values.to(dtype=self.vision_tower.dtype)
 

@@ -22,10 +22,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Literal
+
 import torch
+
 
 try:
     from pydantic import BaseModel, ConfigDict, Field, field_validator
+
     _has_pydantic = True
 except ImportError:
     _has_pydantic = False
@@ -33,8 +36,10 @@ except ImportError:
 
 
 if _has_pydantic:
+
     class UltraGenerationConfigSchema(BaseModel):
         """Rust-accelerated Pydantic v2 schema for validating generation parameters."""
+
         model_config = ConfigDict(extra="allow", validate_assignment=True, populate_by_name=True)
 
         max_new_tokens: int = Field(default=512, gt=0, description="Maximum number of tokens to generate.")
@@ -60,9 +65,9 @@ if _has_pydantic:
             """Converts valid schema directly to generation config dictionary."""
             return self.model_dump(exclude_none=True)
 
-
     class UltraQuantizationConfigSchema(BaseModel):
         """Pydantic v2 schema for quantization configuration validation."""
+
         model_config = ConfigDict(extra="forbid", validate_assignment=True)
 
         quant_method: Literal["metal", "bitnet", "awq", "gptq", "bnb_4bit", "bnb_8bit", "compressed_tensors"]
@@ -75,6 +80,7 @@ if _has_pydantic:
 # Fast-Path Zero-Overhead Slotted Dataclasses for Inner Forward Loops
 # =====================================================================
 
+
 @dataclass(slots=True, kw_only=True)
 class UltraFastCausalLMOutput:
     """
@@ -83,6 +89,7 @@ class UltraFastCausalLMOutput:
         match output:
             case UltraFastCausalLMOutput(loss=l, logits=logits) if l is not None: ...
     """
+
     loss: torch.Tensor | None = None
     logits: torch.Tensor
     past_key_values: tuple[Any, ...] | None = None

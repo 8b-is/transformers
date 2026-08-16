@@ -660,4 +660,3 @@ def escape_chat_special_tokens(text: str, custom_tokens: list[str] | None = None
             safe_rep = t[0] + "\u200b" + t[1:]
             escaped = escaped.replace(t, safe_rep)
     return escaped
-

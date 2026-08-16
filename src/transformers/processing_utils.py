@@ -22,7 +22,6 @@ import inspect
 import json
 import os
 import re
-import sys
 import typing
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -158,7 +157,6 @@ def _get_modality_for_attribute(attribute_name: str) -> str:
 
 
 Unpack = getattr(typing, "Unpack", getattr(typing_extensions, "Unpack", Any))
-
 
 
 class TextKwargs(TypedDict, total=False):

@@ -1247,7 +1247,7 @@ class TapasForSequenceClassification(TapasPreTrainedModel):
 """ TAPAS utilities."""
 
 
-class AverageApproximationFunction(str, enum.Enum):
+class AverageApproximationFunction(enum.StrEnum):
     RATIO = "ratio"
     FIRST_ORDER = "first_order"
     SECOND_ORDER = "second_order"

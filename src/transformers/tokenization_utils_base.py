@@ -3547,7 +3547,7 @@ def find_sentencepiece_model_file(pretrained_model_name_or_path, **kwargs):
             entries = hf_api().list_repo_tree(
                 repo_id=pretrained_model_name_or_path,
                 revision=kwargs.get("revision"),
-                path_in_repo=subfolder if subfolder else None,
+                path_in_repo=subfolder or None,
                 recursive=False,
                 token=kwargs.get("token"),
             )
@@ -3700,8 +3700,8 @@ def generate_merges(vocab, vocab_scores: dict[str, float] | None = None, skip_to
     merges = [(val[0], val[1]) for val in merges]
     return merges
 
+
 # Sovereign tool calling and structured chat template utilities
 
 
 # Jinja2 chat template fallback defaults
-

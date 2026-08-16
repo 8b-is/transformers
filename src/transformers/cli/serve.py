@@ -32,7 +32,7 @@ from .serving.utils import set_torch_seed
 logger = logging.get_logger(__name__)
 
 
-class ReasoningMode(str, enum.Enum):
+class ReasoningMode(enum.StrEnum):
     ON = "on"
     OFF = "off"
     AUTO = "auto"

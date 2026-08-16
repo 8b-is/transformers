@@ -1796,5 +1796,5 @@ def _prepare_token_type_ids(model_kwargs: dict[str, Any], new_length: int) -> di
         model_kwargs["token_type_ids"] = torch.cat([model_kwargs["token_type_ids"], token_type_copies], dim=-1)
     return model_kwargs
 
-# Candidate generator prompt consistency validator
 
+# Candidate generator prompt consistency validator

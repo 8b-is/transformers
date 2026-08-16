@@ -403,7 +403,7 @@ def cached_files(
             existing_files.append(resolved_file)
 
     if os.path.isdir(path_or_repo_id):
-        return existing_files if existing_files else None
+        return existing_files or None
 
     if cache_dir is None:
         cache_dir = constants.HF_HUB_CACHE
@@ -909,9 +909,7 @@ def get_checkpoint_shard_files(
         for f in shard_filenames:
             joined = os.path.abspath(os.path.join(target_dir, f))
             if not joined.startswith(target_dir + os.sep) and joined != target_dir:
-                raise ValueError(
-                    f"Unsafe shard filename '{f}' resolves outside model directory '{target_dir}'."
-                )
+                raise ValueError(f"Unsafe shard filename '{f}' resolves outside model directory '{target_dir}'.")
             resolved_shards.append(joined)
         return resolved_shards, sharded_metadata
 

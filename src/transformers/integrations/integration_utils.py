@@ -29,7 +29,7 @@ import sys
 import tempfile
 import warnings
 from dataclasses import fields
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal
 
@@ -92,6 +92,8 @@ if TYPE_CHECKING and _has_neptune:
             logger.info(f"Neptune-client version {_neptune_version} available.")
         except importlib.metadata.PackageNotFoundError:
             _has_neptune = False
+
+from datetime import UTC
 
 from .. import modelcard  # noqa: E402
 from ..trainer_callback import ProgressCallback, TrainerCallback  # noqa: E402
@@ -670,7 +672,7 @@ def save_model_architecture_to_file(model: Any, output_dir: str):
             print(model, file=f)
 
 
-class WandbLogModel(str, Enum):
+class WandbLogModel(StrEnum):
     """Enum of possible log model values in W&B."""
 
     CHECKPOINT = "checkpoint"
@@ -2531,7 +2533,7 @@ class KubeflowCallback(TrainerCallback):
         import json
         import time
         import urllib.request
-        from datetime import datetime, timezone
+        from datetime import datetime
 
         try:
             url = os.environ.get(self._ENV_SERVER_URL)
@@ -2547,7 +2549,7 @@ class KubeflowCallback(TrainerCallback):
             if not token:
                 return False
 
-            trainer_status = {"lastUpdatedTime": datetime.now(timezone.utc).isoformat()}
+            trainer_status = {"lastUpdatedTime": datetime.now(UTC).isoformat()}
 
             if progress_percent is not None:
                 trainer_status["progressPercentage"] = max(0, min(100, progress_percent))

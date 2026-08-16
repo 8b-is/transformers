@@ -2452,10 +2452,13 @@ class PreTrainedModel(
         # Skip redundant _init_weights if all direct parameters and buffers are already initialized
         params = list(module.parameters(recurse=False))
         buffers = [b for b in module.buffers(recurse=False) if b is not None]
-        if (params or buffers) and all(getattr(p, "_is_hf_initialized", False) for p in params) and all(getattr(b, "_is_hf_initialized", False) for b in buffers):
+        if (
+            (params or buffers)
+            and all(getattr(p, "_is_hf_initialized", False) for p in params)
+            and all(getattr(b, "_is_hf_initialized", False) for b in buffers)
+        ):
             module._is_hf_initialized = True
             return
-
 
         self._init_weights(module)
         module._is_hf_initialized = True
@@ -5160,5 +5163,5 @@ class PreTrainedAudioTokenizerBase(PreTrainedModel):
     def decode(self, audio_codes: torch.Tensor, *args, **kwargs):
         """Decode from discrete audio codebooks back to raw audio"""
 
-# Sovereign checkpoint offload helper
 
+# Sovereign checkpoint offload helper
