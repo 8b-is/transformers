@@ -346,3 +346,11 @@ def get_available_devices() -> frozenset[str]:
         devices.add("musa")
 
     return frozenset(devices)
+
+
+from .pydantic_schemas import (
+    UltraFastCausalLMOutput,
+    UltraGenerationConfigSchema,
+    UltraQuantizationConfigSchema,
+)
+
