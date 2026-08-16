@@ -38,12 +38,16 @@ class DataCollatorMixin:
     def __call__(self, features, return_tensors: str | None = None):
         if return_tensors is None:
             return_tensors = self.return_tensors
-        if return_tensors == "pt":
-            return self.torch_call(features)
-        elif return_tensors == "np":
-            return self.numpy_call(features)
-        else:
-            raise ValueError(f"Framework '{return_tensors}' not recognized!")
+        match return_tensors:
+            case "pt":
+                return self.torch_call(features)
+            case "np":
+                return self.numpy_call(features)
+            case "tf":
+                return getattr(self, "tf_call", lambda f: (_ for _ in ()).throw(ValueError("TensorFlow not available")))(features)
+            case _:
+                raise ValueError(f"Framework '{return_tensors}' not recognized!")
+
 
 
 def pad_without_fast_tokenizer_warning(tokenizer, *pad_args, **pad_kwargs):

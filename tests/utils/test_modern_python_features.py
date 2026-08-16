@@ -71,3 +71,21 @@ class ModernPythonFeaturesTest(unittest.TestCase):
         recalled = store.recall("def kernel_eval(x):", top_k=5, threshold=0.05)
         self.assertLessEqual(len(recalled), 5)
         self.assertGreater(len(recalled), 0)
+
+    def test_data_collator_pattern_matching(self):
+        """Test DataCollatorMixin structural pattern matching on return_tensors."""
+        from transformers.data.data_collator import DataCollatorMixin
+
+        class MockCollator(DataCollatorMixin):
+            return_tensors = "pt"
+            def torch_call(self, features):
+                return {"format": "torch", "count": len(features)}
+            def numpy_call(self, features):
+                return {"format": "numpy", "count": len(features)}
+
+        collator = MockCollator()
+        self.assertEqual(collator([1, 2, 3])["format"], "torch")
+        self.assertEqual(collator([1, 2, 3], return_tensors="np")["format"], "numpy")
+        with self.assertRaises(ValueError):
+            collator([1, 2, 3], return_tensors="unsupported_fw")
+
