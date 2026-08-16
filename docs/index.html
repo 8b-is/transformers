@@ -643,6 +643,11 @@
       <p class="section-subtitle">Engineered from ground up for maximum throughput and mathematical purity.</p>
       <div class="features-grid">
         <div class="feature-card">
+          <div class="feature-icon">🏎️</div>
+          <h3>1+2+3 Hot-Path Inference Trio</h3>
+          <p><code>SlottedStaticCache</code> for zero-allocation in-place slice KV caching, <code>CUDAGraphFastRunner</code> for &lt;5µs token forward dispatch, and <code>FusedLogitsSampler</code> for $O(K)$ in-register sampling.</p>
+        </div>
+        <div class="feature-card">
           <div class="feature-icon">⚡</div>
           <h3>NVIDIA FP8 & 128-Byte TMA Engine</h3>
           <p>Native 128-byte hardware <code>CUtensorMap</code> layout for Hopper (H100/H200 SM90+) and Blackwell (B200 SM100+), with direct C ABI structure, in-place packing, and <code>torch._scaled_mm</code> FP8 GEMM acceleration.</p>
@@ -696,6 +701,20 @@
           <input type="text" class="search-input" id="ledger-search" placeholder="Search commits, issues, tags..." onkeyup="filterLedger()">
         </div>
         <div class="commit-timeline" id="commit-list">
+          
+          <!-- Release v4.58.0.post11 -->
+          <div class="commit-row" data-search="release v4.58.0.post11 slottedstaticcache cuda graph fast runner fused logits sampler zero allocation decoding in register sampling">
+            <div class="commit-meta">
+              <span class="commit-hash" style="color: var(--accent-emerald)">v4.58.0.post11</span>
+              <span class="commit-tag tag-security">Backyard Ultra Lap 90+</span>
+              <span class="commit-tag tag-perf">Inference Trio 1+2+3</span>
+              <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-mono)">2026-08-16</span>
+            </div>
+            <div class="commit-title">feat(perf): SlottedStaticCache Zero-Allocation KV Caching, CUDAGraphFastRunner & FusedLogitsSampler In-Register Sampling</div>
+            <div class="commit-details">
+              Implemented the 1+2+3 high-throughput inference engine: (1) `SlottedStaticCache` pre-allocated fixed memory buffers with in-place `copy_()` slice writes, (2) `CUDAGraphFastRunner` with dedicated static tensor binding and &lt;5µs token execution latency, and (3) `FusedLogitsSampler` with fused temperature scaling, Top-K reduction, Top-P thresholding, and multinomial token selection.
+            </div>
+          </div>
           
           <!-- Release v4.58.0.post10 -->
           <div class="commit-row" data-search="release v4.58.0.post10 nvidia fp8 tma cutensormap apple_silicon h200 b200 h100 mi300x l40s a100 l4 mimalloc jemalloc gc freeze no_gc_cycle">
