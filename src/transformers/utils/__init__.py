@@ -348,9 +348,11 @@ def get_available_devices() -> frozenset[str]:
     return frozenset(devices)
 
 
+from .chat_template_utils import escape_chat_special_tokens
 from .pydantic_schemas import (
     UltraFastCausalLMOutput,
     UltraGenerationConfigSchema,
     UltraQuantizationConfigSchema,
 )
+
 

@@ -629,3 +629,35 @@ class Chat:
             if not is_valid_message(message):
                 raise ValueError("When passing chat dicts as input, each dict must have a 'role' and 'content' key.")
         self.messages = messages
+
+
+def escape_chat_special_tokens(text: str, custom_tokens: list[str] | None = None) -> str:
+    """
+    Escapes special tokens and turn delimiters (e.g. <|im_start|>, [INST], <turn|>)
+    within user message text to prevent prompt injection attacks (#47822).
+    """
+    if not isinstance(text, str) or not text:
+        return text
+
+    default_tokens = [
+        "<|im_start|>",
+        "<|im_end|>",
+        "<|start_header_id|>",
+        "<|end_header_id|>",
+        "<|eot_id|>",
+        "<turn|>",
+        "<|turn>",
+        "[INST]",
+        "[/INST]",
+        "<s>",
+        "</s>",
+    ]
+    tokens = list(set(default_tokens + (custom_tokens or [])))
+    escaped = text
+    for t in tokens:
+        if t in escaped:
+            # Insert a zero-width space or slash escaping to neutralize tokenizer recognition
+            safe_rep = t[0] + "\u200b" + t[1:]
+            escaped = escaped.replace(t, safe_rep)
+    return escaped
+

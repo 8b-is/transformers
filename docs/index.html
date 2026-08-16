@@ -687,6 +687,24 @@
         </div>
         <div class="commit-timeline" id="commit-list">
           
+          <!-- Release v4.58.0.post7 -->
+          <div class="commit-row" data-search="release v4.58.0.post7 tokenizer special tokens prompt injection escape chat template 47838 47822">
+            <div class="commit-meta">
+              <span class="commit-hash" style="color: var(--accent-emerald)">v4.58.0.post7</span>
+              <span class="commit-tag tag-security">Prompt Injection Defense</span>
+              <span class="commit-tag tag-perf">25 Fixes Verified</span>
+              <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-mono)">2026-08-16</span>
+            </div>
+            <div class="commit-title">release(transformers-ultra): v4.58.0.post7 — Special tokens preservation under extra_special_tokens merge (#47838) & chat template prompt injection mitigation (#47822)</div>
+            <div class="commit-details">
+              Hardened `PreTrainedTokenizerBase` against silent discarding of `additional_special_tokens` when `extra_special_tokens` is also present (#47838). Added `escape_chat_special_tokens` filter to neutralize turn delimiter injections like `&lt;turn|&gt;` and `[INST]` in chat templates (#47822).
+            </div>
+            <div class="commit-links">
+              <a href="https://pypi.org/project/transformers-ultra/4.58.0.post7/" target="_blank">PyPI v4.58.0.post7</a> ·
+              <a href="https://github.com/8b-is/transformers/blob/main/tests/utils/test_ultra_upstream_fixes.py" target="_blank">Test Suite (25/25 Passed)</a>
+            </div>
+          </div>
+
           <!-- Release v4.58.0.post6 -->
           <div class="commit-row" data-search="release v4.58.0.post6 dead code cleanup strtobool match case typing unpack modernization 47914 47979">
             <div class="commit-meta">
