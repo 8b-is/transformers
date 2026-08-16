@@ -50,6 +50,16 @@ What a weird world. But open source belongs to no single gatekeeper. We didn't c
 
 #### 🛠️ Hardened Bug Fixes & Security Patches Baked Directly Into `8b-is/transformers`:
 
+- **🛡️ Chat Template Prompt Injection Defense ([#47822](https://github.com/huggingface/transformers/issues/47822))**:
+  - Neutralizes turn delimiter injection attacks (`<|im_start|>`, `<turn|>`, `[INST]`) in user messages via `escape_chat_special_tokens` with zero-width separator protection.
+- **🏷️ Special Tokens Non-Destructive Merge ([#47838](https://github.com/huggingface/transformers/issues/47838))**:
+  - Prevents silent discarding of `additional_special_tokens` when `extra_special_tokens` is also present in checkpoint configs (e.g. Kimi-VL, OpenCUA, Mistral-Large).
+- **⚡ Zero-Redundancy Init on Non-CUDA / MPS / NPU ([#47427](https://github.com/huggingface/transformers/issues/47427))**:
+  - Generalized `_is_hf_initialized` parameter flag checking across all built-in models and accelerators (Apple Silicon MPS, CPU, Ascend NPU), skipping redundant slow `normal_` weight initialization.
+- **📦 CompressedTensors Fused-MoE Expert Dequantization ([#47407](https://github.com/huggingface/transformers/issues/47407))**:
+  - Properly hooks `WeightConverter` and `DecompressExperts` to guarantee exact per-expert weight/scale dequantization under `dequantize=True` / `run_compressed=False`.
+- **🌐 6 New Architecture & AutoConfig Aliases**:
+  - **RWKV-7 (Goose, [#47787](https://github.com/huggingface/transformers/issues/47787))**, **MiniCPM4 ([#47732](https://github.com/huggingface/transformers/issues/47732))**, **Chronos-2 ([#47692](https://github.com/huggingface/transformers/issues/47692))**, **Nanbeige4.2-3B ([#47667](https://github.com/huggingface/transformers/issues/47667))**, **Talkie-1930-13B ([#47618](https://github.com/huggingface/transformers/issues/47618))**, and **Kimi Linear Delta-Attention ([#47875](https://github.com/huggingface/transformers/issues/47875))**.
 - **🎧 Whisper Float16 Input Features Auto-Alignment ([#47805](https://github.com/huggingface/transformers/issues/47805))**:
   - Automatically aligns `input_features` dtype to `conv1.weight.dtype` inside `WhisperEncoder.forward`, allowing seamless manual inference on `whisper-large-v3` and `whisper-large-v3-turbo` without `RuntimeError: Input type and bias type should be the same`.
 - **🔊 HuBERT Positional Conv Zero-Padding Preservation ([#47739](https://github.com/huggingface/transformers/issues/47739))**:
@@ -94,10 +104,9 @@ What a weird world. But open source belongs to no single gatekeeper. We didn't c
   - Unified single-device `torch.device("mps")` assignment in pipelines, eliminating `RuntimeError: Invalid device string 'mps:0'`.
   - Resilient `safe_open` buffer staging fallback for safetensors on macOS unified memory.
   - Decoupled `_AutogradFunction` abstractions in `tensor_parallel.py`, `accelerate.py`, and `monkey_patching.py` for cross-platform imports.
-- **🏷️ Special Tokens Non-Destructive Merge ([#47838](https://github.com/huggingface/transformers/issues/47838))**:
-  - Preserves `additional_special_tokens` when `extra_special_tokens` is present in `tokenizer_config.json`.
 - **⚡ Quantized PEFT Allocation Crash Fix ([#47914](https://github.com/huggingface/transformers/issues/47914))**:
   - Resolves `caching_allocator_warmup` `AttributeError` when loading bitsandbytes quantized models with PEFT adapters.
+
 
 ---
 
@@ -117,6 +126,10 @@ What a weird world. But open source belongs to no single gatekeeper. We didn't c
    - Replaced bloated dynamic dictionaries with `__slots__` memory layouts across wave states and descriptors, dropping per-object memory overhead by up to 50%.
    - Integrated `StrEnum` for zero-overhead string enum comparisons and structural `match/case` pattern matching.
    - Thread-safe synchronization on memory stores for native Python 3.13 free-threaded (`nogil`) execution.
+5. **Pydantic v2 Ingress & Slotted Dataclass Fast-Path Engine**:
+   - Rust-core Pydantic v2 validation schemas (`UltraGenerationConfigSchema`, `UltraQuantizationConfigSchema`) for strict, rapid ingress deserialization.
+   - Zero-overhead `@dataclass(slots=True, kw_only=True)` inference containers (`UltraFastCausalLMOutput`) for lightning-fast pattern matching in model outputs.
+
 
 ```bash
 # Install the ultra-fast fork
