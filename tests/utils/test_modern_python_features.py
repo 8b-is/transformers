@@ -89,3 +89,21 @@ class ModernPythonFeaturesTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             collator([1, 2, 3], return_tensors="unsupported_fw")
 
+    def test_strtobool_match_case(self):
+        """Test modernized strtobool boolean parser with match/case."""
+        from transformers.utils.generic import strtobool
+
+        self.assertEqual(strtobool(True), 1)
+        self.assertEqual(strtobool(False), 0)
+        self.assertEqual(strtobool("true"), 1)
+        self.assertEqual(strtobool("yes"), 1)
+        self.assertEqual(strtobool("1"), 1)
+        self.assertEqual(strtobool("on"), 1)
+        self.assertEqual(strtobool("false"), 0)
+        self.assertEqual(strtobool("no"), 0)
+        self.assertEqual(strtobool("0"), 0)
+        self.assertEqual(strtobool("off"), 0)
+        with self.assertRaises(ValueError):
+            strtobool("invalid_bool_string")
+
+

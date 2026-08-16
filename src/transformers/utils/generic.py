@@ -91,19 +91,20 @@ if is_mlx_available():
     _is_mlx_available = True
 
 
-# vendored from distutils.util
-def strtobool(val) -> int:
-    """Convert a string representation of truth to true (1) or false (0).
+def strtobool(val: str | bool | int) -> int:
+    """Convert a string/bool/int representation of truth to true (1) or false (0)."""
+    if isinstance(val, bool):
+        return int(val)
+    if isinstance(val, int):
+        return 1 if val != 0 else 0
+    match str(val).strip().lower():
+        case "y" | "yes" | "t" | "true" | "on" | "1":
+            return 1
+        case "n" | "no" | "f" | "false" | "off" | "0":
+            return 0
+        case _:
+            raise ValueError(f"invalid truth value {val!r}")
 
-    True values are 'y', 'yes', 't', 'true', 'on', and '1'; false values are 'n', 'no', 'f', 'false', 'off', and '0'.
-    Raises ValueError if 'val' is anything else.
-    """
-    val = val.lower()
-    if val in {"y", "yes", "t", "true", "on", "1"}:
-        return 1
-    if val in {"n", "no", "f", "false", "off", "0"}:
-        return 0
-    raise ValueError(f"invalid truth value {val!r}")
 
 
 def infer_framework_from_repr(x) -> str | None:

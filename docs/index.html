@@ -687,6 +687,24 @@
         </div>
         <div class="commit-timeline" id="commit-list">
           
+          <!-- Release v4.58.0.post6 -->
+          <div class="commit-row" data-search="release v4.58.0.post6 dead code cleanup strtobool match case typing unpack modernization 47914 47979">
+            <div class="commit-meta">
+              <span class="commit-hash" style="color: var(--accent-emerald)">v4.58.0.post6</span>
+              <span class="commit-tag tag-security">Dead Code Pruned</span>
+              <span class="commit-tag tag-perf">Match/Case strtobool</span>
+              <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-mono)">2026-08-16</span>
+            </div>
+            <div class="commit-title">release(transformers-ultra): v4.58.0.post6 — Forensic cleanup of dead compatibility shims, modernized strtobool boolean parser with pattern matching</div>
+            <div class="commit-details">
+              Pruned legacy Python <3.11 version checks and typing fallbacks across `processing_utils.py`, modernized vendored `strtobool` with zero-overhead `match/case` multi-branch boolean resolution in `generic.py`, and verified 23/23 tests passing.
+            </div>
+            <div class="commit-links">
+              <a href="https://pypi.org/project/transformers-ultra/4.58.0.post6/" target="_blank">PyPI v4.58.0.post6</a> ·
+              <a href="https://github.com/8b-is/transformers/blob/main/tests/utils/test_modern_python_features.py" target="_blank">Test Suite (23/23 Passed)</a>
+            </div>
+          </div>
+
           <!-- Release v4.58.0.post5 -->
           <div class="commit-row" data-search="release v4.58.0.post5 pydantic v2 schemas dataclass slots hybrid fast forward loop ultra generation config 47914 47979 47932">
             <div class="commit-meta">

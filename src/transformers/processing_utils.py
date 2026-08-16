@@ -157,10 +157,8 @@ def _get_modality_for_attribute(attribute_name: str) -> str:
     )
 
 
-if sys.version_info >= (3, 11):
-    Unpack = typing.Unpack
-else:
-    Unpack = typing_extensions.Unpack
+Unpack = getattr(typing, "Unpack", getattr(typing_extensions, "Unpack", Any))
+
 
 
 class TextKwargs(TypedDict, total=False):
