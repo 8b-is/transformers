@@ -477,3 +477,79 @@ class UltraUpstreamFixesTest(unittest.TestCase):
         self.assertIn("nvidia_fp8_tma", AUTO_QUANTIZER_MAPPING)
         self.assertIn("nvidia_fp8_tma", AUTO_QUANTIZATION_CONFIG_MAPPING)
         self.assertEqual(AUTO_QUANTIZATION_CONFIG_MAPPING["nvidia_fp8_tma"], NvidiaFp8TmaConfig)
+
+    def test_low_level_tma_direct_byte_and_c_struct(self):
+        """Ultra Feature: Direct byte manipulation, pack_into, and CUtensorMapStruct ctypes ABI."""
+        import ctypes
+        from transformers.integrations.nvidia_fp8_tma import (
+            CUtensorMapStruct,
+            TmaDataType,
+            TmaDescriptor,
+            TmaSwizzle,
+        )
+
+        desc = TmaDescriptor(
+            base_ptr=0x2000,
+            data_type=TmaDataType.FLOAT8_E4M3,
+            global_shape=(256, 128),
+            global_strides=(1, 256),
+            box_size=(64, 64),
+            swizzle=TmaSwizzle.SWIZZLE_128B,
+        )
+
+        # 1. Direct bytearray / memoryview in-place packing
+        raw_buf = bytearray(128)
+        desc.pack_into(raw_buf, offset=0)
+        self.assertEqual(len(raw_buf), 128)
+        self.assertEqual(bytes(raw_buf), desc.pack())
+
+        # 2. CUtensorMapStruct ctypes Structure ABI
+        self.assertEqual(ctypes.sizeof(CUtensorMapStruct), 128)
+        c_struct = desc.as_c_struct()
+        self.assertIsInstance(c_struct, CUtensorMapStruct)
+        self.assertEqual(len(c_struct.to_bytes()), 128)
+
+    def test_memory_tuning_and_gc_optimization(self):
+        """Ultra Feature: mimalloc/jemalloc allocator detection, GC tuning, and zero-allocation buffer pool."""
+        import gc
+        from transformers.utils.memory_tuning import (
+            FastTmaBufferPool,
+            configure_fast_allocator,
+            configure_gc_for_inference,
+            detect_fast_allocator,
+            no_gc_cycle,
+        )
+
+        # 1. Allocator detection
+        allocator = detect_fast_allocator()
+        self.assertIn(allocator, ("mimalloc", "jemalloc", "system"))
+
+        # 2. Environment configuration
+        conf = configure_fast_allocator()
+        self.assertIsInstance(conf, dict)
+
+        # 3. GC tuning for zero-pause inference
+        old_thresh = gc.get_threshold()
+        prev_thresh = configure_gc_for_inference(freeze_existing_objects=False, threshold_multiplier=10)
+        new_thresh = gc.get_threshold()
+        self.assertEqual(new_thresh[0], old_thresh[0] * 10)
+        # Restore threshold
+        gc.set_threshold(*prev_thresh)
+
+        # 4. Zero-pause no_gc_cycle context manager
+        gc.enable()
+        self.assertTrue(gc.isenabled())
+        with no_gc_cycle():
+            self.assertFalse(gc.isenabled())
+        self.assertTrue(gc.isenabled())
+
+        # 5. FastTmaBufferPool acquire & release
+        pool = FastTmaBufferPool(capacity=4)
+        self.assertEqual(len(pool), 4)
+
+        buf1 = pool.acquire()
+        self.assertEqual(len(buf1), 128)
+        self.assertEqual(len(pool), 3)
+
+        pool.release(buf1)
+        self.assertEqual(len(pool), 4)

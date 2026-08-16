@@ -301,6 +301,7 @@ _import_structure = {
         "VptqConfig",
     ],
     "integrations.nvidia_fp8_tma": [
+        "CUtensorMapStruct",
         "NvidiaFp8Linear",
         "TmaDescriptor",
         "create_2d_tma_descriptor",
@@ -308,6 +309,13 @@ _import_structure = {
         "fp8_quantize",
         "nvidia_fp8_linear_forward",
         "replace_with_nvidia_fp8_linear",
+    ],
+    "utils.memory_tuning": [
+        "FastTmaBufferPool",
+        "configure_fast_allocator",
+        "configure_gc_for_inference",
+        "detect_fast_allocator",
+        "no_gc_cycle",
     ],
     "video_utils": [],
 }

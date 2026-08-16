@@ -366,3 +366,10 @@ def get_available_devices() -> frozenset[str]:
 
 
 from .chat_template_utils import escape_chat_special_tokens
+from .memory_tuning import (
+    FastTmaBufferPool,
+    configure_fast_allocator,
+    configure_gc_for_inference,
+    detect_fast_allocator,
+    no_gc_cycle,
+)
