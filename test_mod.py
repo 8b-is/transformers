@@ -1,5 +1,6 @@
 import re
 
+
 file_path = '/Users/lodripeter/workspace/peterlodri-sec/transformers/src/transformers/models/qwen3_vl/modeling_qwen3_vl.py'
 with open(file_path, 'r') as f:
     content = f.read()

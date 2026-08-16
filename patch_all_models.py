@@ -1,6 +1,7 @@
 import glob
 import re
 
+
 files = glob.glob('/Users/lodripeter/workspace/peterlodri-sec/transformers/src/transformers/models/**/*.py', recursive=True)
 
 for file_path in files:
@@ -13,19 +14,19 @@ for file_path in files:
         # splits = [
         #     torch.split(tensor, lengths.tolist(), dim=2) for tensor in (query_states, key_states, value_states)
         # ]
-        
-        # We just want to replace torch.split(tensor, lengths.tolist(), dim=2) 
-        # But we need to define cu_seqlens_list first. 
+
+        # We just want to replace torch.split(tensor, lengths.tolist(), dim=2)
+        # But we need to define cu_seqlens_list first.
         # The exact string is usually:
         # lengths = cu_seqlens[1:] - cu_seqlens[:-1]
         # splits = [
         #     torch.split(tensor, lengths.tolist(), dim=2) ...
         # ]
-        
+
         # Let's replace lengths.tolist() inside the torch.split with cu_seqlens_list.
         # But where to put the definition of cu_seqlens_list?
         # Just replace lengths = cu_seqlens[1:] - cu_seqlens[:-1]
-        
+
         # Using a regex
         new_content = re.sub(
             r'(lengths = [^\n]+\n\s*)(splits = \[\n\s*torch\.split\(tensor, )lengths\.tolist\(\)(, dim=\d+\) for tensor in \([^)]+\)\n\s*\])',

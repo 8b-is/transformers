@@ -30,7 +30,7 @@ select = [
     "C4",  # flake8-comprehensions
     "C901",  # McCabe complexity
     "RUF013",  # Checks for the use of implicit Optional in type annotations when the default parameter value is None.
-    "PERF102",  # Checks for uses of dict.items() that discard either the key or the value when iterating over the dictionary.
+    "PERF",     # Perflint rules for performance optimizations
     "PLC1802",  # Checks for len calls on sequences in a boolean test context.
     "PLC0208",  # Checks for iteration over a set literal where each element in the set is itself a literal value.
     "PIE794",  # Checks for duplicate field definitions in classes.

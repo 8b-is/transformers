@@ -1,4 +1,3 @@
-import re
 
 file_path = '/Users/lodripeter/workspace/peterlodri-sec/transformers/src/transformers/vision_utils.py'
 with open(file_path, 'r') as f:

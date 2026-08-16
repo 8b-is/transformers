@@ -40,8 +40,8 @@ CONFIG_MAPPING_NAMES.update(
         "parakeet_tdt": "ParakeetTDTConfig",
         "vibevoice_acoustic_tokenizer_decoder": "VibeVoiceAcousticTokenizerDecoderConfig",
         "vibevoice_acoustic_tokenizer_encoder": "VibeVoiceAcousticTokenizerEncoderConfig",
-        "gemma4_unified": "Gemma2Config",
-        "gemma4": "Gemma2Config",
+        "gemma4_unified": "Gemma4UnifiedConfig",
+        "gemma4": "Gemma4Config",
     }
 )
 
@@ -55,8 +55,6 @@ SPECIAL_MODEL_TYPE_TO_MODULE_NAME.update(
         "parakeet_tdt": "parakeet",
         "vibevoice_acoustic_tokenizer_encoder": "vibevoice_acoustic_tokenizer",
         "vibevoice_acoustic_tokenizer_decoder": "vibevoice_acoustic_tokenizer",
-        "gemma4_unified": "gemma2",
-        "gemma4": "gemma2",
         "rwkv7": "rwkv",
         "minicpm4": "minicpm",
         "chronos2": "chronos",

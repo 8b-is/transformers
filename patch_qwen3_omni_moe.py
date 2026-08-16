@@ -1,4 +1,3 @@
-import re
 
 file_path = '/Users/lodripeter/workspace/peterlodri-sec/transformers/src/transformers/models/qwen3_omni_moe/modular_qwen3_omni_moe.py'
 with open(file_path, 'r') as f:

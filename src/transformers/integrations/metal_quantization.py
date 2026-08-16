@@ -234,7 +234,6 @@ def _get_metal_kernel():
                 "using locally-compiled Metal shader fallback."
             )
             _metal_kernel = _LocalMetalKernel()
->>>>>>> theirs
     return _metal_kernel
 
 
