@@ -341,6 +341,25 @@ def is_torch_mps_available(min_version: str | None = None) -> bool:
     return False
 
 
+def clear_mps_memory_cache():
+    """Flushes MPS allocator memory cache on Apple Silicon devices."""
+    if is_torch_mps_available():
+        import torch
+
+        if hasattr(torch, "mps") and hasattr(torch.mps, "empty_cache"):
+            torch.mps.empty_cache()
+
+
+def get_optimal_mac_device() -> "torch.device":
+    """Returns optimal device on Apple Silicon Mac (mps when available, else cpu)."""
+    import torch
+
+    if is_torch_mps_available():
+        return torch.device("mps")
+    return torch.device("cpu")
+
+
+
 @lru_cache
 @_make_compile_constant
 def is_torch_npu_available(check_device=False) -> bool:

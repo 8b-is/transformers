@@ -146,3 +146,27 @@ class UltraUpstreamFixesTest(unittest.TestCase):
         self.assertEqual(cfg.bits, 4)
         self.assertEqual(cfg.group_size, 64)
         self.assertEqual(cfg.quant_method, "metal")
+
+    def test_optimal_mac_device_and_cache(self):
+        """Apple Silicon: get_optimal_mac_device and clear_mps_memory_cache execute safely."""
+        from transformers.utils.import_utils import get_optimal_mac_device, clear_mps_memory_cache
+        dev = get_optimal_mac_device()
+        self.assertIn(dev.type, ["mps", "cpu"])
+        clear_mps_memory_cache()
+
+    @pytest.mark.skipif(not is_torch_available(), reason="PyTorch required")
+    def test_get_total_byte_count_bnb_attribute_error_resilience(self):
+        """Fix #47914: get_total_byte_count safely ignores unregistered quantizer/PEFT state attributes."""
+        from transformers.models.distilbert.configuration_distilbert import DistilBertConfig
+        from transformers.models.distilbert.modeling_distilbert import DistilBertForMaskedLM
+        from transformers.modeling_utils import get_total_byte_count
+
+        cfg = DistilBertConfig(vocab_size=100, dim=32, n_layers=1, n_heads=2, hidden_dim=64)
+        model = DistilBertForMaskedLM(cfg)
+        fake_map = {
+            "distilbert.embeddings.word_embeddings.weight": torch.device("cpu"),
+            "distilbert.embeddings.non_existent_scb_attr": torch.device("cpu"),
+        }
+        res = get_total_byte_count(model, fake_map, None)
+        self.assertIn(torch.device("cpu"), res)
+        self.assertGreater(res[torch.device("cpu")], 0)
