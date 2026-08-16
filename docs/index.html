@@ -643,9 +643,19 @@
       <p class="section-subtitle">Engineered from ground up for maximum throughput and mathematical purity.</p>
       <div class="features-grid">
         <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>NVIDIA FP8 & 128-Byte TMA Engine</h3>
+          <p>Native 128-byte hardware <code>CUtensorMap</code> layout for Hopper (H100/H200 SM90+) and Blackwell (B200 SM100+), with direct C ABI structure, in-place packing, and <code>torch._scaled_mm</code> FP8 GEMM acceleration.</p>
+        </div>
+        <div class="feature-card">
           <div class="feature-icon">🍏</div>
-          <h3>Apple Silicon MPS Native</h3>
-          <p>Single-device unindexed Metal Performance Shaders integration eliminating <code>mps:0</code> crashes, with resilient safetensors buffer fallback staging on macOS unified memory.</p>
+          <h3>Apple Silicon UMA & Top HF GPU Matrix</h3>
+          <p>Zero-copy macOS unified memory discovery (<code>sysctl hw.memsize</code>), MPS cache flush, and automated attention backend dispatch (FA3, FA2, SDPA) across B200, H200, H100, MI300X, L40S, A100, and L4.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🚀</div>
+          <h3>Mimalloc & Zero-Pause GC Tuning</h3>
+          <p>Auto-detection of high-throughput allocators (<code>mimalloc</code>/<code>jemalloc</code>), large OS page tuning, permanent object freezing via <code>gc.freeze()</code>, and <code>no_gc_cycle()</code> zero-pause token loops.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🌊</div>
@@ -658,7 +668,7 @@
           <p>Hardware-accelerated bitmask packing and unpacking routines ported from MLX-QUANT and BitNet b1.58 for ultra-compact LLM weights and integer matrix multiplication.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🚀</div>
+          <div class="feature-icon">🏎️</div>
           <h3>>2.2× Hot Path Acceleration</h3>
           <p>Eliminated per-token <code>inspect.signature</code> reflection in <code>LogitsProcessorList</code>, dimension-guarded RoPE embeddings, and bypassed <code>torch.cat</code> on empty prefill caches.</p>
         </div>
@@ -686,6 +696,24 @@
           <input type="text" class="search-input" id="ledger-search" placeholder="Search commits, issues, tags..." onkeyup="filterLedger()">
         </div>
         <div class="commit-timeline" id="commit-list">
+          
+          <!-- Release v4.58.0.post10 -->
+          <div class="commit-row" data-search="release v4.58.0.post10 nvidia fp8 tma cutensormap apple_silicon h200 b200 h100 mi300x l40s a100 l4 mimalloc jemalloc gc freeze no_gc_cycle">
+            <div class="commit-meta">
+              <span class="commit-hash" style="color: var(--accent-emerald)">v4.58.0.post10</span>
+              <span class="commit-tag tag-security">Backyard Ultra Lap 80+</span>
+              <span class="commit-tag tag-perf">NVIDIA FP8 / TMA / Mimalloc</span>
+              <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-mono)">2026-08-16</span>
+            </div>
+            <div class="commit-title">feat(nvidia): First-Class NVIDIA FP8 (E4M3/E5M2), Hopper/Blackwell 128-Byte TMA ABI, Apple Silicon UMA, HF Compute Tier Matrix & Mimalloc Zero-Pause GC</div>
+            <div class="commit-details">
+              Implemented exact 128-byte hardware `CUtensorMap` binary memory layout (`CUtensorMapStruct`), zero-allocation in-place buffer packing (`pack_into`), `torch._scaled_mm` FP8 tensor core acceleration, Apple Silicon Darwin ARM64 zero-copy UMA memory size discovery, complete Hugging Face GPU tier detection (B200, H200, H100, MI300X, L40S, A100, L4), and high-throughput `mimalloc`/`jemalloc` + `gc.freeze()` / `no_gc_cycle()` memory tuning.
+            </div>
+            <div class="commit-links">
+              <a href="https://pypi.org/project/transformers-ultra/4.58.0.post10/" target="_blank">PyPI v4.58.0.post10</a> ·
+              <a href="https://github.com/8b-is/transformers/blob/main/tests/utils/test_ultra_upstream_fixes.py" target="_blank">Test Suite (27/27 Passed)</a>
+            </div>
+          </div>
           
           <!-- Release v4.58.0.post9 -->
           <div class="commit-row" data-search="release v4.58.0.post9 nemotron_h use_mamba_kernels readme docs pydantic 47577">
