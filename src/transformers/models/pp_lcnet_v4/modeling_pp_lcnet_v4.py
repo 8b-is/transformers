@@ -355,7 +355,7 @@ class PPLCNetV4Backbone(BackboneMixin, PPLCNetV4PreTrainedModel):
         super().__init__(config)
         num_features = [config.stem_channels]
         for block in config.block_configs:
-            num_features.append(int(block[-1][2] * config.scale))
+            num_features.append(int(block[-1][2] * config.scale))  # noqa: PERF401
         self.num_features = num_features
         self.encoder = PPLCNetV4Encoder(config)
 

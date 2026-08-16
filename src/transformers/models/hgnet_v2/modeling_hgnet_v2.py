@@ -287,7 +287,7 @@ class HGNetV2Stage(nn.Module):
 
         blocks_list = []
         for i in range(num_blocks):
-            blocks_list.append(
+            blocks_list.append(  # noqa: PERF401
                 HGNetV2BasicLayer(
                     in_channels if i == 0 else out_channels,
                     mid_channels,

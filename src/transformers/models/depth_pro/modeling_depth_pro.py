@@ -252,7 +252,7 @@ class DepthProPatchEncoder(nn.Module):
 
         scaled_images = []
         for ratio in self.scaled_images_ratios:
-            scaled_images.append(
+            scaled_images.append(  # noqa: PERF401
                 F.interpolate(
                     pixel_values,
                     scale_factor=ratio,

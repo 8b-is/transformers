@@ -287,7 +287,7 @@ class GLPNEncoder(nn.Module):
         # patch embeddings
         embeddings = []
         for i in range(config.num_encoder_blocks):
-            embeddings.append(
+            embeddings.append(  # noqa: PERF401
                 GLPNOverlapPatchEmbeddings(
                     patch_size=config.patch_sizes[i],
                     stride=config.strides[i],
@@ -306,7 +306,7 @@ class GLPNEncoder(nn.Module):
             if i != 0:
                 cur += config.depths[i - 1]
             for j in range(config.depths[i]):
-                layers.append(
+                layers.append(  # noqa: PERF401
                     GLPNLayer(
                         config,
                         hidden_size=config.hidden_sizes[i],

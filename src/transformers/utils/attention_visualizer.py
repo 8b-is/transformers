@@ -109,7 +109,7 @@ def generate_attention_matrix_from_mask(
     vertical_header = list(map(list, zip(*vertical_header)))  # Transpose
 
     for row in vertical_header:
-        output.append(
+        output.append(  # noqa: PERF401
             (max_word_length + 5) * " " + " ".join(row) + "    |    " + " ".join(row)
             if sliding_window is not None
             else ""

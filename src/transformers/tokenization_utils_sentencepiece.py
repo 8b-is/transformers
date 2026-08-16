@@ -234,7 +234,7 @@ class SentencePieceBackend(PreTrainedTokenizer):
         if hasattr(self, "sp_model") and self.sp_model is not None:
             try:
                 return self.sp_model.decode(tokens)
-            except Exception:
+            except Exception:  # noqa: S110
                 pass
         out_string = "".join(tokens).replace(SPIECE_UNDERLINE, " ").strip()
         return out_string

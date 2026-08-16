@@ -1348,7 +1348,7 @@ class GenerationTesterMixin(ExportGenerateTesterMixin):
                     "pixel" in key
                     or key in ["image_patches", "input_feature", "input_features", "feature_attention_mask"]
                 ) and key != model.main_input_name:
-                    keys_to_pop.append(key)
+                    keys_to_pop.append(key)  # noqa: PERF401
             for key in keys_to_pop:
                 inputs.pop(key)
 
@@ -3193,7 +3193,7 @@ def ids_tensor(shape, vocab_size, rng=None, name=None):
 
     values = []
     for _ in range(total_dims):
-        values.append(rng.randint(0, vocab_size - 1))
+        values.append(rng.randint(0, vocab_size - 1))  # noqa: PERF401
 
     return torch.tensor(data=values, dtype=torch.long, device=torch_device).view(shape).contiguous()
 
@@ -3210,7 +3210,7 @@ def floats_tensor(shape, scale=1.0, rng=None, name=None):
 
     values = []
     for _ in range(total_dims):
-        values.append(rng.random() * scale)
+        values.append(rng.random() * scale)  # noqa: PERF401
 
     return torch.tensor(data=values, dtype=torch.float, device=torch_device).view(shape).contiguous()
 

@@ -400,7 +400,7 @@ class SLANetCSPPAN(nn.Module):
     def forward(self, hidden_states: torch.FloatTensor) -> torch.FloatTensor:
         projected_features = []
         for idx in range(len(self.channel_projector)):
-            projected_features.append(self.channel_projector[idx](hidden_states[idx]))
+            projected_features.append(self.channel_projector[idx](hidden_states[idx]))  # noqa: PERF401
 
         top_down_features = [projected_features[-1]]
         for top_down_block, low_level_feature in zip(self.top_down_blocks, reversed(projected_features[:-1])):

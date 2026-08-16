@@ -187,7 +187,7 @@ class RemoteFileSystemReader(dist_cp.StorageReader):
         with ThreadPoolExecutor(max_workers=self.thread_count) as executor:
             read_item_content_futures = []
             for read_item in plan.items:
-                read_item_content_futures.append(executor.submit(self._get_content_for_read, read_item))
+                read_item_content_futures.append(executor.submit(self._get_content_for_read, read_item))  # noqa: PERF401
             read_item_content_results = []
             for f in as_completed(read_item_content_futures):
                 try:

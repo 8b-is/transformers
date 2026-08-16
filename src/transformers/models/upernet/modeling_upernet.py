@@ -236,7 +236,7 @@ class UperNetFCNHead(nn.Module):
             )
         )
         for i in range(self.num_convs - 1):
-            convs.append(
+            convs.append(  # noqa: PERF401
                 UperNetConvModule(
                     self.channels, self.channels, kernel_size=kernel_size, padding=conv_padding, dilation=dilation
                 )

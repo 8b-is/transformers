@@ -704,7 +704,7 @@ class PushToHubMixin:
             if os.path.isdir(os.path.join(working_dir, file)):
                 # go over individual files of folder
                 for f in os.listdir(os.path.join(working_dir, file)):
-                    operations.append(
+                    operations.append(  # noqa: PERF401
                         CommitOperationAdd(
                             path_or_fileobj=os.path.join(working_dir, file, f), path_in_repo=os.path.join(file, f)
                         )

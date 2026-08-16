@@ -248,7 +248,7 @@ class ResponseParser:
         watch: list[tuple[str, ResponseTemplateField]] = []
         for field in self._spec.fields.values():
             if field.open_re is not None:
-                watch.append(("open", field))
+                watch.append(("open", field))  # noqa: PERF401
         if self._implicit_name is not None:
             impl = self._spec.fields[self._implicit_name]
             if impl.close_re is not None:

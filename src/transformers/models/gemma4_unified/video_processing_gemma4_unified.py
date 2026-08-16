@@ -20,7 +20,6 @@
 import math
 
 import torch
-from torchvision.transforms.v2 import functional as tvF
 
 from ...image_processing_utils import BatchFeature
 from ...image_utils import PILImageResampling
@@ -28,10 +27,18 @@ from ...processing_utils import Unpack
 from ...utils import (
     TensorType,
     auto_docstring,
+    is_torchvision_available,
+    is_torchvision_v2_available,
 )
 from ...video_processing_utils import BaseVideoProcessor
 from ...video_utils import VideoInput
-from .processing_gemma4_unified import Gemma2VideoProcessorKwargs
+from .processing_gemma4_unified import Gemma4UnifiedVideoProcessorKwargs
+
+
+if is_torchvision_v2_available():
+    from torchvision.transforms.v2 import functional as tvF
+elif is_torchvision_available():
+    from torchvision.transforms import functional as tvF
 
 
 _SUPPORTED_SOFT_TOKENS = (70, 140, 280, 560, 1120)
@@ -213,17 +220,17 @@ class Gemma4UnifiedVideoProcessor(BaseVideoProcessor):
     patch_size = 16
     max_soft_tokens = 70
     pooling_kernel_size = 3
-    valid_kwargs = Gemma2VideoProcessorKwargs
+    valid_kwargs = Gemma4UnifiedVideoProcessorKwargs
     model_input_names = ["pixel_values_videos", "video_position_ids"]
 
-    def __init__(self, **kwargs: Unpack[Gemma2VideoProcessorKwargs]):
+    def __init__(self, **kwargs: Unpack[Gemma4UnifiedVideoProcessorKwargs]):
         super().__init__(**kwargs)
 
         if self.max_soft_tokens not in _SUPPORTED_SOFT_TOKENS:
             raise ValueError(f"`max_soft_tokens` must be one of {_SUPPORTED_SOFT_TOKENS}, got {self.max_soft_tokens}.")
 
     def _validate_preprocess_kwargs(self, **kwargs):
-        # Gemma2 uses aspect_ratio_preserving_resize driven by patch_size,
+        # Gemma4Unified uses aspect_ratio_preserving_resize driven by patch_size,
         # max_soft_tokens, and pooling_kernel_size — not the standard `size`
         # parameter. Temporarily disable do_resize so the base validation
         # doesn't require `size` to be set.
@@ -236,7 +243,7 @@ class Gemma4UnifiedVideoProcessor(BaseVideoProcessor):
         patch_size: int,
         max_patches: int,
         pooling_kernel_size: int,
-        resample: tvF.InterpolationMode,
+        resample: "tvF.InterpolationMode",
     ) -> torch.Tensor:
         height, width = video.shape[-2], video.shape[-1]
         target_height, target_width = get_aspect_ratio_preserving_size(
@@ -260,7 +267,7 @@ class Gemma4UnifiedVideoProcessor(BaseVideoProcessor):
     def preprocess(
         self,
         videos: VideoInput,
-        **kwargs: Unpack[Gemma2VideoProcessorKwargs],
+        **kwargs: Unpack[Gemma4UnifiedVideoProcessorKwargs],
     ) -> BatchFeature:
         return super().preprocess(videos, **kwargs)
 

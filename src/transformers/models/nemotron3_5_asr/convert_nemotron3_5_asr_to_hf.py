@@ -99,7 +99,7 @@ def extract_nemo_archive(nemo_file_path: str, extract_dir: str) -> dict[str, str
     all_files = []
     for root, dirs, files in os.walk(extract_dir):
         for file in files:
-            all_files.append(os.path.join(root, file))
+            all_files.append(os.path.join(root, file))  # noqa: PERF401
 
     print(f"All extracted files: {[os.path.basename(f) for f in all_files]}")
 

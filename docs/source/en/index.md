@@ -43,6 +43,7 @@ Transformers provides everything you need for inference or training with state-o
 - [Pipeline](./pipeline_tutorial): Simple and optimized inference class for many machine learning tasks like text generation, image segmentation, automatic speech recognition, document question answering, and more.
 - [Trainer](./trainer): A comprehensive trainer that supports features such as mixed precision, torch.compile, and FlashAttention for training and distributed training for PyTorch models.
 - [generate](./llm_tutorial): Fast text generation with large language models (LLMs) and vision language models (VLMs), including support for streaming and multiple decoding strategies.
+- **Mesh Router**: Integrate discrete standalone checkpoints as a unified Mixture-of-Experts (MoE) via `MeshRouterWrapper` and the native `GenerationMixin` routing loop.
 
 ## Design
 

@@ -156,7 +156,7 @@ def patch_model_config(model: PreTrainedModel, output_flags: dict[str, Any]):
         config_patches.append((model.config, flag, lambda _original, v=value: v))
     for module in model.modules():
         if hasattr(module, "config") and hasattr(module.config, "use_mamba_kernels"):
-            config_patches.append((module.config, "use_mamba_kernels", lambda _original: False))
+            config_patches.append((module.config, "use_mamba_kernels", lambda _original: False))  # noqa: PERF401
     with patch_attributes(config_patches):
         yield
 

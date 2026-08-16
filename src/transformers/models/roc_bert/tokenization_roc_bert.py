@@ -971,7 +971,7 @@ class RoCBertTokenizer(PreTrainedTokenizer):
 
         ids = []
         for token in tokens:
-            ids.append(self._convert_token_to_shape_id(token))
+            ids.append(self._convert_token_to_shape_id(token))  # noqa: PERF401
         return ids
 
     def _convert_token_to_pronunciation_id(self, token):
@@ -984,7 +984,7 @@ class RoCBertTokenizer(PreTrainedTokenizer):
 
         ids = []
         for token in tokens:
-            ids.append(self._convert_token_to_pronunciation_id(token))
+            ids.append(self._convert_token_to_pronunciation_id(token))  # noqa: PERF401
         return ids
 
     def _convert_id_to_token(self, index):

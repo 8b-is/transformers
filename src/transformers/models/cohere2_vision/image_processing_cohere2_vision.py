@@ -76,7 +76,7 @@ def get_all_supported_aspect_ratios(max_image_tiles: int) -> list[tuple[int, int
     for width in range(1, max_image_tiles + 1):
         for height in range(1, max_image_tiles + 1):
             if width * height <= max_image_tiles:
-                aspect_ratios.append((width, height))
+                aspect_ratios.append((width, height))  # noqa: PERF401
     return aspect_ratios
 
 

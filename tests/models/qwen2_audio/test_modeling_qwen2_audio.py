@@ -192,7 +192,7 @@ class Qwen2AudioForConditionalGenerationIntegrationTest(unittest.TestCase):
                 if isinstance(message["content"], list):
                     for ele in message["content"]:
                         if ele["type"] == "audio":
-                            audios.append(
+                            audios.append(  # noqa: PERF401
                                 librosa.load(
                                     BytesIO(urlopen(ele["audio_url"]).read()),
                                     sr=self.processor.feature_extractor.sampling_rate,
@@ -253,7 +253,7 @@ class Qwen2AudioForConditionalGenerationIntegrationTest(unittest.TestCase):
             if isinstance(message["content"], list):
                 for ele in message["content"]:
                     if ele["type"] == "audio":
-                        audios.append(
+                        audios.append(  # noqa: PERF401
                             librosa.load(
                                 BytesIO(urlopen(ele["audio_url"]).read()),
                                 sr=self.processor.feature_extractor.sampling_rate,

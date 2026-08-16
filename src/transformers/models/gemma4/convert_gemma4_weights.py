@@ -864,7 +864,7 @@ def convert_quantized_vision_encoder_weights(
                 k_reshaped = k_matrix.transpose(1, 0, 2).reshape(kv_shape).transpose()
                 v_reshaped = v_matrix.transpose(1, 0, 2).reshape(kv_shape).transpose()
                 for hf_base in hf_bases:
-                    converted_paths.append(f"{hf_base}.{suffix}")
+                    converted_paths.append(f"{hf_base}.{suffix}")  # noqa: PERF401
                 converted_weights.append(k_reshaped)
                 converted_weights.append(v_reshaped)
                 continue
@@ -873,7 +873,7 @@ def convert_quantized_vision_encoder_weights(
                 k_flat = k_scale.transpose(0, 2, 1).reshape(-1, 1)
                 v_flat = v_scale.transpose(0, 2, 1).reshape(-1, 1)
                 for hf_base in hf_bases:
-                    converted_paths.append(f"{hf_base}.{suffix}")
+                    converted_paths.append(f"{hf_base}.{suffix}")  # noqa: PERF401
                 converted_weights.append(k_flat)
                 converted_weights.append(v_flat)
                 continue
@@ -902,7 +902,7 @@ def convert_quantized_vision_encoder_weights(
             if is_value or is_scale:
                 gate_matrix, up_matrix = matrix
                 for hf_base in hf_bases:
-                    converted_paths.append(f"{hf_base}.{suffix}")
+                    converted_paths.append(f"{hf_base}.{suffix}")  # noqa: PERF401
                 converted_weights.append(gate_matrix)
                 converted_weights.append(up_matrix)
                 continue
@@ -1047,7 +1047,7 @@ def convert_quantized_audio_encoder_weights(
                     k_reshaped = k_matrix.reshape(kv_shape).transpose()
                     v_reshaped = v_matrix.reshape(kv_shape).transpose()
                     for hf_base in hf_bases:
-                        converted_paths.append(f"{hf_base}.{suffix}")
+                        converted_paths.append(f"{hf_base}.{suffix}")  # noqa: PERF401
                     converted_weights.extend([q_reshaped, k_reshaped, v_reshaped])
                     continue
                 elif is_scale:
@@ -1057,7 +1057,7 @@ def convert_quantized_audio_encoder_weights(
                     k_flat = k_scale.reshape(-1, 1)
                     v_flat = v_scale.reshape(-1, 1)
                     for hf_base in hf_bases:
-                        converted_paths.append(f"{hf_base}.{suffix}")
+                        converted_paths.append(f"{hf_base}.{suffix}")  # noqa: PERF401
                     converted_weights.extend([q_flat, k_flat, v_flat])
                     continue
                 else:

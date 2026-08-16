@@ -173,7 +173,7 @@ class PPOCRV5ServerRecImageProcessor(TorchvisionBackend):
 
             character_list = []
             for text_id in preds_idx[idx][selection]:
-                character_list.append(self.character_list[text_id])
+                character_list.append(self.character_list[text_id])  # noqa: PERF401
 
             results.append(
                 {

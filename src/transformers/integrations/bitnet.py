@@ -10,24 +10,14 @@ if is_torch_available():
 logger = logging.get_logger(__name__)
 
 
-# the weights are ternary so can be represented with 2 bits, and they are packed in uint8 tensors, hence the number of values per item is 4
-VALUES_PER_ITEM = 4
+# the weights are ternary so can be represented with base-3, and they are packed in uint8 tensors, hence the number of values per item is 5
+VALUES_PER_ITEM = 5
 
 
 def pack_weights(quantized_weights: torch.Tensor) -> torch.Tensor:
     """
-    Packs a tensor of quantized weights into a compact format using 2 bits per value.
-
-    Parameters:
-    -----------
-    quantized_weights : torch.Tensor
-        A tensor containing ternary quantized weights with values in {-1, 0, 1}. These values are adjusted to
-        {0, 1, 2} before being packed.
-
-    Returns:
-    --------
-    torch.Tensor
-        A packed tensor where each element stores 4 quantized values (each using 2 bits) in an 8-bit format.
+    Packs a tensor of quantized weights into a compact format using base-3 packing.
+    5 ternary values (-1, 0, 1) are packed into a single 8-bit uint8.
     """
 
     original_shape = quantized_weights.shape
@@ -39,15 +29,18 @@ def pack_weights(quantized_weights: torch.Tensor) -> torch.Tensor:
     else:
         packed_tensor_shape = (row_dim, *original_shape[1:])
 
-    quantized_weights += 1
+    quantized_weights = quantized_weights + 1
     packed = torch.zeros(packed_tensor_shape, device=quantized_weights.device, dtype=torch.uint8)
-    unpacked = quantized_weights.to(torch.uint8)
+    unpacked = quantized_weights.to(torch.uint16)
 
-    it = min(VALUES_PER_ITEM, (original_shape[0] // row_dim) + 1)
+    it = min(VALUES_PER_ITEM, (original_shape[0] + row_dim - 1) // row_dim)
+    multiplier = 1
     for i in range(it):
         start = i * row_dim
         end = min(start + row_dim, original_shape[0])
-        packed[: (end - start)] |= unpacked[start:end] << 2 * i
+        chunk_len = end - start
+        packed[:chunk_len] += (unpacked[start:end] * multiplier).to(torch.uint8)
+        multiplier *= 3
 
     return packed
 
@@ -91,15 +84,7 @@ def unpack_weights(packed: torch.Tensor, dtype: torch.dtype) -> torch.Tensor:
     ---------------------------
     Let's take the first value for example 0b10100001, we will only focus on the first column,
     because every element is unpacked across the first dimension
-    - First 2 bits: `01` → 0 at [0][0]
-    - Second 2 bits: `00` → -1 at [0][2]
-    - Third 2 bits: `10` → 1 at [0][4]
-    - Fourth 2 bits: `10` → 1 at [0][6]
-    the second value of the same row (0b10010000) will give the values for [0][1], [0][3], [0][5], [0][7]
-
-    We subtract 1 because during the packing process, it's easier to work with values like 0, 1, and 2. To make this possible,
-    we add 1 to the original ternary weights (which are typically -1, 0, and 1) when packing them. When unpacking, we reverse
-    this by subtracting 1 to restore the original ternary values.
+    Unpacks a tensor of quantized weights that were stored in a base-3 packed format.
     """
     packed_shape = packed.shape
 
@@ -111,12 +96,13 @@ def unpack_weights(packed: torch.Tensor, dtype: torch.dtype) -> torch.Tensor:
         unpacked_shape = (original_row_dim, *packed_shape[1:])
 
     unpacked = torch.zeros(unpacked_shape, device=packed.device, dtype=torch.uint8)
+    b = packed.to(torch.uint16)
 
     for i in range(VALUES_PER_ITEM):
         start = i * packed_shape[0]
         end = start + packed_shape[0]
-        mask = 3 << (2 * i)
-        unpacked[start:end] = (packed & mask) >> (2 * i)
+        unpacked[start:end] = (b % 3).to(torch.uint8)
+        b = torch.div(b, 3, rounding_mode="trunc")
 
     return unpacked.to(dtype) - 1
 
@@ -137,7 +123,11 @@ class BitLinear(nn.Module):
         self.in_features = in_features
         self.out_features = out_features
         self.weight = nn.Buffer(
-            torch.zeros((out_features // VALUES_PER_ITEM, in_features), dtype=torch.uint8, device=device)
+            torch.zeros(
+                ((out_features + VALUES_PER_ITEM - 1) // VALUES_PER_ITEM, in_features),
+                dtype=torch.uint8,
+                device=device,
+            )
         )
         self.weight_scale = nn.Buffer(torch.ones((1), dtype=dtype, device=device))
         if bias:
@@ -188,6 +178,8 @@ class BitLinear(nn.Module):
 
         w = self.weight
         w_quant = unpack_weights(w, dtype=self.dtype)
+        if w_quant.shape[0] > self.out_features:
+            w_quant = w_quant[: self.out_features]
         input_quant, input_scale = self.activation_quant(input)
         y = F.linear(input_quant.to(self.dtype), w_quant)
         y = self.post_quant_process(y, self.weight_scale, input_scale)
@@ -275,6 +267,8 @@ class AutoBitLinear(nn.Linear):
     ):
         if (prefix + "weight") in state_dict and state_dict[prefix + "weight"].dtype != self.weight.dtype:
             state_dict[prefix + "weight"] = unpack_weights(state_dict[prefix + "weight"], dtype=self.weight.dtype)
+            if state_dict[prefix + "weight"].shape[0] > self.out_features:
+                state_dict[prefix + "weight"] = state_dict[prefix + "weight"][: self.out_features]
         return state_dict
 
     def forward(self, input):
@@ -371,14 +365,18 @@ class BitNetDeserialize:
 
         needs_unpacking = False
         target_dtype = weight.dtype
+        expected_out = None
         if model is not None and full_layer_name is not None:
             module, _ = get_module_from_name(model, full_layer_name)
             if hasattr(module, "out_features") and hasattr(module, "in_features"):
-                # Packed: shape[0] * VALUES_PER_ITEM == out_features
+                # Packed: shape[0] * VALUES_PER_ITEM >= out_features
                 # Unpacked: shape[0] == out_features
                 expected_out = module.out_features
                 actual_out = weight.shape[0]
-                if actual_out * VALUES_PER_ITEM == expected_out:
+                if (
+                    actual_out * VALUES_PER_ITEM >= expected_out
+                    and actual_out * VALUES_PER_ITEM - expected_out < VALUES_PER_ITEM
+                ):
                     needs_unpacking = True
                     # Unpack into the module's compute dtype, not the packed uint8 dtype,
                     # otherwise the ternary weights stay uint8 and F.linear fails with a
@@ -388,4 +386,6 @@ class BitNetDeserialize:
         if needs_unpacking:
             weight_uint8 = weight.to(torch.uint8)
             weight = unpack_weights(weight_uint8, dtype=target_dtype)
+            if expected_out is not None and weight.shape[0] > expected_out:
+                weight = weight[:expected_out]
         return {key_weight: weight}

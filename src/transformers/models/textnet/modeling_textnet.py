@@ -175,7 +175,7 @@ class TextNetStage(nn.Module):
 
         stage = []
         for stage_config in zip(in_channels, out_channels, kernel_size, stride):
-            stage.append(TextNetRepConvLayer(config, *stage_config))
+            stage.append(TextNetRepConvLayer(config, *stage_config))  # noqa: PERF401
         self.stage = nn.ModuleList(stage)
 
     def forward(self, hidden_state):
@@ -191,7 +191,7 @@ class TextNetEncoder(nn.Module):
         stages = []
         num_stages = len(config.conv_layer_kernel_sizes)
         for stage_ix in range(num_stages):
-            stages.append(TextNetStage(config, stage_ix))
+            stages.append(TextNetStage(config, stage_ix))  # noqa: PERF401
 
         self.stages = nn.ModuleList(stages)
 

@@ -174,7 +174,7 @@ class PoolFormerEncoder(nn.Module):
         # patch embeddings
         embeddings = []
         for i in range(config.num_encoder_blocks):
-            embeddings.append(
+            embeddings.append(  # noqa: PERF401
                 PoolFormerEmbeddings(
                     patch_size=config.patch_sizes[i],
                     stride=config.strides[i],
@@ -194,7 +194,7 @@ class PoolFormerEncoder(nn.Module):
             if i != 0:
                 cur += config.depths[i - 1]
             for j in range(config.depths[i]):
-                layers.append(
+                layers.append(  # noqa: PERF401
                     PoolFormerLayer(
                         config,
                         num_channels=config.hidden_sizes[i],

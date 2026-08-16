@@ -929,7 +929,7 @@ class ModelTesterMixin(ExportTesterMixin):
                     non_existent = []
                     for module in model._keep_in_fp32_modules:
                         if not any(re.search(rf"(?:^|\.){module}(?:\.|$)", name) for name in state_dict_names):
-                            non_existent.append(module)
+                            non_existent.append(module)  # noqa: PERF401
                     self.assertTrue(
                         len(non_existent) == 0,
                         f"{non_existent} were specified in the `_keep_in_fp32_modules` list, but are not part of the modules in"
@@ -6138,7 +6138,7 @@ def ids_tensor(shape, vocab_size, rng=None, name=None):
 
     values = []
     for _ in range(total_dims):
-        values.append(rng.randint(0, vocab_size - 1))
+        values.append(rng.randint(0, vocab_size - 1))  # noqa: PERF401
 
     return torch.tensor(data=values, dtype=torch.long, device=torch_device).view(shape).contiguous()
 
@@ -6162,7 +6162,7 @@ def floats_tensor(shape, scale=1.0, rng=None, name=None):
 
     values = []
     for _ in range(total_dims):
-        values.append(rng.random() * scale)
+        values.append(rng.random() * scale)  # noqa: PERF401
 
     return torch.tensor(data=values, dtype=torch.float, device=torch_device).view(shape).contiguous()
 

@@ -664,7 +664,7 @@ class BeitUperHead(nn.Module):
         # build outputs
         fpn_outs = []
         for i in range(used_backbone_levels - 1):
-            fpn_outs.append(self.fpn_convs[i](laterals[i]))
+            fpn_outs.append(self.fpn_convs[i](laterals[i]))  # noqa: PERF401
         # append psp feature
         fpn_outs.append(laterals[-1])
 

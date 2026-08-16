@@ -66,11 +66,11 @@ def compare_job_sets(job_set1, job_set2):
             if removed:
                 report_lines.append("--- Absent in current run:")
                 for test in sorted(removed):
-                    report_lines.append(f"    - {test}")
+                    report_lines.append(f"    - {test}")  # noqa: PERF401
             if added:
                 report_lines.append("+++ Appeared in current run:")
                 for test in sorted(added):
-                    report_lines.append(f"    + {test}")
+                    report_lines.append(f"    + {test}")  # noqa: PERF401
             report_lines.append("")  # blank line
 
     return "\n".join(report_lines) if report_lines else "No differences found."

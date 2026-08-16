@@ -465,7 +465,7 @@ class PipelineTesterMixin:
 
             out = []
             for item in pipeline(data(10), batch_size=4):
-                out.append(item)
+                out.append(item)  # noqa: PERF402
             self.assertEqual(len(out), 10)
 
         run_batch_test(pipeline, examples)

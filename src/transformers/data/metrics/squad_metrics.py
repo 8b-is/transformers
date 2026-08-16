@@ -317,7 +317,7 @@ def get_final_text(pred_text, orig_text, do_lower_case, verbose_logging=False):
     # the character-to-character alignment.
     tok_s_to_ns_map = {}
     for i, tok_index in tok_ns_to_s_map.items():
-        tok_s_to_ns_map[tok_index] = i
+        tok_s_to_ns_map[tok_index] = i  # noqa: PERF403
 
     orig_start_position = None
     if start_position in tok_s_to_ns_map:
@@ -376,7 +376,7 @@ def _compute_softmax(scores):
 
     probs = []
     for score in exp_scores:
-        probs.append(score / total_sum)
+        probs.append(score / total_sum)  # noqa: PERF401
     return probs
 
 

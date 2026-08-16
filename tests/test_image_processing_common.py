@@ -116,7 +116,7 @@ def prepare_video(num_frames, num_channels, width=10, height=10, numpify=False, 
 
     video = []
     for frame_idx in range(num_frames):
-        video.append(np.random.randint(255, size=(num_channels, width, height), dtype=np.uint8))
+        video.append(np.random.randint(255, size=(num_channels, width, height), dtype=np.uint8))  # noqa: PERF401
 
     if not numpify and not torchify:
         # PIL expects the channel dimension as last dimension

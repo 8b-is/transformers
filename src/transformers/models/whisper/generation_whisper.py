@@ -253,7 +253,7 @@ class WhisperGenerationMixin(GenerationMixin):
         # (batch size * num beams, attention_heads, output length, input length).
         cross_attentions = []
         for i in range(self.config.decoder_layers):
-            cross_attentions.append(torch.cat([x[i] for x in generate_outputs.cross_attentions], dim=2))
+            cross_attentions.append(torch.cat([x[i] for x in generate_outputs.cross_attentions], dim=2))  # noqa: PERF401
 
         # Select specific cross-attention layers and heads. This is a tensor
         # of shape (batch size * num beams, num selected heads, output length, input length).

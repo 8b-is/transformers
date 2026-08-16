@@ -84,7 +84,7 @@ def get_all_supported_aspect_ratios(min_image_tiles: int, max_image_tiles: int) 
     for width in range(1, max_image_tiles + 1):
         for height in range(1, max_image_tiles + 1):
             if width * height <= max_image_tiles and width * height >= min_image_tiles:
-                aspect_ratios.append((width, height))
+                aspect_ratios.append((width, height))  # noqa: PERF401
 
     aspect_ratios = sorted(aspect_ratios, key=lambda x: x[0] * x[1])
 

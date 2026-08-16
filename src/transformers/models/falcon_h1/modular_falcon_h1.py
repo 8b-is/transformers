@@ -509,7 +509,7 @@ class FalconH1Model(FalconH1PreTrainedModel):
         self.embed_tokens = nn.Embedding(config.vocab_size, config.hidden_size, self.padding_idx)
         decoder_layers = []
         for i in range(config.num_hidden_layers):
-            decoder_layers.append(FalconH1DecoderLayer(config, layer_idx=i))
+            decoder_layers.append(FalconH1DecoderLayer(config, layer_idx=i))  # noqa: PERF401
         self.layers = nn.ModuleList(decoder_layers)
 
         self._attn_implementation = config._attn_implementation

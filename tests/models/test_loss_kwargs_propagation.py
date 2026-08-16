@@ -51,7 +51,7 @@ class LossKwargsPropagationTest(unittest.TestCase):
                 labels=MagicMock(),
                 num_items_in_batch=8,
             )
-        except Exception:
+        except Exception:  # noqa: S110
             pass  # We check mock_loss_fn calls
 
         if mock_loss_fn.called:

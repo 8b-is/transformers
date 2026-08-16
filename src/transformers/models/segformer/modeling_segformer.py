@@ -481,7 +481,7 @@ class SegformerDecodeHead(nn.Module):
         # linear layers which will unify the channel dimension of each of the encoder blocks to the same config.decoder_hidden_size
         linear_projections = []
         for stage_idx in range(config.num_encoder_blocks):
-            linear_projections.append(SegformerMLP(config, input_dim=config.hidden_sizes[stage_idx]))
+            linear_projections.append(SegformerMLP(config, input_dim=config.hidden_sizes[stage_idx]))  # noqa: PERF401
         self.linear_projections = nn.ModuleList(linear_projections)
 
         # the following 3 layers implement the ConvModule of the original implementation

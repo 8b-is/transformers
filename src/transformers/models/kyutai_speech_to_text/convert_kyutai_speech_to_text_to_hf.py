@@ -99,7 +99,7 @@ def convert_kyutai_speech_to_text_state_dict(state_dict, config, unwanted_prefix
     # concat embeddings
     embed_tokens_weight = []
     for i in range(32):
-        embed_tokens_weight.append(state_dict.pop(f"emb.{i}.weight"))
+        embed_tokens_weight.append(state_dict.pop(f"emb.{i}.weight"))  # noqa: PERF401
 
     embed_tokens_weight = torch.cat(embed_tokens_weight, dim=0)
     embed_tokens_weight = torch.cat([state_dict.pop("text_emb.weight"), embed_tokens_weight])

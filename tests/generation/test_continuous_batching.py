@@ -1725,7 +1725,7 @@ class TestMemoryHandlerPrediction(unittest.TestCase):
             fixed.append(torch.empty((7, M), dtype=torch.int32, device=device))  # bulk_input
             fixed.append(torch.empty((num_output_rows, M), dtype=torch.int32, device=device))  # output_ids
             for _ in range(num_attn_masks):  # attention_mask: [1, 1, M, N + M] per mask type
-                fixed.append(torch.empty((1, 1, M, N + M), dtype=dtype, device=device))
+                fixed.append(torch.empty((1, 1, M, N + M), dtype=dtype, device=device))  # noqa: PERF401
             if max_bpr > 0:  # block_table: [num_groups, M, max_bpr] (skipped when max_bpr == 0)
                 fixed.append(torch.empty((num_groups, M, max_bpr), dtype=torch.int32, device=device))
             fixed.append(torch.empty((num_groups, M), dtype=torch.int64, device=device))  # write_index

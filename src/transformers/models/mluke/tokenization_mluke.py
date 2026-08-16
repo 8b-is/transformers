@@ -348,7 +348,7 @@ class MLukeTokenizer(TokenizersBackend):
             tokens = kwargs.pop(key, None)
             if isinstance(tokens, (list, tuple)):
                 for token in tokens:
-                    extra_tokens.append(AddedToken(**token) if isinstance(token, dict) else token)
+                    extra_tokens.append(AddedToken(**token) if isinstance(token, dict) else token)  # noqa: PERF401
 
         # Ensure MLuke entity tokens are present exactly once.
         seen = {str(token) for token in extra_tokens}

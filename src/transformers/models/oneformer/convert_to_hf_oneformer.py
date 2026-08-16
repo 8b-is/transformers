@@ -1021,7 +1021,7 @@ def test(
         original_pixel_decoder_features = []
         original_pixel_decoder_features.append(mask_features)
         for i in range(len(multi_scale_features)):
-            original_pixel_decoder_features.append(multi_scale_features[i])
+            original_pixel_decoder_features.append(multi_scale_features[i])  # noqa: PERF401
 
         for original_model_feature, our_model_feature in zip(
             original_pixel_decoder_features, our_model_output.pixel_decoder_hidden_states

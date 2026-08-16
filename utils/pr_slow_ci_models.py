@@ -59,7 +59,7 @@ def get_new_python_files_between_commits(base_commit: str, commits: list[str]) -
         for diff_obj in commit.diff(base_commit):
             # We always add new python files
             if diff_obj.change_type == "A" and diff_obj.b_path.endswith(".py"):
-                code_diff.append(diff_obj.b_path)
+                code_diff.append(diff_obj.b_path)  # noqa: PERF401
 
     return code_diff
 

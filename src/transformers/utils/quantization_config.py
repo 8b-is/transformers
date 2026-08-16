@@ -54,6 +54,7 @@ class QuantizationMethod(StrEnum):
     FBGEMM_FP8 = "fbgemm_fp8"
     TORCHAO = "torchao"
     BITNET = "bitnet"
+    BITNET_MLX = "bitnet_mlx"
     SPQR = "spqr"
     FP8 = "fp8"
     QUARK = "quark"
@@ -382,7 +383,7 @@ class HqqConfig(QuantizationConfigMixin):
         # only serialize values that differ from the default config
         for key, value in config_dict.items():
             if value != default_config_dict[key]:
-                serializable_config_dict[key] = value
+                serializable_config_dict[key] = value  # noqa: PERF403
 
         return serializable_config_dict
 
@@ -604,7 +605,7 @@ class BitsAndBytesConfig(QuantizationConfigMixin):
         # only serialize values that differ from the default config
         for key, value in config_dict.items():
             if value != default_config_dict[key]:
-                serializable_config_dict[key] = value
+                serializable_config_dict[key] = value  # noqa: PERF403
 
         return serializable_config_dict
 
@@ -803,18 +804,11 @@ class AwqConfig(GPTQConfig):
     loaded using `auto-awq` library awq quantization relying on auto_awq backend.
 
     Args:
-        bits (`int`, *optional*, defaults to 4):
-            The number of bits to quantize to.
-        group_size (`int`, *optional*, defaults to 128):
-            The group size to use for quantization. Recommended value is 128 and -1 uses per-column quantization.
-        zero_point (`bool`, *optional*, defaults to `True`):
-            Whether to use zero point quantization.
-        backend (`AwqBackend`, *optional*, defaults to `AwqBackend.AUTO`):
-            The quantization backend.
-        modules_to_not_convert (`list`, *optional*, default to `None`):
-            The list of modules to not quantize, useful for quantizing models that explicitly require to have
-            some modules left in their original precision (e.g. Whisper encoder, Llava encoder, Mixtral gate layers).
-            Note you cannot quantize directly with transformers, please refer to `AutoAWQ` documentation for quantizing HF models.
+            bits (`int`, *optional*, defaults to 4): <fill_docstring>
+            group_size (`int`, *optional*, defaults to 128): <fill_docstring>
+            zero_point (`bool`, *optional*, defaults to `True`): <fill_docstring>
+            backend (`AwqBackend`, *optional*, defaults to `auto`): <fill_docstring>
+            modules_to_not_convert (`list | None`, *optional*): <fill_docstring>
     """
 
     def __init__(
@@ -1255,7 +1249,7 @@ class CompressedTensorsConfig(QuantizationConfigMixin):
         # only serialize values that differ from the default config
         for key, value in config_dict.items():
             if key not in default_config_dict or value != default_config_dict[key]:
-                serializable_config_dict[key] = value
+                serializable_config_dict[key] = value  # noqa: PERF403
 
         return serializable_config_dict
 
@@ -1625,6 +1619,28 @@ class BitNetQuantConfig(QuantizationConfigMixin):
         r"""
         Safety checker that arguments are correct
         """
+
+
+@dataclass
+class BitNetMlxQuantConfig(QuantizationConfigMixin):
+    """
+    Configuration class for applying BitNet b1.58 ternary quantization with MLX packing format.
+
+    Args:
+        modules_to_not_convert (`Optional[List]`, *optional*):
+            Optionally, provides a list of full paths of `nn.Linear` weight parameters
+            that shall not be quantized. Defaults to None.
+        kwargs (`dict[str, Any]`, *optional*):
+            Additional keyword arguments.
+    """
+
+    def __init__(
+        self,
+        modules_to_not_convert: list | None = None,
+        **kwargs,
+    ):
+        self.quant_method = QuantizationMethod.BITNET_MLX
+        self.modules_to_not_convert = modules_to_not_convert
 
 
 @dataclass

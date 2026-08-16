@@ -473,7 +473,7 @@ class MiniCPMV4_6VideoProcessor(BaseVideoProcessor):
                         visual_units.append(composites_by_sec[i])
             else:
                 for i in range(len(video)):
-                    visual_units.append(video[i : i + 1])
+                    visual_units.append(video[i : i + 1])  # noqa: PERF401
             num_frames_per_video.append(len(visual_units) - units_before)
 
         # Stage 2 — Resize, split, normalise and reshape each unit independently.

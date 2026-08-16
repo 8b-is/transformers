@@ -1741,7 +1741,7 @@ class TapasTokenizer(PreTrainedTokenizer):
                     end_index = begin_index + len(answer_text)
                     for index in indexes:
                         if index >= begin_index and index < end_index:
-                            coordinate_answer_ids.append(index)
+                            coordinate_answer_ids.append(index)  # noqa: PERF401
                 if len(coordinate_answer_ids) == len(answer_text):
                     for index in coordinate_answer_ids:
                         answer_ids[index] = 1

@@ -254,6 +254,7 @@ _import_structure = {
         "AqlmConfig",
         "AutoRoundConfig",
         "AwqConfig",
+        "BitNetMlxQuantConfig",
         "BitNetQuantConfig",
         "BitsAndBytesConfig",
         "CompressedTensorsConfig",
@@ -445,6 +446,7 @@ else:
     ]
 
     _import_structure["integrations.hub_kernels"] = ["kernelize"]
+    _import_structure["integrations.mesh"] = ["MeshRouterWrapper"]
     _import_structure["masking_utils"] = ["AttentionMaskInterface"]
     _import_structure["model_debugging_utils"] = ["model_addition_debugger_context"]
     _import_structure["modeling_flash_attention_utils"] = []
@@ -630,6 +632,7 @@ if TYPE_CHECKING:
     from .integrations.executorch import TorchExportableModuleWithStaticCache as TorchExportableModuleWithStaticCache
     from .integrations.executorch import convert_and_export_with_cache as convert_and_export_with_cache
     from .integrations.hub_kernels import kernelize as kernelize
+    from .integrations.mesh import MeshRouterWrapper as MeshRouterWrapper
     from .masking_utils import AttentionMaskInterface as AttentionMaskInterface
     from .model_debugging_utils import model_addition_debugger_context as model_addition_debugger_context
     from .modeling_layers import GradientCheckpointingLayer as GradientCheckpointingLayer
@@ -772,6 +775,7 @@ if TYPE_CHECKING:
     from .utils.quantization_config import AqlmConfig as AqlmConfig
     from .utils.quantization_config import AutoRoundConfig as AutoRoundConfig
     from .utils.quantization_config import AwqConfig as AwqConfig
+    from .utils.quantization_config import BitNetMlxQuantConfig as BitNetMlxQuantConfig
     from .utils.quantization_config import BitNetQuantConfig as BitNetQuantConfig
     from .utils.quantization_config import BitsAndBytesConfig as BitsAndBytesConfig
     from .utils.quantization_config import CompressedTensorsConfig as CompressedTensorsConfig

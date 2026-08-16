@@ -76,7 +76,7 @@ def normalize(input_tensors):
     if isinstance(input_tensors, list):
         out = []
         for tensor in input_tensors:
-            out.append(nn.functional.normalize(tensor, p=2, dim=-1))
+            out.append(nn.functional.normalize(tensor, p=2, dim=-1))  # noqa: PERF401
         return out
     else:
         return nn.functional.normalize(input_tensors, p=2, dim=-1)

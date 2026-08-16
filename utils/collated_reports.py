@@ -26,7 +26,7 @@ def simplify_gpu_name(gpu_name: str, simplified_names: list[str]) -> str:
     matches = []
     for simplified_name in simplified_names:
         if simplified_name in gpu_name:
-            matches.append(simplified_name)
+            matches.append(simplified_name)  # noqa: PERF401
     if len(matches) == 1:
         return matches[0]
     return gpu_name

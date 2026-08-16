@@ -624,7 +624,7 @@ class MistralCommonBackend(PreTrainedTokenizerBase):
 
         ids: list[int] = []
         for token in tokens:
-            ids.append(self._piece_to_id(token, True))
+            ids.append(self._piece_to_id(token, True))  # noqa: PERF401
 
         if one_token:
             return ids[0]

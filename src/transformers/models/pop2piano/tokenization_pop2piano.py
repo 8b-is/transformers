@@ -459,7 +459,7 @@ class Pop2PianoTokenizer(PreTrainedTokenizer):
 
         encoded_batch_token_ids = []
         for i in range(len(notes)):
-            encoded_batch_token_ids.append(
+            encoded_batch_token_ids.append(  # noqa: PERF401
                 self.encode_plus(
                     notes[i],
                     truncation_strategy=truncation_strategy,

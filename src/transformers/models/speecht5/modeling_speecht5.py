@@ -2283,7 +2283,7 @@ def _generate_speech(
         # batched return values should also include the spectrogram/waveform lengths
         spectrogram_lengths = []
         for i in range(bsz):
-            spectrogram_lengths.append(spectrograms[i].size(0))
+            spectrogram_lengths.append(spectrograms[i].size(0))  # noqa: PERF401
         if vocoder is None:
             spectrograms = torch.nn.utils.rnn.pad_sequence(spectrograms, batch_first=True)
             outputs = (spectrograms, spectrogram_lengths)

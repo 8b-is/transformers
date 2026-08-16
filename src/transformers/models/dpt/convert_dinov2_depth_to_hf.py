@@ -97,7 +97,7 @@ def create_rename_keys_dpt(config):
 
     # neck convolutions
     for i in range(4):
-        rename_keys.append((f"decode_head.convs.{i}.conv.weight", f"neck.convs.{i}.weight"))
+        rename_keys.append((f"decode_head.convs.{i}.conv.weight", f"neck.convs.{i}.weight"))  # noqa: PERF401
 
     # head
     rename_keys.append(("decode_head.project.conv.weight", "head.projection.weight"))

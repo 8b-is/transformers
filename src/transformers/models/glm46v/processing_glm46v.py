@@ -83,7 +83,7 @@ class Glm46VProcessor(ProcessorMixin):
 
         unique_timestamps = []
         for idx in range(0, len(timestamps)):
-            unique_timestamps.append(timestamps[idx])
+            unique_timestamps.append(timestamps[idx])  # noqa: PERF401
 
         selected_timestamps = unique_timestamps[:num_frames]
         while len(selected_timestamps) < num_frames:

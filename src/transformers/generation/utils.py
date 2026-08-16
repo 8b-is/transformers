@@ -2874,6 +2874,16 @@ class GenerationMixin(ContinuousMixin):
             is_first_iteration=not generation_config.is_assistant,
         )
 
+        # Pre-allocate `input_ids` to avoid `torch.cat` at each step
+        max_length = generation_config.max_length
+        if max_length is None:
+            max_length = input_ids.shape[-1] + stopping_criteria.max_length
+
+        preallocated_ids = torch.empty((batch_size, max_length), dtype=input_ids.dtype, device=input_ids.device)
+        cur_len = input_ids.shape[-1]
+        preallocated_ids[:, :cur_len] = input_ids
+        input_ids = preallocated_ids[:, :cur_len]
+
         with self._optimize_model_for_decode():
             while self._has_unfinished_sequences(this_peer_finished, synced_gpus, device=input_ids.device):
                 if prefill_consumed:
@@ -2881,7 +2891,38 @@ class GenerationMixin(ContinuousMixin):
                     model_inputs = self.prepare_inputs_for_generation(
                         input_ids, next_sequence_length=next_sequence_length, **model_kwargs
                     )
-                    outputs = model_forward(**model_inputs, return_dict=True)
+
+                    if hasattr(self, "experts") and hasattr(self, "_gate"):
+                        gate = self._gate(model_inputs["input_ids"])
+                        if len(gate.shape) == 2:
+                            gate = gate.unsqueeze(1)
+                        if model_inputs["input_ids"].shape[1] == 1 and gate.shape[1] > 1:
+                            gate = gate[:, -1:]
+
+                        expert_outputs = []
+                        for e_idx in range(self.n_experts):
+                            e_kwargs = model_kwargs.copy()
+                            if "past_key_values" in e_kwargs and isinstance(e_kwargs["past_key_values"], tuple):
+                                e_kwargs["past_key_values"] = e_kwargs["past_key_values"][e_idx]
+
+                            e_inputs = self.experts[e_idx].prepare_inputs_for_generation(
+                                model_inputs["input_ids"], next_sequence_length=next_sequence_length, **e_kwargs
+                            )
+                            e_out = self.experts[e_idx](**e_inputs, return_dict=True)
+                            expert_outputs.append(e_out)
+
+                        logits = sum(
+                            gate[:, :, e_idx].unsqueeze(-1) * expert_outputs[e_idx].logits
+                            for e_idx in range(self.n_experts)
+                        )
+                        caches = tuple(e.past_key_values for e in expert_outputs)
+
+                        outputs = type(expert_outputs[0])(
+                            logits=logits,
+                            past_key_values=caches,
+                        )
+                    else:
+                        outputs = model_forward(**model_inputs, return_dict=True)
                 prefill_consumed = True
                 model_kwargs = self._update_model_kwargs_for_generation(
                     outputs,
@@ -2931,7 +2972,10 @@ class GenerationMixin(ContinuousMixin):
                     next_tokens = next_tokens * unfinished_sequences + pad_token_id * (1 - unfinished_sequences)
 
                 # update generated ids, model inputs, and length for next step
-                input_ids = torch.cat([input_ids, next_tokens[:, None]], dim=-1)
+                preallocated_ids[:, cur_len] = next_tokens
+                cur_len += 1
+                input_ids = preallocated_ids[:, :cur_len]
+
                 if streamer is not None:
                     streamer.put(next_tokens.cpu())
 
@@ -2987,7 +3031,7 @@ class GenerationMixin(ContinuousMixin):
         return torch.reshape(tensor, [batch_size, num_beams] + shape[1:])
 
     @staticmethod
-    def _gather_beams(tensor: torch.Tensor, beam_indices: torch.Tensor) -> torch.Tensor:
+    def _gather_beams(tensor: torch.Tensor, beam_indices: torch.Tensor, out: torch.Tensor = None) -> torch.Tensor:
         """
         Gathers the beam slices indexed by beam_indices into new beam array.
 
@@ -3003,8 +3047,14 @@ class GenerationMixin(ContinuousMixin):
         # `take_along_dim` requires its indices arg to have the same number of dims as `input`
         while len(beam_indices.shape) < len(tensor.shape):
             beam_indices = beam_indices.unsqueeze(-1)
-        gathered_tensor = torch.take_along_dim(input=tensor, indices=beam_indices, dim=1)
-        return gathered_tensor
+
+        if out is not None:
+            # torch.gather requires indices to match the shape of the tensor except on the gather dimension
+            beam_indices_expanded = beam_indices.expand(tensor.shape[0], beam_indices.shape[1], *tensor.shape[2:])
+            return torch.gather(input=tensor, dim=1, index=beam_indices_expanded, out=out)
+        else:
+            gathered_tensor = torch.take_along_dim(input=tensor, indices=beam_indices, dim=1)
+            return gathered_tensor
 
     @staticmethod
     def _check_early_stop_heuristic(
@@ -3088,6 +3138,8 @@ class GenerationMixin(ContinuousMixin):
         num_beams: int,
         vocab_size: int,
         batch_size: int,
+        topk_running_sequences: torch.Tensor = None,
+        topk_running_beam_indices: torch.Tensor = None,
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
         Get top-K continuations given the accumulated log probs on the next token.
@@ -3116,8 +3168,12 @@ class GenerationMixin(ContinuousMixin):
 
         # Gather K top beams, recover the beam index by floor division and token id by modulo division
         topk_current_beam_indices = topk_indices // vocab_size
-        topk_running_beam_indices = self._gather_beams(running_beam_indices, topk_current_beam_indices)
-        topk_running_sequences = self._gather_beams(running_sequences, topk_current_beam_indices)
+        topk_running_beam_indices = self._gather_beams(
+            running_beam_indices, topk_current_beam_indices, out=topk_running_beam_indices
+        )
+        topk_running_sequences = self._gather_beams(
+            running_sequences, topk_current_beam_indices, out=topk_running_sequences
+        )
         topk_ids = topk_indices % vocab_size
 
         # Update sequences for the K top-k new sequences.
@@ -3137,6 +3193,9 @@ class GenerationMixin(ContinuousMixin):
         topk_running_beam_indices: torch.Tensor,
         next_token_hits_stopping_criteria: torch.Tensor,
         num_beams: int,
+        running_sequences: torch.Tensor = None,
+        running_beam_scores: torch.Tensor = None,
+        running_beam_indices: torch.Tensor = None,
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
         Given the top-K continuations, their scores, and whether they hit a stopping criteria, select the
@@ -3147,9 +3206,11 @@ class GenerationMixin(ContinuousMixin):
         topk_running_log_probs = topk_log_probs + next_token_hits_stopping_criteria.to(torch.float32) * -1.0e9
 
         next_topk_indices = torch.topk(topk_running_log_probs, k=num_beams)[1]
-        running_sequences = self._gather_beams(topk_running_sequences, next_topk_indices)
-        running_beam_scores = self._gather_beams(topk_running_log_probs, next_topk_indices)
-        running_beam_indices = self._gather_beams(topk_running_beam_indices, next_topk_indices)
+        running_sequences = self._gather_beams(topk_running_sequences, next_topk_indices, out=running_sequences)
+        running_beam_scores = self._gather_beams(topk_running_log_probs, next_topk_indices, out=running_beam_scores)
+        running_beam_indices = self._gather_beams(
+            topk_running_beam_indices, next_topk_indices, out=running_beam_indices
+        )
         return running_sequences, running_beam_scores, running_beam_indices
 
     def _update_finished_beams(
@@ -3169,6 +3230,10 @@ class GenerationMixin(ContinuousMixin):
         decoder_prompt_len: int,
         length_penalty: float,
         early_stopping: bool | str,
+        merged_sequences: torch.Tensor = None,
+        merged_scores: torch.Tensor = None,
+        merged_beam_indices: torch.Tensor = None,
+        merged_is_sent_finished: torch.Tensor = None,
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         """
         Updates the finished beams if (and only if) there are new completed sequences that have a higher score than
@@ -3194,15 +3259,25 @@ class GenerationMixin(ContinuousMixin):
         # Get finalized  `num_beam` sequences for the next generation step -- combine the previous finalized
         # data with the new finalized sequences (if any, non-finalized sequences have a very large negative score
         # in this step), and keep the best `num_beams` sequences.
-        merged_sequences = torch.cat((sequences, topk_running_sequences), dim=1)
-        merged_scores = torch.cat((beam_scores, topk_log_probs), dim=1)
-        merged_beam_indices = torch.cat((beam_indices, topk_running_beam_indices), dim=1)
-        merged_is_sent_finished = torch.cat((is_sent_finished, did_top_num_beams_just_finished), dim=1)
+        if merged_sequences is None:
+            merged_sequences = torch.cat((sequences, topk_running_sequences), dim=1)
+            merged_scores = torch.cat((beam_scores, topk_log_probs), dim=1)
+            merged_beam_indices = torch.cat((beam_indices, topk_running_beam_indices), dim=1)
+            merged_is_sent_finished = torch.cat((is_sent_finished, did_top_num_beams_just_finished), dim=1)
+        else:
+            merged_sequences[:, :num_beams] = sequences
+            merged_sequences[:, num_beams:] = topk_running_sequences
+            merged_scores[:, :num_beams] = beam_scores
+            merged_scores[:, num_beams:] = topk_log_probs
+            merged_beam_indices[:, :num_beams] = beam_indices
+            merged_beam_indices[:, num_beams:] = topk_running_beam_indices
+            merged_is_sent_finished[:, :num_beams] = is_sent_finished
+            merged_is_sent_finished[:, num_beams:] = did_top_num_beams_just_finished
         topk_merged_indices = torch.topk(merged_scores, k=num_beams)[1]
-        sequences = self._gather_beams(merged_sequences, topk_merged_indices)
-        beam_scores = self._gather_beams(merged_scores, topk_merged_indices)
-        beam_indices = self._gather_beams(merged_beam_indices, topk_merged_indices)
-        is_sent_finished = self._gather_beams(merged_is_sent_finished, topk_merged_indices)
+        self._gather_beams(merged_sequences, topk_merged_indices, out=sequences)
+        self._gather_beams(merged_scores, topk_merged_indices, out=beam_scores)
+        self._gather_beams(merged_beam_indices, topk_merged_indices, out=beam_indices)
+        self._gather_beams(merged_is_sent_finished, topk_merged_indices, out=is_sent_finished)
         return sequences, beam_scores, beam_indices, is_sent_finished
 
     # end of auxiliary functions for beam search
@@ -3361,6 +3436,29 @@ class GenerationMixin(ContinuousMixin):
             is_first_iteration=not generation_config.is_assistant,
         )
 
+        # Pre-allocate buffers for beam search loop to avoid O(N^2) memory scaling
+        merged_sequences = torch.empty(
+            (batch_size, num_beams + beams_to_keep, max_length), dtype=sequences.dtype, device=sequences.device
+        )
+        merged_scores = torch.empty(
+            (batch_size, num_beams + beams_to_keep), dtype=beam_scores.dtype, device=beam_scores.device
+        )
+        merged_beam_indices = torch.empty(
+            (batch_size, num_beams + beams_to_keep, max_length - cur_len),
+            dtype=beam_indices.dtype,
+            device=beam_indices.device,
+        )
+        merged_is_sent_finished = torch.empty(
+            (batch_size, num_beams + beams_to_keep), dtype=is_sent_finished.dtype, device=is_sent_finished.device
+        )
+
+        topk_running_sequences = torch.empty(
+            (batch_size, beams_to_keep, max_length), dtype=sequences.dtype, device=sequences.device
+        )
+        topk_running_beam_indices = torch.empty(
+            (batch_size, beams_to_keep, max_length - cur_len), dtype=beam_indices.dtype, device=beam_indices.device
+        )
+
         # 4. run the generation loop
         while self._has_unfinished_sequences(this_peer_finished, synced_gpus, device=input_ids.device):
             if prefill_consumed:
@@ -3370,7 +3468,38 @@ class GenerationMixin(ContinuousMixin):
                 model_inputs = self.prepare_inputs_for_generation(
                     flat_running_sequences, next_sequence_length=next_sequence_length, **model_kwargs
                 )
-                model_outputs = self(**model_inputs, return_dict=True)
+
+                if hasattr(self, "experts") and hasattr(self, "_gate"):
+                    gate = self._gate(model_inputs["input_ids"])
+                    if len(gate.shape) == 2:
+                        gate = gate.unsqueeze(1)
+                    if model_inputs["input_ids"].shape[1] == 1 and gate.shape[1] > 1:
+                        gate = gate[:, -1:]
+
+                    expert_outputs = []
+                    for e_idx in range(self.n_experts):
+                        e_kwargs = model_kwargs.copy()
+                        if "past_key_values" in e_kwargs and isinstance(e_kwargs["past_key_values"], tuple):
+                            e_kwargs["past_key_values"] = e_kwargs["past_key_values"][e_idx]
+
+                        e_inputs = self.experts[e_idx].prepare_inputs_for_generation(
+                            model_inputs["input_ids"], next_sequence_length=next_sequence_length, **e_kwargs
+                        )
+                        e_out = self.experts[e_idx](**e_inputs, return_dict=True)
+                        expert_outputs.append(e_out)
+
+                    logits = sum(
+                        gate[:, :, e_idx].unsqueeze(-1) * expert_outputs[e_idx].logits
+                        for e_idx in range(self.n_experts)
+                    )
+                    caches = tuple(e.past_key_values for e in expert_outputs)
+
+                    model_outputs = type(expert_outputs[0])(
+                        logits=logits,
+                        past_key_values=caches,
+                    )
+                else:
+                    model_outputs = self(**model_inputs, return_dict=True)
             prefill_consumed = True
 
             # synced_gpus: don't waste resources running the code we don't need; kwargs must be updated before skipping
@@ -3434,6 +3563,8 @@ class GenerationMixin(ContinuousMixin):
                 num_beams=num_beams,
                 vocab_size=vocab_size,
                 batch_size=batch_size,
+                topk_running_sequences=topk_running_sequences,
+                topk_running_beam_indices=topk_running_beam_indices,
             )
 
             # d. Check which running sequences have finished
@@ -3452,6 +3583,9 @@ class GenerationMixin(ContinuousMixin):
                 topk_running_beam_indices=topk_running_beam_indices,
                 next_token_hits_stopping_criteria=next_token_hits_stopping_criteria,
                 num_beams=num_beams,
+                running_sequences=running_sequences,
+                running_beam_scores=running_beam_scores,
+                running_beam_indices=running_beam_indices,
             )
 
             # f. Update the completed beams if a new high score in a finished sequence is found
@@ -3471,6 +3605,10 @@ class GenerationMixin(ContinuousMixin):
                 decoder_prompt_len=decoder_prompt_len,
                 length_penalty=length_penalty,
                 early_stopping=early_stopping,
+                merged_sequences=merged_sequences,
+                merged_scores=merged_scores,
+                merged_beam_indices=merged_beam_indices,
+                merged_is_sent_finished=merged_is_sent_finished,
             )
 
             # g. Prepare remaining data for the next iteration, including computing the stopping condition for
@@ -3676,6 +3814,16 @@ class GenerationMixin(ContinuousMixin):
         is_first_iteration = True  # to preserve the same API in the output as other generation methods
         outputs = None
         n_matches = 0
+
+        # Pre-allocate `input_ids` to avoid `torch.cat` at each step
+        max_length = generation_config.max_length
+        if max_length is None:
+            max_length = input_ids.shape[-1] + stopping_criteria.max_length
+
+        preallocated_ids = torch.empty((batch_size, max_length), dtype=input_ids.dtype, device=input_ids.device)
+        preallocated_ids[:, :cur_len] = input_ids
+        input_ids = preallocated_ids[:, :cur_len]
+
         while self._has_unfinished_sequences(this_peer_finished, synced_gpus, device=input_ids.device):
             cur_len = input_ids.shape[1]
 
@@ -3802,7 +3950,11 @@ class GenerationMixin(ContinuousMixin):
             # is no match.
 
             # 4.1. Get the valid continuation, after the matching tokens
-            input_ids = torch.cat((input_ids, valid_tokens), dim=-1)
+            num_valid = valid_tokens.shape[1]
+            preallocated_ids[:, cur_len : cur_len + num_valid] = valid_tokens
+            cur_len += num_valid
+            input_ids = preallocated_ids[:, :cur_len]
+
             if streamer is not None:
                 streamer.put(valid_tokens.cpu())
             new_cur_len = input_ids.shape[1]
@@ -3956,6 +4108,39 @@ class GenerationMixin(ContinuousMixin):
                 is_first_iteration=is_first_iteration,
                 **model_kwargs,
             )
+
+            if hasattr(self, "experts") and hasattr(self, "_gate"):
+                gate = self._gate(model_inputs["input_ids"])
+                if len(gate.shape) == 2:
+                    gate = gate.unsqueeze(1)
+
+                expert_outputs = []
+                for e_idx in range(self.n_experts):
+                    e_kwargs = model_kwargs.copy()
+                    if "past_key_values" in e_kwargs and isinstance(e_kwargs["past_key_values"], tuple):
+                        e_kwargs["past_key_values"] = e_kwargs["past_key_values"][e_idx]
+
+                    e_inputs = self.experts[e_idx].prepare_inputs_for_generation(
+                        model_inputs["input_ids"],
+                        next_sequence_length=next_sequence_length,
+                        is_first_iteration=is_first_iteration,
+                        **e_kwargs,
+                    )
+                    e_out = self.experts[e_idx](**e_inputs, return_dict=True)
+                    expert_outputs.append(e_out)
+
+                logits = sum(
+                    gate[:, :, e_idx].unsqueeze(-1) * expert_outputs[e_idx].logits for e_idx in range(self.n_experts)
+                )
+                caches = tuple(e.past_key_values for e in expert_outputs)
+
+                # Return the type of the first expert output (e.g. CausalLMOutputWithPast)
+                model_outputs = type(expert_outputs[0])(
+                    logits=logits,
+                    past_key_values=caches,
+                )
+                return model_outputs
+
             return self(**model_inputs, return_dict=True)
 
         # Chunked prefill (for very large contexts)

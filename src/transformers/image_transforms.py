@@ -890,7 +890,7 @@ def _group_images_by_shape(nested_images, *paired_inputs, is_nested: bool = Fals
     normalized_images = [nested_images] if not is_nested else nested_images
     normalized_paired = []
     for paired_input in paired_inputs:
-        normalized_paired.append([paired_input] if not is_nested else paired_input)
+        normalized_paired.append([paired_input] if not is_nested else paired_input)  # noqa: PERF401
 
     # Process each image and group by shape
     for i, (sublist, *paired_sublists) in enumerate(zip(normalized_images, *normalized_paired)):

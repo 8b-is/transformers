@@ -227,7 +227,7 @@ class Evaluator:
     def get_target_sizes(self, post_processed_targets) -> list[list[int]]:
         target_sizes = []
         for target in post_processed_targets:
-            target_sizes.append(target["masks"].shape[-2:])
+            target_sizes.append(target["masks"].shape[-2:])  # noqa: PERF401
         return target_sizes
 
     def postprocess_prediction_batch(self, prediction_batch, target_sizes) -> list[dict[str, torch.Tensor]]:

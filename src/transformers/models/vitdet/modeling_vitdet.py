@@ -516,7 +516,7 @@ class VitDetEncoder(nn.Module):
 
         layers = []
         for i in range(depth):
-            layers.append(
+            layers.append(  # noqa: PERF401
                 VitDetLayer(
                     config,
                     drop_path_rate=drop_path_rate[i],

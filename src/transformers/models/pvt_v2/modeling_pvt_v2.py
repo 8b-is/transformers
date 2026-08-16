@@ -281,7 +281,7 @@ class PvtV2EncoderLayer(GradientCheckpointingLayer):
         drop_path_decays = torch.linspace(0, config.drop_path_rate, sum(config.depths), device="cpu").tolist()
         block_layers = []
         for block_idx in range(config.depths[layer_idx]):
-            block_layers.append(
+            block_layers.append(  # noqa: PERF401
                 PvtV2BlockLayer(
                     config=config,
                     layer_idx=layer_idx,

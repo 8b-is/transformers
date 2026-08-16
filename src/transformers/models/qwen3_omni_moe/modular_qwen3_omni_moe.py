@@ -2189,7 +2189,7 @@ class Qwen3OmniMoeCode2WavDecoderBlock(Qwen3OmniMoePreTrainedModel):
         ]
 
         for dilation in (1, 3, 9):
-            block.append(Qwen3OmniMoeCode2WavDecoderResidualUnit(out_dim, dilation))
+            block.append(Qwen3OmniMoeCode2WavDecoderResidualUnit(out_dim, dilation))  # noqa: PERF401
 
         self.block = nn.ModuleList(block)
 
@@ -2215,7 +2215,7 @@ class Qwen3OmniMoeCode2Wav(Qwen3OmniMoePreTrainedModel):
 
         upsample = []
         for factor in config.upsampling_ratios:
-            upsample.append(
+            upsample.append(  # noqa: PERF401
                 nn.ModuleList(
                     [
                         Qwen3OmniMoeCausalTransConvNet(config.hidden_size, config.hidden_size, factor, factor),
@@ -2227,7 +2227,7 @@ class Qwen3OmniMoeCode2Wav(Qwen3OmniMoePreTrainedModel):
 
         decoder = [Qwen3OmniMoeCausalConvNet(config.hidden_size, config.decoder_dim, 7)]
         for i in range(len(config.upsample_rates)):
-            decoder.append(Qwen3OmniMoeCode2WavDecoderBlock(config, i))
+            decoder.append(Qwen3OmniMoeCode2WavDecoderBlock(config, i))  # noqa: PERF401
         output_dim = config.decoder_dim // 2 ** len(config.upsample_rates)
         decoder += [
             Qwen3OmniMoeSnakeBeta(output_dim),

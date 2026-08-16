@@ -1264,7 +1264,7 @@ class OneFormerPixelDecoder(nn.Module):
         if self.num_feature_levels > 1:
             input_projections_list = []
             for in_channels in transformer_in_channels[::-1]:
-                input_projections_list.append(
+                input_projections_list.append(  # noqa: PERF401
                     nn.Sequential(
                         nn.Conv2d(in_channels, config.conv_dim, kernel_size=1),
                         nn.GroupNorm(32, config.conv_dim),

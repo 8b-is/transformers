@@ -218,7 +218,7 @@ def remove_unused_keys(state_dict):
     keys_to_ignore = []
     for k in state_dict:
         if k.startswith("seg_head.aux_head."):
-            keys_to_ignore.append(k)
+            keys_to_ignore.append(k)  # noqa: PERF401
     for k in keys_to_ignore:
         state_dict.pop(k, None)
 

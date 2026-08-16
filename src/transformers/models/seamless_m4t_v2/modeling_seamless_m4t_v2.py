@@ -1595,7 +1595,7 @@ class SeamlessM4Tv2Encoder(SeamlessM4Tv2PreTrainedModel):
 
         layers = []
         for _ in range(config.encoder_layers):
-            layers.append(
+            layers.append(  # noqa: PERF401
                 SeamlessM4Tv2EncoderLayer(
                     config,
                     encoder_attention_heads=config.encoder_attention_heads,
@@ -1776,7 +1776,7 @@ class SeamlessM4Tv2Decoder(SeamlessM4Tv2PreTrainedModel):
 
         layers = []
         for i in range(config.decoder_layers):
-            layers.append(
+            layers.append(  # noqa: PERF401
                 SeamlessM4Tv2DecoderLayer(
                     config,
                     decoder_attention_heads=config.decoder_attention_heads,
@@ -1970,7 +1970,7 @@ class SeamlessM4Tv2TextToUnitDecoder(SeamlessM4Tv2PreTrainedModel):
 
         layers = []
         for _ in range(config.decoder_layers):
-            layers.append(
+            layers.append(  # noqa: PERF401
                 SeamlessM4Tv2TextToUnitDecoderLayer(
                     config,
                     decoder_attention_heads=config.decoder_attention_heads,

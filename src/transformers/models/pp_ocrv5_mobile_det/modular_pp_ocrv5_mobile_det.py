@@ -249,7 +249,7 @@ class PPOCRV5MobileDetModel(PPOCRV5MobileDetPreTrainedModel):
         feature_maps = outputs.feature_maps
         processed_features = []
         for i in range(len(feature_maps)):
-            processed_features.append(self.layer[i](feature_maps[i]))
+            processed_features.append(self.layer[i](feature_maps[i]))  # noqa: PERF401
         hidden_states = self.neck(processed_features)
 
         return BaseModelOutputWithNoAttention(last_hidden_state=hidden_states, hidden_states=outputs.hidden_states)

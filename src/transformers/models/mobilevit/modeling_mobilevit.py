@@ -821,7 +821,7 @@ class MobileViTASPP(nn.Module):
     def forward(self, features: torch.Tensor) -> torch.Tensor:
         pyramid = []
         for conv in self.convs:
-            pyramid.append(conv(features))
+            pyramid.append(conv(features))  # noqa: PERF401
         pyramid = torch.cat(pyramid, dim=1)
 
         pooled_features = self.project(pyramid)

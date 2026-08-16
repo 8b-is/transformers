@@ -33,7 +33,7 @@ class CustomConfig(QuantizationConfigMixin):
 
         for key, value in config_dict.items():
             if value != default_config_dict[key]:
-                serializable_config_dict[key] = value
+                serializable_config_dict[key] = value  # noqa: PERF403
 
         return serializable_config_dict
 

@@ -21,6 +21,12 @@ import numpy as np
 import torch
 import torch.nn as nn
 
+from ..quantizers.quantizers_utils import should_convert_module
+from ..utils import logging
+
+
+logger = logging.get_logger(__name__)
+
 
 def quantize_ternary_numpy(w: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """
@@ -142,6 +148,21 @@ class BitNetTernaryLinear(nn.Module):
         else:
             self.register_parameter("bias", None)
 
+        self._register_load_state_dict_pre_hook(self.load_hook)
+
+    def load_hook(self, state_dict, prefix, *args, **kwargs):
+        if (prefix + "weight") in state_dict:
+            weight = state_dict.pop(prefix + "weight")
+            # If the loaded weight is float, pack it dynamically during loading
+            if weight.is_floating_point():
+                packed_t, scales_t = quantize_ternary_torch(weight)
+                state_dict[prefix + "packed_weight"] = packed_t
+                state_dict[prefix + "weight_scale"] = scales_t
+            else:
+                # If it's already packed (e.g. from an already quantized checkpoint), pass it back
+                state_dict[prefix + "packed_weight"] = weight
+        return state_dict
+
     def pack_from_float(self, weight_float: torch.Tensor):
         if weight_float.is_cuda or weight_float.is_mps:
             packed_t, scales_t = quantize_ternary_torch(weight_float)
@@ -169,3 +190,28 @@ class BitNetTernaryLinear(nn.Module):
         if self.bias is not None:
             out = out + self.bias
         return out
+
+
+def replace_with_bitnet_mlx_linear(model, modules_to_not_convert: list[str] | None = None, quantization_config=None):
+    """
+    Replaces the linear layers of the given model with BitNet b1.58 ternary packed layers.
+    """
+    has_been_replaced = False
+    for module_name, module in model.named_modules():
+        if not should_convert_module(module_name, modules_to_not_convert):
+            continue
+        with torch.device("meta"):
+            if isinstance(module, nn.Linear):
+                new_module = BitNetTernaryLinear(
+                    in_features=module.in_features,
+                    out_features=module.out_features,
+                    bias=module.bias is not None,
+                )
+                new_module.requires_grad_(False)
+                model.set_submodule(module_name, new_module)
+                has_been_replaced = True
+
+    if not has_been_replaced:
+        logger.warning("You are loading your model using bitnet_mlx but no linear modules were found in your model.")
+
+    return model

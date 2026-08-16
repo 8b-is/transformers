@@ -20,11 +20,21 @@ import torch
 from huggingface_hub.dataclasses import strict
 from torch import nn
 from torch.nn import init
-from torchvision.transforms.v2 import functional as tvF
 
 from ...cache_utils import Cache, DynamicCache
 from ...configuration_utils import PreTrainedConfig
 from ...image_processing_utils import BatchFeature
+from ...utils import (
+    is_torchvision_available,
+    is_torchvision_v2_available,
+)
+
+
+if is_torchvision_v2_available():
+    from torchvision.transforms.v2 import functional as tvF
+elif is_torchvision_available():
+    from torchvision.transforms import functional as tvF
+
 from ...image_utils import PILImageResampling
 from ...masking_utils import create_causal_mask, create_masks_for_generate, create_sliding_window_causal_mask
 from ...modeling_outputs import ModelOutput

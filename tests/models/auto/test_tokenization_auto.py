@@ -182,7 +182,7 @@ class AutoTokenizerTest(unittest.TestCase):
             candidates = tokenizer_entry if isinstance(tokenizer_entry, tuple) else (tokenizer_entry,)
             for tokenizer_cls in candidates:
                 if tokenizer_cls is not None:
-                    tokenizer_names.append(tokenizer_cls.__name__)
+                    tokenizer_names.append(tokenizer_cls.__name__)  # noqa: PERF401
 
         for tokenizer_name in tokenizer_names:
             # must find the right class

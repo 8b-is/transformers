@@ -133,7 +133,7 @@ class GlmImageProcessor(ProcessorMixin):
         batch_size = len(text) if not isinstance(text, str) else 1
         images_per_sample = []
         for i in range(batch_size):
-            images_per_sample.append(text[i].count(self.image_token))
+            images_per_sample.append(text[i].count(self.image_token))  # noqa: PERF401
 
         # Build prompt with target shape and combine grids in a single loop
         # Format: [sample0_source_grids..., sample0_target_grids, sample1_source_grids..., sample1_target_grids, ...]
@@ -204,7 +204,7 @@ class GlmImageProcessor(ProcessorMixin):
         # Validate homogeneity for i2i mode
         images_per_sample = []
         for i in range(len(text)):
-            images_per_sample.append(text[i].count(self.image_token))
+            images_per_sample.append(text[i].count(self.image_token))  # noqa: PERF401
 
         if images is not None and images_per_sample and len(set(images_per_sample)) != 1:
             raise ValueError(

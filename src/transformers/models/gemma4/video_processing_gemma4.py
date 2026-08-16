@@ -190,7 +190,7 @@ class Gemma4VideoProcessor(BaseVideoProcessor):
         patch_size: int,
         max_patches: int,
         pooling_kernel_size: int,
-        resample: tvF.InterpolationMode,
+        resample: "tvF.InterpolationMode",
     ) -> torch.Tensor:
         height, width = video.shape[-2], video.shape[-1]
         target_height, target_width = get_aspect_ratio_preserving_size(

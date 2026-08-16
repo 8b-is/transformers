@@ -1078,7 +1078,7 @@ def check_all_auto_mapping_names_in_config_mapping_names():
     for name, mapping in mappings_to_check.items():
         for model_type in mapping:
             if model_type not in CONFIG_MAPPING_NAMES:
-                failures.append(
+                failures.append(  # noqa: PERF401
                     f"`{model_type}` appears in the mapping `{name}` but it is not defined in the keys of "
                     "`CONFIG_MAPPING_NAMES`."
                 )

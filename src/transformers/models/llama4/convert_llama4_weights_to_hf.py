@@ -422,7 +422,7 @@ def write_model(
                 # for experts, we need to split expert for offline quantization purpose and don't need to fuse
                 expert_lists = []
                 for k in current_parameter:
-                    expert_lists.append(
+                    expert_lists.append(  # noqa: PERF401
                         list(k.reshape(num_experts, -1, k.shape[-1]).unbind(0))
                     )  # [#expert * IN, OUT] -> #experts * [IN, OUT]
                 for i in range(num_experts):

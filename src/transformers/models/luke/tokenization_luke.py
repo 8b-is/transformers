@@ -338,7 +338,7 @@ class LukeTokenizer(TokenizersBackend):
         extra_tokens: list[AddedToken | str] = []
         for key in ("extra_special_tokens", "additional_special_tokens"):
             for token in kwargs.pop(key, []) or []:
-                extra_tokens.append(AddedToken(**token) if isinstance(token, dict) else token)
+                extra_tokens.append(AddedToken(**token) if isinstance(token, dict) else token)  # noqa: PERF401
 
         # Ensure LUKE entity tokens are present exactly once.
         seen = {str(token) for token in extra_tokens}

@@ -142,7 +142,7 @@ class ProphetNetTokenizationTest(TokenizerTesterMixin, unittest.TestCase):
 
         vocab = {}
         for i, token in enumerate(vocab_tokens):
-            vocab[token] = i
+            vocab[token] = i  # noqa: PERF403
         tokenizer = WordpieceTokenizer(vocab=vocab, unk_token="[UNK]")
 
         self.assertListEqual(tokenizer.tokenize(""), [])

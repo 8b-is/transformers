@@ -210,7 +210,7 @@ class TorchAoHfQuantizer(HfQuantizer):
             param_names = self._discover_quantized_param_names()
             converters = []
             for param_name in sorted(param_names):
-                converters.append(
+                converters.append(  # noqa: PERF401
                     WeightConverter(
                         source_patterns=[
                             f"_{param_name}_qdata",

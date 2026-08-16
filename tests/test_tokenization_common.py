@@ -177,7 +177,7 @@ def check_subword_sampling(
 
     tokens_list = []
     for _ in range(5):
-        tokens_list.append(tokenizer.tokenize(text))
+        tokens_list.append(tokenizer.tokenize(text))  # noqa: PERF401
 
     # the list of different pairs of tokens_list
     combinations = itertools.combinations(tokens_list, 2)

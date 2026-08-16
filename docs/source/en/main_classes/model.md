@@ -42,3 +42,7 @@ set this to `False`.
 ## Pushing to the Hub
 
 [[autodoc]] utils.PushToHubMixin
+
+## MeshRouterWrapper
+
+[[autodoc]] MeshRouterWrapper

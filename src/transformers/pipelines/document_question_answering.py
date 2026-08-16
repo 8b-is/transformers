@@ -188,7 +188,7 @@ def apply_tesseract(image: "Image.Image", lang: str | None, tesseract_config: st
     # finally, normalize the bounding boxes
     normalized_boxes = []
     for box in actual_boxes:
-        normalized_boxes.append(normalize_box(box, image_width, image_height))
+        normalized_boxes.append(normalize_box(box, image_width, image_height))  # noqa: PERF401
 
     if len(words) != len(normalized_boxes):
         raise ValueError("Not as many words as there are bounding boxes")

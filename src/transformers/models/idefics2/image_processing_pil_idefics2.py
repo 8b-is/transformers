@@ -82,7 +82,7 @@ def get_max_height_width(images_list: list[list["torch.Tensor|np.ndarray"]]) -> 
     image_sizes = []
     for images in images_list:
         for image in images:
-            image_sizes.append(image.shape[-2:])
+            image_sizes.append(image.shape[-2:])  # noqa: PERF401
 
     max_height = max(size[0] for size in image_sizes)
     max_width = max(size[1] for size in image_sizes)

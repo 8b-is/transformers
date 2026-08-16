@@ -147,10 +147,10 @@ class TatoebaConverter:
         a2_src_tags, a2_tgt_tags = [], []
         for tag in resolved_src_tags:
             if tag not in self.alpha3_to_alpha2:
-                a2_src_tags.append(tag)
+                a2_src_tags.append(tag)  # noqa: PERF401
         for tag in resolved_tgt_tags:
             if tag not in self.alpha3_to_alpha2:
-                a2_tgt_tags.append(tag)
+                a2_tgt_tags.append(tag)  # noqa: PERF401
 
         lang_tags = dedup(a2_src_tags + a2_tgt_tags)
         src_multilingual, tgt_multilingual = (len(a2_src_tags) > 1), (len(a2_tgt_tags) > 1)

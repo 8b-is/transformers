@@ -1320,7 +1320,7 @@ def _ensure_utils_availability_imports(imports: list[cst.CSTNode], needed: set[s
                 continue
             new_names = list(import_from.names)
             for name in to_add:
-                new_names.append(cst.ImportAlias(name=cst.Name(value=name)))
+                new_names.append(cst.ImportAlias(name=cst.Name(value=name)))  # noqa: PERF401
             new_import_from = import_from.with_changes(names=new_names)
             new_node = node.with_changes(body=[new_import_from])
             return imports[:i] + [new_node] + imports[i + 1 :]

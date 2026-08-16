@@ -186,9 +186,9 @@ def save_sharded_model(state_dict, output_path, max_shard_size_gb=5, num_layers=
     # Determine layer ordering
     layer_order = []
     for i in range(num_layers):
-        layer_order.append(f"layer_{i}")
+        layer_order.append(f"layer_{i}")  # noqa: PERF401
     for i in range(vision_num_layers):
-        layer_order.append(f"visual_layer_{i}")
+        layer_order.append(f"visual_layer_{i}")  # noqa: PERF401
     layer_order.append("others")
 
     # Calculate sizes and create shards by layer

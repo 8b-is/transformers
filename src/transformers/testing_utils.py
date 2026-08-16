@@ -2437,7 +2437,7 @@ def pytest_terminal_summary_main(tr, id):
     for replist in tr.stats.values():
         for rep in replist:
             if hasattr(rep, "duration"):
-                dlist.append(rep)
+                dlist.append(rep)  # noqa: PERF401
     if dlist:
         dlist.sort(key=lambda x: x.duration, reverse=True)
         with open(report_files["durations"], "w") as f:
@@ -3309,12 +3309,12 @@ def compare_pipeline_output_to_hub_spec(output, hub_spec):
     # Fields with a MISSING default are required and must be in the output
     for field in fields(hub_spec):
         if field.default is MISSING and field.name not in output:
-            missing_keys.append(field.name)
+            missing_keys.append(field.name)  # noqa: PERF401
 
     # All output keys must match either a required or optional field in the Hub spec
     for output_key in output:
         if output_key not in all_field_names:
-            unexpected_keys.append(output_key)
+            unexpected_keys.append(output_key)  # noqa: PERF401
 
     if missing_keys or unexpected_keys:
         error = ["Pipeline output does not match Hub spec!"]
@@ -4185,7 +4185,7 @@ def _format_py_obj(obj, indent=0, mode="", cache=None, prefix=""):
 
                     if not_fit_into_one_line:
                         for x in buf[:-1]:
-                            groups.append([x])
+                            groups.append([x])  # noqa: PERF401
                     else:
                         groups.append(buf[:-1])
 
@@ -4204,7 +4204,7 @@ def _format_py_obj(obj, indent=0, mode="", cache=None, prefix=""):
 
             if not_fit_into_one_line:
                 for x in buf:
-                    groups.append([x])
+                    groups.append([x])  # noqa: PERF401
             else:
                 groups.append(buf)
 

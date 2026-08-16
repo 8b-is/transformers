@@ -47,7 +47,7 @@ def prepare_video(num_frames, num_channels, width=10, height=10, return_tensors=
 
     video = []
     for frame_idx in range(num_frames):
-        video.append(np.random.randint(255, size=(width, height, num_channels), dtype=np.uint8))
+        video.append(np.random.randint(255, size=(width, height, num_channels), dtype=np.uint8))  # noqa: PERF401
 
     if return_tensors == "pil":
         # PIL expects the channel dimension as last dimension

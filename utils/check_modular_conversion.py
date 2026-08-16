@@ -235,7 +235,7 @@ if __name__ == "__main__":
             files_to_check = []
             for file_path in dependency_level_files:
                 if args.check_all or not guaranteed_no_diff(file_path, dependencies, models_in_diff):
-                    files_to_check.append(file_path)
+                    files_to_check.append(file_path)  # noqa: PERF401
 
             if not files_to_check:
                 continue

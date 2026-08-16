@@ -321,7 +321,7 @@ class SubWordJapaneseTokenizer:
                     result.append("<U2000U2BFF>")
                 else:
                     for i in wd.encode("utf-8"):
-                        result.append("<|byte%d|>" % i)
+                        result.append("<|byte%d|>" % i)  # noqa: PERF401
                 pos = end
         return result
 

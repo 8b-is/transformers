@@ -20,7 +20,6 @@
 import math
 
 import torch
-from torchvision.transforms.v2 import functional as tvF
 
 from ...image_processing_backends import TorchvisionBackend
 from ...image_processing_utils import BatchFeature
@@ -29,7 +28,15 @@ from ...processing_utils import ImagesKwargs, Unpack
 from ...utils import (
     TensorType,
     auto_docstring,
+    is_torchvision_available,
+    is_torchvision_v2_available,
 )
+
+
+if is_torchvision_v2_available():
+    from torchvision.transforms.v2 import functional as tvF
+elif is_torchvision_available():
+    from torchvision.transforms import functional as tvF
 
 
 class Gemma4UnifiedImageProcessorKwargs(ImagesKwargs, total=False):
@@ -41,22 +48,6 @@ class Gemma4UnifiedImageProcessorKwargs(ImagesKwargs, total=False):
         Must be one of {70, 140, 280, 560, 1120}.
     pooling_kernel_size (`int`, *optional*):
         Kernel size for merging teacher patches into model patches.
-    """
-
-    patch_size: int
-    max_soft_tokens: int
-    pooling_kernel_size: int
-
-
-class Gemma2ImageProcessorKwargs(ImagesKwargs, total=False):
-    """
-    patch_size (`int`, *optional*):
-        Size of each image patch in pixels.
-    max_soft_tokens (`int`, *optional*):
-        Maximum number of soft (vision) tokens per image.
-        Must be one of {70, 140, 280, 560, 1120}.
-    pooling_kernel_size (`int`, *optional*):
-        Spatial pooling kernel size applied after patchification.
     """
 
     patch_size: int
@@ -240,17 +231,17 @@ class Gemma4UnifiedImageProcessor(TorchvisionBackend):
     patch_size = 16
     max_soft_tokens = 280
     pooling_kernel_size = 3
-    valid_kwargs = Gemma2ImageProcessorKwargs
+    valid_kwargs = Gemma4UnifiedImageProcessorKwargs
     model_input_names = ["pixel_values", "image_position_ids", "num_soft_tokens_per_image"]
 
-    def __init__(self, **kwargs: Unpack[Gemma2ImageProcessorKwargs]):
+    def __init__(self, **kwargs: Unpack[Gemma4UnifiedImageProcessorKwargs]):
         super().__init__(**kwargs)
 
         if self.max_soft_tokens not in _SUPPORTED_SOFT_TOKENS:
             raise ValueError(f"`max_soft_tokens` must be one of {_SUPPORTED_SOFT_TOKENS}, got {self.max_soft_tokens}.")
 
     def _validate_preprocess_kwargs(self, **kwargs):
-        # Gemma2 uses aspect_ratio_preserving_resize driven by patch_size,
+        # Gemma4Unified uses aspect_ratio_preserving_resize driven by patch_size,
         # max_soft_tokens, and pooling_kernel_size — not the standard `size`
         # parameter. Temporarily disable do_resize so the base validation
         # doesn't require `size` to be set.
@@ -263,7 +254,7 @@ class Gemma4UnifiedImageProcessor(TorchvisionBackend):
         patch_size: int,
         max_patches: int,
         pooling_kernel_size: int,
-        resample: tvF.InterpolationMode,
+        resample: "tvF.InterpolationMode",
     ) -> torch.Tensor:
         height, width = image.shape[-2], image.shape[-1]
         target_height, target_width = get_aspect_ratio_preserving_size(
@@ -287,7 +278,7 @@ class Gemma4UnifiedImageProcessor(TorchvisionBackend):
     def preprocess(
         self,
         images: ImageInput,
-        **kwargs: Unpack[Gemma2ImageProcessorKwargs],
+        **kwargs: Unpack[Gemma4UnifiedImageProcessorKwargs],
     ) -> BatchFeature:
         return super().preprocess(images, **kwargs)
 

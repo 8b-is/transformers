@@ -77,7 +77,7 @@ def format_mrpc(data_dir, path_to_data):
     dev_ids = []
     with open(os.path.join(mrpc_dir, "dev_ids.tsv"), encoding="utf8") as ids_fh:
         for row in ids_fh:
-            dev_ids.append(row.strip().split("\t"))
+            dev_ids.append(row.strip().split("\t"))  # noqa: PERF401
 
     with (
         open(mrpc_train_file, encoding="utf8") as data_fh,

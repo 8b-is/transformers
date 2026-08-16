@@ -93,7 +93,7 @@ if TYPE_CHECKING and _has_neptune:
         except importlib.metadata.PackageNotFoundError:
             _has_neptune = False
 
-from datetime import UTC
+from datetime import UTC  # noqa: E402
 
 from .. import modelcard  # noqa: E402
 from ..trainer_callback import ProgressCallback, TrainerCallback  # noqa: E402

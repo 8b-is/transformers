@@ -20,6 +20,7 @@ from ..utils.quantization_config import (
     AqlmConfig,
     AutoRoundConfig,
     AwqConfig,
+    BitNetMlxQuantConfig,
     BitNetQuantConfig,
     BitsAndBytesConfig,
     CompressedTensorsConfig,
@@ -48,6 +49,7 @@ from .quantizer_aqlm import AqlmHfQuantizer
 from .quantizer_auto_round import AutoRoundQuantizer
 from .quantizer_awq import AwqQuantizer
 from .quantizer_bitnet import BitNetHfQuantizer
+from .quantizer_bitnet_mlx import BitNetMlxHfQuantizer
 from .quantizer_bnb_4bit import Bnb4BitHfQuantizer
 from .quantizer_bnb_8bit import Bnb8BitHfQuantizer
 from .quantizer_compressed_tensors import CompressedTensorsHfQuantizer
@@ -87,6 +89,7 @@ AUTO_QUANTIZER_MAPPING = {
     "fbgemm_fp8": FbgemmFp8HfQuantizer,
     "torchao": TorchAoHfQuantizer,
     "bitnet": BitNetHfQuantizer,
+    "bitnet_mlx": BitNetMlxHfQuantizer,
     "vptq": VptqHfQuantizer,
     "spqr": SpQRHfQuantizer,
     "fp8": FineGrainedFP8HfQuantizer,
@@ -118,6 +121,7 @@ AUTO_QUANTIZATION_CONFIG_MAPPING = {
     "higgs": HiggsConfig,
     "torchao": TorchAoConfig,
     "bitnet": BitNetQuantConfig,
+    "bitnet_mlx": BitNetMlxQuantConfig,
     "vptq": VptqConfig,
     "spqr": SpQRConfig,
     "fp8": FineGrainedFP8Config,

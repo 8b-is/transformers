@@ -163,7 +163,7 @@ class JetMoeParallelExperts(nn.Module):
         input_list = inputs.split(expert_size, dim=0)
         output_list = []
         for i in range(self.num_experts):
-            output_list.append(F.linear(input_list[i], self.weight[i]))
+            output_list.append(F.linear(input_list[i], self.weight[i]))  # noqa: PERF401
         results = torch.cat(output_list, dim=0)
         return results
 

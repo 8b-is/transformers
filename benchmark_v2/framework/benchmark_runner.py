@@ -469,7 +469,7 @@ class BenchmarkRunner:
                 with open(jsonl_path, "w") as f:
                     json_lines = []
                     for ex in ds:
-                        json_lines.append(json.dumps(ex, ensure_ascii=False))
+                        json_lines.append(json.dumps(ex, ensure_ascii=False))  # noqa: PERF401
                     f.write("\n".join(json_lines))
 
                 # NOTE: we expect the repository to already exist

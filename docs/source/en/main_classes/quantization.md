@@ -90,6 +90,10 @@ Learn how to quantize models in the [Quantization](../quantization/overview) gui
 
 [[autodoc]] BitNetQuantConfig
 
+## BitNetMlxQuantConfig
+
+[[autodoc]] BitNetMlxQuantConfig
+
 ## SpQRConfig
 
 [[autodoc]] SpQRConfig

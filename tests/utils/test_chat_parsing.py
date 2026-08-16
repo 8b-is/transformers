@@ -890,7 +890,7 @@ class ChatResponseTemplateParserTest(unittest.TestCase):
         flushed: list[str] = []
         for ch in parser.feed(plain):
             if ch["type"] == "region_chunk":
-                flushed.append(ch["text"])
+                flushed.append(ch["text"])  # noqa: PERF401
         # Plain text has zero prefix-overlap with any literal, so the parser
         # holds nothing back and streams everything immediately.
         self.assertEqual("".join(flushed), plain)

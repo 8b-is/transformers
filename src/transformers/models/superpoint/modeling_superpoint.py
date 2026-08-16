@@ -153,7 +153,7 @@ class SuperPointEncoder(nn.Module):
             SuperPointConvBlock(config, self.input_dim, config.encoder_hidden_sizes[0], add_pooling=True)
         )
         for i in range(1, len(config.encoder_hidden_sizes) - 1):
-            conv_blocks.append(
+            conv_blocks.append(  # noqa: PERF401
                 SuperPointConvBlock(
                     config, config.encoder_hidden_sizes[i - 1], config.encoder_hidden_sizes[i], add_pooling=True
                 )

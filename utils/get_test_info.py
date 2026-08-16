@@ -72,7 +72,7 @@ def get_tester_classes(test_file):
     test_module = get_test_module(test_file)
     for attr in dir(test_module):
         if attr.endswith("ModelTester"):
-            tester_classes.append(getattr(test_module, attr))
+            tester_classes.append(getattr(test_module, attr))  # noqa: PERF401
 
     # sort with class names
     return sorted(tester_classes, key=lambda x: x.__name__)

@@ -133,7 +133,7 @@ def wrap_init_to_accept_kwargs(cls: dataclass):
         additional_kwargs = {}
         for name, value in kwargs.items():
             if name not in dataclass_fields:
-                additional_kwargs[name] = value
+                additional_kwargs[name] = value  # noqa: PERF403
 
         self.__post_init__(**additional_kwargs)
 

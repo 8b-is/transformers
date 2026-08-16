@@ -183,7 +183,7 @@ class CustomDPRReaderTokenizerMixin:
         if return_attention_mask is not False:
             attention_mask = []
             for input_ids in encoded_inputs["input_ids"]:
-                attention_mask.append([int(input_id != self.pad_token_id) for input_id in input_ids])
+                attention_mask.append([int(input_id != self.pad_token_id) for input_id in input_ids])  # noqa: PERF401
             encoded_inputs["attention_mask"] = attention_mask
         return self.pad(encoded_inputs, padding=padding, max_length=max_length, return_tensors=return_tensors)
 

@@ -350,7 +350,7 @@ def clear_mps_memory_cache():
             torch.mps.empty_cache()
 
 
-def get_optimal_mac_device() -> "torch.device":
+def get_optimal_mac_device() -> "torch.device":  # noqa: F821
     """Returns optimal device on Apple Silicon Mac (mps when available, else cpu)."""
     import torch
 

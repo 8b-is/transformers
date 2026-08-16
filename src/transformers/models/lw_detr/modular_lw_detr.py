@@ -524,7 +524,7 @@ class LwDetrScaleProjector(nn.Module):
         intermediate_dims = [config.backbone_config.hidden_size] * len(config.backbone_config.out_indices)
         sampling_layers = []
         for channel_size in intermediate_dims:
-            sampling_layers.append(LwDetrSamplingLayer(config, channel_size, scale))
+            sampling_layers.append(LwDetrSamplingLayer(config, channel_size, scale))  # noqa: PERF401
         self.sampling_layers = nn.ModuleList(sampling_layers)
 
         intermediate_dim = intermediate_dims[-1]
@@ -561,7 +561,7 @@ class LwDetrMultiScaleProjector(nn.Module):
     def forward(self, hidden_states: tuple[torch.Tensor]) -> list[torch.Tensor]:
         output_hidden_states = []
         for scale_layer in self.scale_layers:
-            output_hidden_states.append(scale_layer(hidden_states))
+            output_hidden_states.append(scale_layer(hidden_states))  # noqa: PERF401
         return output_hidden_states
 
 

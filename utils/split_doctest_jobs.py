@@ -72,7 +72,7 @@ if __name__ == "__main__":
     for file_dir in raw_test_collection_map:
         if file_dir in ["docs/source/en/model_doc", "docs/source/en/tasks"]:
             for file in raw_test_collection_map[file_dir]:
-                refined_test_collection_map[file] = file
+                refined_test_collection_map[file] = file  # noqa: PERF403
         else:
             refined_test_collection_map[file_dir] = " ".join(sorted(raw_test_collection_map[file_dir]))
 

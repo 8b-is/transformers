@@ -915,7 +915,7 @@ def find_matching_model_files(check_all: bool = False):
     matching_files = []
     for file_path in potential_files:
         if os.path.isfile(file_path):
-            matching_files.append(file_path)
+            matching_files.append(file_path)  # noqa: PERF401
     if not check_all:
         # intersect with module_diff_files
         matching_files = sorted([file for file in matching_files if file in module_diff_files])
@@ -1247,7 +1247,7 @@ def generate_new_docstring_for_signature(
                 and arg not in get_args_doc_from_source(source_args_doc)
                 and arg not in custom_args_dict
             ):
-                docstring_args_ro_remove.append(arg)
+                docstring_args_ro_remove.append(arg)  # noqa: PERF401
 
     args_docstring_dict = {
         arg: args_docstring_dict[arg] for arg in args_docstring_dict if arg not in docstring_args_ro_remove
@@ -1934,11 +1934,11 @@ def update_file_with_new_docstrings(
 
         # Collect warnings
         for arg in missing_docstring_args:
-            missing_docstring_args_warnings.append(f"    - {arg} line {def_line_0}")
+            missing_docstring_args_warnings.append(f"    - {arg} line {def_line_0}")  # noqa: PERF401
         for arg in fill_docstring_args:
-            fill_docstring_args_warnings.append(f"    - {arg} line {def_line_0}")
+            fill_docstring_args_warnings.append(f"    - {arg} line {def_line_0}")  # noqa: PERF401
         for arg in docstring_args_ro_remove:
-            docstring_args_ro_remove_warnings.append(f"    - {arg} line {def_line_0}")
+            docstring_args_ro_remove_warnings.append(f"    - {arg} line {def_line_0}")  # noqa: PERF401
 
         # Add lines from current def through signature
         content_base_file_new_lines += lines[def_line_0:sig_line_end]

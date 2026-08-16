@@ -494,7 +494,7 @@ class GGUFLlamaConverter(LlamaConverter):
             special_tokens_idx = np.where(np.array(self.proto.token_type) == 3)[0]
 
             for idx in special_tokens_idx:
-                special_tokens.append(AddedToken(self.proto.tokens[idx], normalized=False, special=True))
+                special_tokens.append(AddedToken(self.proto.tokens[idx], normalized=False, special=True))  # noqa: PERF401
 
         if len(special_tokens) != 0:
             tokenizer.add_special_tokens(special_tokens)

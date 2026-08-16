@@ -95,7 +95,7 @@ def create_rename_keys(config):
     for level in range(3):
         rename_keys.append((f"backbone.conv1.conv1_{level+1}.conv.weight", f"model.backbone.model.embedder.embedder.{level}.convolution.weight"))
         for last in last_key:
-            rename_keys.append((f"backbone.conv1.conv1_{level+1}.norm.{last}", f"model.backbone.model.embedder.embedder.{level}.normalization.{last}"))
+            rename_keys.append((f"backbone.conv1.conv1_{level+1}.norm.{last}", f"model.backbone.model.embedder.embedder.{level}.normalization.{last}"))  # noqa: PERF401
 
     for stage_idx in range(len(config.backbone_config.depths)):
         for layer_idx in range(config.backbone_config.depths[stage_idx]):
@@ -109,7 +109,7 @@ def create_rename_keys(config):
                         )
                     )
                     for last in last_key:
-                        rename_keys.append(
+                        rename_keys.append(  # noqa: PERF401
                             (
                                 f"backbone.res_layers.{stage_idx}.blocks.0.short.norm.{last}",
                                 f"model.backbone.model.encoder.stages.{stage_idx}.layers.0.shortcut.normalization.{last}",
@@ -123,7 +123,7 @@ def create_rename_keys(config):
                         )
                     )
                     for last in last_key:
-                        rename_keys.append(
+                        rename_keys.append(  # noqa: PERF401
                             (
                                 f"backbone.res_layers.{stage_idx}.blocks.0.short.conv.norm.{last}",
                                 f"model.backbone.model.encoder.stages.{stage_idx}.layers.0.shortcut.1.normalization.{last}",
@@ -137,7 +137,7 @@ def create_rename_keys(config):
                 )
             )
             for last in last_key:
-                rename_keys.append((
+                rename_keys.append((  # noqa: PERF401
                     f"backbone.res_layers.{stage_idx}.blocks.{layer_idx}.branch2a.norm.{last}",
                     f"model.backbone.model.encoder.stages.{stage_idx}.layers.{layer_idx}.layer.0.normalization.{last}",
                     ))
@@ -149,7 +149,7 @@ def create_rename_keys(config):
                 )
             )
             for last in last_key:
-                rename_keys.append((
+                rename_keys.append((  # noqa: PERF401
                     f"backbone.res_layers.{stage_idx}.blocks.{layer_idx}.branch2b.norm.{last}",
                     f"model.backbone.model.encoder.stages.{stage_idx}.layers.{layer_idx}.layer.1.normalization.{last}",
                     ))
@@ -163,7 +163,7 @@ def create_rename_keys(config):
                     )
                 )
                 for last in last_key:
-                    rename_keys.append((
+                    rename_keys.append((  # noqa: PERF401
                         f"backbone.res_layers.{stage_idx}.blocks.{layer_idx}.branch2c.norm.{last}",
                         f"model.backbone.model.encoder.stages.{stage_idx}.layers.{layer_idx}.layer.2.normalization.{last}",
                         ))
@@ -235,7 +235,7 @@ def create_rename_keys(config):
     for j in range(0, 3):
         rename_keys.append((f"encoder.input_proj.{j}.0.weight", f"model.encoder_input_proj.{j}.0.weight"))
         for last in last_key:
-            rename_keys.append((f"encoder.input_proj.{j}.1.{last}", f"model.encoder_input_proj.{j}.1.{last}"))
+            rename_keys.append((f"encoder.input_proj.{j}.1.{last}", f"model.encoder_input_proj.{j}.1.{last}"))  # noqa: PERF401
 
     block_levels = 3 if config.backbone_config.layer_type != "basic" else 4
 
@@ -246,7 +246,7 @@ def create_rename_keys(config):
                 (f"encoder.fpn_blocks.{i}.conv{j}.conv.weight", f"model.encoder.fpn_blocks.{i}.conv{j}.conv.weight")
             )
             for last in last_key:
-                rename_keys.append(
+                rename_keys.append(  # noqa: PERF401
                     (
                         f"encoder.fpn_blocks.{i}.conv{j}.norm.{last}",
                         f"model.encoder.fpn_blocks.{i}.conv{j}.norm.{last}",
@@ -255,7 +255,7 @@ def create_rename_keys(config):
 
         rename_keys.append((f"encoder.lateral_convs.{i}.conv.weight", f"model.encoder.lateral_convs.{i}.conv.weight"))
         for last in last_key:
-            rename_keys.append(
+            rename_keys.append(  # noqa: PERF401
                 (f"encoder.lateral_convs.{i}.norm.{last}", f"model.encoder.lateral_convs.{i}.norm.{last}")
             )
 
@@ -268,7 +268,7 @@ def create_rename_keys(config):
                     )
                 )
                 for last in last_key:
-                    rename_keys.append(
+                    rename_keys.append(  # noqa: PERF401
                         (
                             f"encoder.fpn_blocks.{i}.bottlenecks.{j}.conv{k}.norm.{last}",
                             f"model.encoder.fpn_blocks.{i}.bottlenecks.{j}.conv{k}.norm.{last}",
@@ -280,7 +280,7 @@ def create_rename_keys(config):
                 (f"encoder.pan_blocks.{i}.conv{j}.conv.weight", f"model.encoder.pan_blocks.{i}.conv{j}.conv.weight")
             )
             for last in last_key:
-                rename_keys.append(
+                rename_keys.append(  # noqa: PERF401
                     (
                         f"encoder.pan_blocks.{i}.conv{j}.norm.{last}",
                         f"model.encoder.pan_blocks.{i}.conv{j}.norm.{last}",
@@ -296,7 +296,7 @@ def create_rename_keys(config):
                     )
                 )
                 for last in last_key:
-                    rename_keys.append(
+                    rename_keys.append(  # noqa: PERF401
                         (
                             f"encoder.pan_blocks.{i}.bottlenecks.{j}.conv{k}.norm.{last}",
                             f"model.encoder.pan_blocks.{i}.bottlenecks.{j}.conv{k}.norm.{last}",
@@ -307,7 +307,7 @@ def create_rename_keys(config):
             (f"encoder.downsample_convs.{i}.conv.weight", f"model.encoder.downsample_convs.{i}.conv.weight")
         )
         for last in last_key:
-            rename_keys.append(
+            rename_keys.append(  # noqa: PERF401
                 (f"encoder.downsample_convs.{i}.norm.{last}", f"model.encoder.downsample_convs.{i}.norm.{last}")
             )
 
@@ -456,7 +456,7 @@ def create_rename_keys(config):
             )
         )
         for last in last_key:
-            rename_keys.append(
+            rename_keys.append(  # noqa: PERF401
                 (
                     f"decoder.input_proj.{i}.norm.{last}",
                     f"model.decoder_input_proj.{i}.1.{last}",

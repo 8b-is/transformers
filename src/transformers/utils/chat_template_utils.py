@@ -411,7 +411,7 @@ def _render_with_assistant_indices(
             add_generation_prompt=add_generation_prompt,
             **template_kwargs,
         ):
-            rendered_blocks.append(block)
+            rendered_blocks.append(block)  # noqa: PERF402
         rendered_chat = "".join(rendered_blocks)
     return rendered_chat, generation_indices
 

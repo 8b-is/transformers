@@ -321,7 +321,7 @@ if __name__ == "__main__":
     # Generate Python version classifiers dynamically
     python_classifiers = ["Programming Language :: Python :: 3"]
     for minor in range(min_version, max_version + 1):
-        python_classifiers.append(f"Programming Language :: Python :: 3.{minor}")
+        python_classifiers.append(f"Programming Language :: Python :: 3.{minor}")  # noqa: PERF401
 
     setup(
         name=os.environ.get("TRANSFORMERS_PACKAGE_NAME", "transformers-ultra"),

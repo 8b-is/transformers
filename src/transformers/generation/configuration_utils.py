@@ -405,6 +405,8 @@ class GenerationConfig(PushToHubMixin):
         # Parameters that control the cache
         self.use_cache = kwargs.pop("use_cache", None)
         self.cache_implementation = kwargs.pop("cache_implementation", None)
+        if self.cache_implementation == "dynamic_full":
+            self.cache_implementation = "dynamic"
         self.cache_config = kwargs.pop("cache_config", None)
         self.max_cache_len = kwargs.pop("max_cache_len", None)
 
@@ -1164,7 +1166,7 @@ class GenerationConfig(PushToHubMixin):
         # only serialize values that differ from the default config
         for key, value in config_dict.items():
             if key not in default_config_dict or key == "transformers_version" or value != default_config_dict[key]:
-                serializable_config_dict[key] = value
+                serializable_config_dict[key] = value  # noqa: PERF403
 
         self.dict_dtype_to_str(serializable_config_dict)
         return serializable_config_dict
@@ -1330,6 +1332,8 @@ class GenerationConfig(PushToHubMixin):
         """
         to_remove = []
         for key, value in kwargs.items():
+            if key == "cache_implementation" and value == "dynamic_full":
+                value = "dynamic"
             if allow_custom_entries and not hasattr(self, key):
                 setattr(self, key, value)
                 to_remove.append(key)

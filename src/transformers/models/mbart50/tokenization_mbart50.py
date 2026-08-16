@@ -131,7 +131,7 @@ class MBart50Tokenizer(TokenizersBackend):
 
                 # Add language codes
                 for lang_code in FAIRSEQ_LANGUAGE_CODES:
-                    vocab_list.append((str(lang_code), 0.0))
+                    vocab_list.append((str(lang_code), 0.0))  # noqa: PERF401
 
                 # Add mask token
                 vocab_list.append((str(mask_token), 0.0))

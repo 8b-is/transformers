@@ -127,7 +127,7 @@ class Int8SymmetricConfig(QuantizationConfigMixin):
         serializable_config_dict = {}
         for key, value in config_dict.items():
             if value != default_config_dict[key]:
-                serializable_config_dict[key] = value
+                serializable_config_dict[key] = value  # noqa: PERF403
 
         return serializable_config_dict
 
@@ -207,7 +207,7 @@ class Int8SymmetricQuantizer(HfQuantizer):
                         and not missing.endswith(".weight")
                         and not missing.endswith(".bias")
                     ):
-                        not_missing_keys.append(missing)
+                        not_missing_keys.append(missing)  # noqa: PERF401
         return [k for k in missing_keys if k not in not_missing_keys]
 
     def _process_model_after_weight_loading(self, model, **kwargs):

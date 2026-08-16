@@ -163,7 +163,7 @@ class TapasModelTester:
 
         token_type_ids = []
         for type_vocab_size in self.type_vocab_sizes:
-            token_type_ids.append(ids_tensor(shape=[self.batch_size, self.seq_length], vocab_size=type_vocab_size))
+            token_type_ids.append(ids_tensor(shape=[self.batch_size, self.seq_length], vocab_size=type_vocab_size))  # noqa: PERF401
         token_type_ids = torch.stack(token_type_ids, dim=2).to(torch_device)
 
         sequence_labels = None

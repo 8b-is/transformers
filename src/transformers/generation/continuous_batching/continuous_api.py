@@ -651,7 +651,7 @@ class ContinuousBatchingManager:
                     major, _ = torch.cuda.get_device_capability(device_idx)
                     if major < 8:  # Flash attention requires Ampere (SM 8.0) or newer
                         can_run_flash = False
-                except Exception:
+                except Exception:  # noqa: S110
                     pass
 
             if can_run_flash:

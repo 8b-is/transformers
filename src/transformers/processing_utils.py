@@ -2148,7 +2148,7 @@ class ProcessorMixin(PushToHubMixin):
                     # Audio models do not accept nested list of audios (yet!) so we construct a flat input audio list
                     if not load_audio_from_video:
                         for fname in audio_fnames:
-                            batch_audios.append(
+                            batch_audios.append(  # noqa: PERF401
                                 load_audio(fname, sampling_rate=sampling_rate, backend=load_audio_backend)
                             )
                     else:

@@ -285,7 +285,7 @@ def _patch_split(original):
             splits = []
             total = input.size(dim)
             for i in range(0, total, split_size_or_sections):
-                splits.append(input.narrow(dim, i, min(split_size_or_sections, total - i)))
+                splits.append(input.narrow(dim, i, min(split_size_or_sections, total - i)))  # noqa: PERF401
             return tuple(splits)
         elif isinstance(split_size_or_sections, torch.SymInt):
             # Dynamic split size: `range(0, total, sym_int)` needs a concrete step, so

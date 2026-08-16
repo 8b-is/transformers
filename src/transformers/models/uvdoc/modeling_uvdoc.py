@@ -301,7 +301,7 @@ class UVDocBackbone(BackboneMixin, UVDocPreTrainedModel):
 
         num_features = [config.resnet_head[-1][-1]]
         for stage in config.stage_configs:
-            num_features.append(stage[0][1])
+            num_features.append(stage[0][1])  # noqa: PERF401
         self.num_features = num_features
 
         self.resnet = UVDocResNet(config)

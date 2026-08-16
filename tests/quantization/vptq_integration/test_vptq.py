@@ -153,7 +153,7 @@ class VptqTest(unittest.TestCase):
         for name in names:
             shared_layer_config[name] = value
         for i in range(24):
-            modules_to_not_convert.append(f"model.decoder.layers.{i}.fc1")
+            modules_to_not_convert.append(f"model.decoder.layers.{i}.fc1")  # noqa: PERF401
         layer_configs = {}
         layer_configs["model.decoder.project_out"] = value
         layer_configs["model.decoder.project_in"] = value

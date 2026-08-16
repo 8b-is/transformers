@@ -89,7 +89,7 @@ def from_proteinnet_string(proteinnet_str: str) -> Protein:
         elif g[0] == "[TERTIARY]":
             tertiary: list[list[float]] = []
             for axis in range(3):
-                tertiary.append(list(map(float, g[1][axis].split())))
+                tertiary.append(list(map(float, g[1][axis].split())))  # noqa: PERF401
             tertiary_np = np.array(tertiary)
             atom_positions = np.zeros((len(tertiary[0]) // 3, residue_constants.atom_type_num, 3)).astype(np.float32)
             for i, atom in enumerate(atoms):

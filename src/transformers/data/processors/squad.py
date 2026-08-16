@@ -492,7 +492,7 @@ class SquadProcessor(DataProcessor):
 
         examples = []
         for tensor_dict in tqdm(dataset):
-            examples.append(self._get_example_from_tensor_dict(tensor_dict, evaluate=evaluate))
+            examples.append(self._get_example_from_tensor_dict(tensor_dict, evaluate=evaluate))  # noqa: PERF401
 
         return examples
 

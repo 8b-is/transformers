@@ -329,7 +329,7 @@ class PvtEncoder(nn.Module):
         embeddings = []
 
         for i in range(config.num_encoder_blocks):
-            embeddings.append(
+            embeddings.append(  # noqa: PERF401
                 PvtPatchEmbeddings(
                     config=config,
                     image_size=config.image_size if i == 0 else self.config.image_size // (2 ** (i + 1)),
@@ -351,7 +351,7 @@ class PvtEncoder(nn.Module):
             if i != 0:
                 cur += config.depths[i - 1]
             for j in range(config.depths[i]):
-                layers.append(
+                layers.append(  # noqa: PERF401
                     PvtLayer(
                         config=config,
                         hidden_size=config.hidden_sizes[i],

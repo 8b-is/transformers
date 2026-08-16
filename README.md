@@ -50,6 +50,8 @@ What a weird world. But open source belongs to no single gatekeeper. We didn't c
 
 #### 🛠️ Hardened Bug Fixes & Security Patches Baked Directly Into `8b-is/transformers`:
 
+- **🕸️ Mesh (Network-Level Router) Top-Level Wrapper**:
+  - Implements a seamless `MeshRouterWrapper` that dispatches token inputs across multiple instantiated HuggingFace experts directly inside the `GenerationMixin` core loop, allowing Mixture-of-Experts inference over discrete, standalone checkpoints.
 - **🛡️ Chat Template Prompt Injection Defense ([#47822](https://github.com/huggingface/transformers/issues/47822))**:
   - Neutralizes turn delimiter injection attacks (`<|im_start|>`, `<turn|>`, `[INST]`) in user messages via `escape_chat_special_tokens` with zero-width separator protection.
 - **🏷️ Special Tokens Non-Destructive Merge ([#47838](https://github.com/huggingface/transformers/issues/47838))**:

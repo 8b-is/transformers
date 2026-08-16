@@ -14,13 +14,18 @@
 import math
 
 import torch
-from torchvision.transforms.v2 import functional as tvF
 
 from ...image_processing_backends import TorchvisionBackend
 from ...image_processing_utils import BatchFeature
 from ...image_utils import ImageInput, PILImageResampling
 from ...processing_utils import ImagesKwargs, Unpack
-from ...utils import TensorType, auto_docstring, logging
+from ...utils import TensorType, auto_docstring, is_torchvision_available, is_torchvision_v2_available, logging
+
+
+if is_torchvision_v2_available():
+    from torchvision.transforms.v2 import functional as tvF
+elif is_torchvision_available():
+    from torchvision.transforms import functional as tvF
 
 
 logger = logging.get_logger(__name__)
@@ -169,7 +174,7 @@ class Gemma4ImageProcessor(TorchvisionBackend):
         patch_size: int,
         max_patches: int,
         pooling_kernel_size: int,
-        resample: tvF.InterpolationMode,
+        resample: "tvF.InterpolationMode",
     ) -> torch.Tensor:
         height, width = image.shape[-2], image.shape[-1]
         target_height, target_width = get_aspect_ratio_preserving_size(

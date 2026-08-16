@@ -279,7 +279,7 @@ def get_config_by_level(level: int) -> list[BenchmarkConfig]:
                 compile_kwargs = {"mode": cm} if cm is not None else None
                 for kernelize_on in {False, KERNELIZATION_AVAILABLE}:
                     for cb_on in [False, True]:
-                        configs.append(
+                        configs.append(  # noqa: PERF401
                             BenchmarkConfig(
                                 attn_implementation=attn_implementation,
                                 compile_kwargs=compile_kwargs,

@@ -104,20 +104,21 @@ class MuseGlimmerRMSNorm(nn.Module):
     def __init__(self, dim: int | None = None, eps: float = 1e-6, with_scale: bool = True):
         super().__init__()
         self.eps = eps
-        self.weight = nn.Parameter(torch.zeros(dim))
+        self.with_scale = with_scale
 
-    def _norm(self, x):
-        return x * torch.rsqrt(x.pow(2).mean(-1, keepdim=True) + self.eps)
+        if self.with_scale:
+            self.weight = nn.Parameter(torch.ones(dim), requires_grad=True)
 
-    def forward(self, x):
-        output = self._norm(x.float())
-        # Llama does x.to(float16) * w whilst MuseGlimmer is (x * w).to(float16)
-        # See https://github.com/huggingface/transformers/pull/29402
-        output = output * (1.0 + self.weight.float())
-        return output.type_as(x)
+    def _norm(self, hidden_states: torch.Tensor):
+        mean_squared = hidden_states.pow(2).mean(-1, keepdim=True) + self.eps
+        # Use torch.pow() (over torch.sqrt() or torch.rsqrt()) to address compiler differences between Torch and JAX
+        return hidden_states * torch.pow(mean_squared, -0.5)
 
-    def extra_repr(self):
-        return f"{tuple(self.weight.shape)}, eps={self.eps}"
+    def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:
+        normed_output = self._norm(hidden_states.float())
+        if self.with_scale:
+            normed_output = normed_output * self.weight.float()
+        return normed_output.type_as(hidden_states)
 
 
 class MuseGlimmerTextCenteredRMSNorm(nn.Module):

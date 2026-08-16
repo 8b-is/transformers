@@ -1684,7 +1684,7 @@ class TestMultimodalLM(unittest.TestCase):
         chunks = []
         for chunk in stream:
             if chunk.choices[0].delta.content:
-                chunks.append(chunk.choices[0].delta.content)
+                chunks.append(chunk.choices[0].delta.content)  # noqa: PERF401
         self._assert_audio_transcription("".join(chunks))
 
     @require_torchcodec
@@ -1725,7 +1725,7 @@ class TestMultimodalLM(unittest.TestCase):
         chunks = []
         for chunk in stream:
             if chunk.choices[0].delta.content:
-                chunks.append(chunk.choices[0].delta.content)
+                chunks.append(chunk.choices[0].delta.content)  # noqa: PERF401
         self._assert_video_description("".join(chunks))
 
     def test_responses_with_audio(self):
@@ -2663,7 +2663,7 @@ class TestTranscription(unittest.TestCase):
             chunks = []
             for line in resp.iter_lines():
                 if line and line.startswith("data: "):
-                    chunks.append(line[len("data: ") :])
+                    chunks.append(line[len("data: ") :])  # noqa: PERF401
 
         self.assertGreater(len(chunks), 0, "No streaming chunks received")
         full_text = "".join(chunks)

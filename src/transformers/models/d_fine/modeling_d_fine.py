@@ -1744,7 +1744,7 @@ class DFineModel(DFinePreTrainedModel):
             _len_sources = len(sources)
             sources.append(self.decoder_input_proj[_len_sources](encoder_outputs.last_hidden_state[-1]))
             for i in range(_len_sources + 1, self.config.num_feature_levels):
-                sources.append(self.decoder_input_proj[i](encoder_outputs.last_hidden_state[-1]))
+                sources.append(self.decoder_input_proj[i](encoder_outputs.last_hidden_state[-1]))  # noqa: PERF401
 
         # Prepare encoder inputs (by flattening)
         source_flatten = []

@@ -634,7 +634,7 @@ class DFineModelTest(ModelTesterMixin, PipelineTesterMixin, unittest.TestCase):
         ).to(torch_device)
         labels = []
         for _ in range(self.model_tester.batch_size):
-            labels.append(
+            labels.append(  # noqa: PERF401
                 {
                     "class_labels": torch.randint(0, self.model_tester.num_labels, (self.model_tester.n_targets,)).to(
                         torch_device

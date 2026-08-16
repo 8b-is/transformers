@@ -124,7 +124,7 @@ def create_rename_keys(config):
 
     # scratch convolutions
     for i in range(4):
-        rename_keys.append((f"scratch.layer{i+1}_rn.weight", f"neck.convs.{i}.weight"))
+        rename_keys.append((f"scratch.layer{i+1}_rn.weight", f"neck.convs.{i}.weight"))  # noqa: PERF401
 
     # head
     for i in range(0, 5, 2):

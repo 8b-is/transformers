@@ -279,7 +279,7 @@ class BambaModel(BambaPreTrainedModel):
         self.embed_tokens = nn.Embedding(config.vocab_size, config.hidden_size, self.padding_idx)
         decoder_layers = []
         for i in range(config.num_hidden_layers):
-            decoder_layers.append(BambaDecoderLayer(config, layer_idx=i, layer_type=config.layers_block_type[i]))
+            decoder_layers.append(BambaDecoderLayer(config, layer_idx=i, layer_type=config.layers_block_type[i]))  # noqa: PERF401
         self.layers = nn.ModuleList(decoder_layers)
 
         self._attn_implementation = config._attn_implementation

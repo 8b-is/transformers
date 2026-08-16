@@ -572,7 +572,7 @@ class Message:
 
             for block in self.model_failures:
                 if block["text"]["text"]:
-                    blocks.append(block)
+                    blocks.append(block)  # noqa: PERF401
 
         if self.n_additional_failures > 0:
             blocks.append(self.additional_failures)

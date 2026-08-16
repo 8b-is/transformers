@@ -323,11 +323,9 @@ class RepetitionPenaltyLogitsProcessor(LogitsProcessor):
     repetition, use `penalty` values between 0.0 and 1.0, where a lower value rewards more strongly.
 
     Args:
-        penalty (`float`):
-            The parameter for repetition penalty. 1.0 means no penalty. Above 1.0 penalizes previously generated
-            tokens. Between 0.0 and 1.0 rewards previously generated tokens.
-        prompt_ignore_length (`int`, *optional*):
-            The original input ids sequence length, which if provided, will not be used in the penalty calculation.
+            penalty (`float`): <fill_docstring>
+            prompt_ignore_length (`int | None`, *optional*): <fill_docstring>
+            normalize (`bool`, *optional*, defaults to `False`): <fill_docstring>
 
     Examples:
 
@@ -1338,7 +1336,7 @@ class SequenceBiasLogitsProcessor(LogitsProcessor):
         for sequence_ids in self.sequence_bias:
             for token_id in sequence_ids:
                 if token_id >= vocabulary_size:
-                    invalid_biases.append(token_id)
+                    invalid_biases.append(token_id)  # noqa: PERF401
         if len(invalid_biases) > 0:
             raise ValueError(
                 f"The model vocabulary size is {vocabulary_size}, but the following tokens were being biased: "

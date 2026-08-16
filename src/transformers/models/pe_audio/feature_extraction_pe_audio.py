@@ -76,7 +76,7 @@ class PeAudioFeatureExtractor(SequenceFeatureExtractor):
         if isinstance(raw_audio, (list, tuple)) and isinstance(raw_audio[0], str):
             loaded = []
             for audio_file in raw_audio:
-                loaded.append(load_audio(audio_file, self.sampling_rate))
+                loaded.append(load_audio(audio_file, self.sampling_rate))  # noqa: PERF401
             raw_audio = loaded
             from_file = True
 

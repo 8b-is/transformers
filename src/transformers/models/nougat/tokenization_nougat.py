@@ -226,7 +226,7 @@ def remove_numbers(lines):
         return _clean(lines)
     out = []
     for l in lines:
-        out.append(_clean(l))
+        out.append(_clean(l))  # noqa: PERF401
     return out
 
 
@@ -480,7 +480,7 @@ class NougatTokenizer(TokenizersBackend):
         slices = get_slices(lines, clean_lines)
         to_delete = []
         for slice in slices:
-            to_delete.append(remove_slice_from_lines(lines, clean_lines, slice))
+            to_delete.append(remove_slice_from_lines(lines, clean_lines, slice))  # noqa: PERF401
         for to_delete in reversed(to_delete):
             text = text.replace(to_delete, "\n\n[MISSING_PAGE_POST]\n\n")
         text = re.sub(

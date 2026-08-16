@@ -630,7 +630,7 @@ class Pop2PianoModelIntegrationTests(unittest.TestCase):
             self.assertEqual(len(pretty_midi_object.instruments[0].notes), 59)
             predicted_timings = []
             for i in pretty_midi_object.instruments[0].notes:
-                predicted_timings.append(i.start)
+                predicted_timings.append(i.start)  # noqa: PERF401
 
             # Checking note start timings(first 6)
             EXPECTED_START_TIMINGS = [

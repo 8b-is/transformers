@@ -80,7 +80,7 @@ def group_layers_by_attn_type(config: PreTrainedConfig) -> tuple[list[list[int]]
     layer_groups = []
     for layer_type, indices in layer_counts.items():
         for i in range(0, len(indices), group_size):
-            layer_groups.append(indices[i : i + group_size])
+            layer_groups.append(indices[i : i + group_size])  # noqa: PERF401
     # And note the layer types
     group_types = [layer_types[lg[0]] for lg in layer_groups]
     return layer_groups, group_types

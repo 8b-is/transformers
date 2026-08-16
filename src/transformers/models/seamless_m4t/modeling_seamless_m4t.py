@@ -1557,7 +1557,7 @@ class SeamlessM4TEncoder(SeamlessM4TPreTrainedModel):
 
         layers = []
         for _ in range(config.encoder_layers):
-            layers.append(
+            layers.append(  # noqa: PERF401
                 SeamlessM4TEncoderLayer(
                     config,
                     encoder_attention_heads=config.encoder_attention_heads,
@@ -1737,7 +1737,7 @@ class SeamlessM4TDecoder(SeamlessM4TPreTrainedModel):
 
         layers = []
         for i in range(config.decoder_layers):
-            layers.append(
+            layers.append(  # noqa: PERF401
                 SeamlessM4TDecoderLayer(
                     config,
                     decoder_attention_heads=config.decoder_attention_heads,

@@ -1722,13 +1722,13 @@ class Deimv2Model(Deimv2PreTrainedModel):
         decoder_input_proj = []
         in_channels = config.decoder_in_channels[-1]
         for _ in range(num_backbone_outs):
-            decoder_input_proj.append(
+            decoder_input_proj.append(  # noqa: PERF401
                 nn.Identity()
                 if config.hidden_size == config.decoder_in_channels[-1]
                 else Deimv2ConvNormLayer(config, in_channels, config.d_model, 1, 1)
             )
         for _ in range(config.num_feature_levels - num_backbone_outs):
-            decoder_input_proj.append(
+            decoder_input_proj.append(  # noqa: PERF401
                 nn.Identity()
                 if config.hidden_size == config.decoder_in_channels[-1]
                 else Deimv2ConvNormLayer(config, in_channels, config.d_model, 3, 2)
@@ -1862,7 +1862,7 @@ class Deimv2Model(Deimv2PreTrainedModel):
         if self.config.num_feature_levels > len(sources):
             sources.append(self.decoder_input_proj[len(sources)](encoder_outputs.feature_maps[-1]))
             for i in range(len(sources), self.config.num_feature_levels):
-                sources.append(self.decoder_input_proj[i](encoder_outputs.feature_maps[-1]))
+                sources.append(self.decoder_input_proj[i](encoder_outputs.feature_maps[-1]))  # noqa: PERF401
 
         # Prepare encoder inputs (by flattening)
         source_flatten = []

@@ -106,7 +106,7 @@ class LayoutXLMProcessor(ProcessorMixin):
         # in case there's an overflow, ensure each `input_ids` sample is mapped to its corresponding image
         images_with_overflow = []
         for sample_idx in overflow_to_sample_mapping:
-            images_with_overflow.append(images[sample_idx])
+            images_with_overflow.append(images[sample_idx])  # noqa: PERF401
 
         if len(images_with_overflow) != len(overflow_to_sample_mapping):
             raise ValueError(
