@@ -123,3 +123,26 @@ class UltraUpstreamFixesTest(unittest.TestCase):
         input_features = torch.randn(1, cfg.num_mel_bins, 200, dtype=torch.float32)
         out = encoder(input_features)
         self.assertEqual(out.last_hidden_state.dtype, torch.float16)
+
+    @pytest.mark.skipif(not is_torch_available(), reason="PyTorch required")
+    def test_distilbert_tied_weights_mapping(self):
+        """Fix #47979: DistilBertForMaskedLM declares explicit canonical tied weights."""
+        from transformers.models.distilbert.configuration_distilbert import DistilBertConfig
+        from transformers.models.distilbert.modeling_distilbert import DistilBertForMaskedLM
+
+        cfg = DistilBertConfig(vocab_size=100, dim=32, n_layers=1, n_heads=2, hidden_dim=64)
+        model = DistilBertForMaskedLM(cfg)
+        self.assertIn("vocab_projector.weight", model._tied_weights_keys)
+        self.assertEqual(
+            model._tied_weights_keys["vocab_projector.weight"],
+            "distilbert.embeddings.word_embeddings.weight"
+        )
+        self.assertIs(model.vocab_projector.weight, model.distilbert.embeddings.word_embeddings.weight)
+
+    def test_metal_quantizer_config(self):
+        """Apple Silicon: MetalConfig initializes with correct bits and group_size defaults."""
+        from transformers.utils.quantization_config import MetalConfig
+        cfg = MetalConfig(bits=4, group_size=64)
+        self.assertEqual(cfg.bits, 4)
+        self.assertEqual(cfg.group_size, 64)
+        self.assertEqual(cfg.quant_method, "metal")

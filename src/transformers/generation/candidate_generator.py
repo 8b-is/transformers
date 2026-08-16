@@ -1387,7 +1387,22 @@ class SinglePositionMultiTokenCandidateGenerator(AssistedCandidateGenerator):
                     use_cache=False,
                 )
 
-            last_token_id = outputs.logits.argmax(dim=-1)
+            logits = outputs.logits
+            if self.logits_processor is not None:
+                current_input_ids = torch.cat([input_ids] + drafted_tokens, dim=1) if drafted_tokens else input_ids
+                logits = self.logits_processor(current_input_ids, logits[:, 0, :].float()).unsqueeze(1)
+
+            if self.do_sample:
+                probs = nn.functional.softmax(logits, dim=-1, dtype=torch.float32)
+                last_token_id = torch.multinomial(probs.squeeze(1), num_samples=1)
+                drafted_logit = logits
+            else:
+                last_token_id = logits.argmax(dim=-1)
+                # Drafting here is deterministic (argmax), so the proposal distribution is a point mass on the drafted
+                # token. The verifier must receive logits that describe that point mass rather than the raw logits.
+                drafted_logit = torch.full_like(logits, -torch.inf)
+                drafted_logit.scatter_(-1, last_token_id.unsqueeze(-1), 0.0)
+
             last_hidden_state = outputs.last_hidden_state
 
             # For stopped sequences, replace drafted tokens with pad.
@@ -1395,12 +1410,7 @@ class SinglePositionMultiTokenCandidateGenerator(AssistedCandidateGenerator):
                 stopped = sequence_stopped.unsqueeze(1)  # (batch, 1) for broadcasting
                 last_token_id = torch.where(stopped, self.generation_config.pad_token_id, last_token_id)
 
-            # Drafting here is deterministic (argmax), so the proposal distribution is a point mass on the drafted
-            # token. The verifier must receive logits that describe that point mass rather than the raw logits.
-            drafted_logit = torch.full_like(outputs.logits, -torch.inf)
-            drafted_logit.scatter_(-1, last_token_id.unsqueeze(-1), 0.0)
             drafted_logits.append(drafted_logit)
-
             drafted_tokens.append(last_token_id)
 
             # Update stop status: mark sequences whose latest token is an EOS token.

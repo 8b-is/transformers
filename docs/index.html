@@ -687,6 +687,24 @@
         </div>
         <div class="commit-timeline" id="commit-list">
           
+          <!-- Release v4.58.0.post3 -->
+          <div class="commit-row" data-search="release v4.58.0.post3 distilbert torch export speculative sampling proposal candidate generator metal apple silicon 47979 47932 47973 47805 47739 47926">
+            <div class="commit-meta">
+              <span class="commit-hash" style="color: var(--accent-emerald)">v4.58.0.post3</span>
+              <span class="commit-tag tag-security">18 Upstream Fixes</span>
+              <span class="commit-tag tag-perf">PyPI Release</span>
+              <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-mono)">2026-08-16</span>
+            </div>
+            <div class="commit-title">release(transformers-ultra): v4.58.0.post3 — Speculative decoding proposal distribution alignment, DistilBERT tied weights torch.export mapping & Apple Silicon Metal low-bit integration</div>
+            <div class="commit-details">
+              Hardened speculative candidate generation with logits processing to preserve exact proposal distribution `q` (#47932), explicit tied weight mapping for `torch.export` on DistilBERT (#47979), automated base SHA resolution on branch secret scans (#47973), Whisper large-v3 float16 auto-cast (#47805), HuBERT zero-padding conv normalization mask (#47739), and Continuous Batching CUDA SM 8.0+ capability gating (#47926).
+            </div>
+            <div class="commit-links">
+              <a href="https://pypi.org/project/transformers-ultra/4.58.0.post3/" target="_blank">PyPI v4.58.0.post3</a> ·
+              <a href="https://github.com/8b-is/transformers/blob/main/tests/utils/test_ultra_upstream_fixes.py" target="_blank">Test Suite (16/16 Passed)</a>
+            </div>
+          </div>
+
           <!-- Commit: Whisper, HuBERT, CB GPU Fixes -->
           <div class="commit-row" data-search="whisper hubert continuous batching 47805 47739 47926 gpu t4 sm gating padding mask dtype">
             <div class="commit-meta">
