@@ -87,6 +87,14 @@ else:
         "validate_stopping_criteria",
         "StopStringCriteria",
     ]
+    _import_structure["cuda_graph_runner"] = [
+        "CUDAGraphFastRunner",
+        "is_cuda_graph_available",
+    ]
+    _import_structure["fused_sampler"] = [
+        "FusedLogitsSampler",
+        "fused_sample_next_token",
+    ]
     _import_structure["continuous_batching"] = [
         "ContinuousBatchingManager",
         "ContinuousMixin",

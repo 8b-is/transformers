@@ -553,3 +553,94 @@ class UltraUpstreamFixesTest(unittest.TestCase):
 
         pool.release(buf1)
         self.assertEqual(len(pool), 4)
+
+    def test_slotted_static_kv_cache_zero_allocation(self):
+        """Ultra Feature: SlottedStaticCache in-place zero-allocation updates."""
+        import torch
+        from transformers.integrations.slotted_cache import SlottedStaticCache
+
+        cache = SlottedStaticCache(
+            batch_size=2,
+            num_key_value_heads=4,
+            max_cache_len=128,
+            head_dim=32,
+            num_layers=2,
+            dtype=torch.float32,
+            device="cpu",
+        )
+
+        self.assertEqual(cache.get_seq_length(), 0)
+        self.assertEqual(cache.get_max_cache_shape(), 128)
+
+        # Step 1: Prefill 10 tokens
+        k1 = torch.randn(2, 4, 10, 32)
+        v1 = torch.randn(2, 4, 10, 32)
+        out_k, out_v = cache.update(k1, v1, layer_idx=0)
+        self.assertEqual(cache.get_seq_length(), 10)
+        self.assertEqual(out_k.shape, (2, 4, 10, 32))
+        self.assertTrue(torch.allclose(cache.key_cache[0][:, :, :10, :], k1))
+
+        # Step 2: Autoregressive single token step (in-place slice write)
+        k2 = torch.randn(2, 4, 1, 32)
+        v2 = torch.randn(2, 4, 1, 32)
+        out_k, out_v = cache.update(k2, v2, layer_idx=0)
+        self.assertEqual(cache.get_seq_length(), 11)
+        self.assertEqual(out_k.shape, (2, 4, 11, 32))
+        self.assertTrue(torch.allclose(cache.key_cache[0][:, :, 10:11, :], k2))
+
+        # Step 3: Reset and crop
+        cache.crop(5)
+        self.assertEqual(cache.get_seq_length(), 5)
+        cache.reset()
+        self.assertEqual(cache.get_seq_length(), 0)
+
+    def test_cuda_graph_fast_runner_and_fallback(self):
+        """Ultra Feature: CUDAGraphFastRunner CPU/fallback step execution."""
+        import torch
+        import torch.nn as nn
+        from transformers.generation.cuda_graph_runner import (
+            CUDAGraphFastRunner,
+            is_cuda_graph_available,
+        )
+
+        class TinyModel(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.embed = nn.Embedding(100, 16)
+                self.head = nn.Linear(16, 100)
+
+            def forward(self, input_ids, **kwargs):
+                h = self.embed(input_ids)
+                logits = self.head(h)
+                return logits
+
+        model = TinyModel()
+        runner = CUDAGraphFastRunner(model=model, batch_size=1, device="cpu")
+        self.assertFalse(runner.is_captured)
+
+        # Step fallback execution on non-CUDA device
+        input_ids = torch.tensor([[42]], dtype=torch.long)
+        logits = runner.step(input_ids=input_ids)
+        self.assertEqual(logits.shape, (1, 1, 100))
+
+    def test_fused_logits_sampler_and_greedy_fast_path(self):
+        """Ultra Feature: FusedLogitsSampler in-register Top-K, Top-P, and greedy fast-path."""
+        import torch
+        from transformers.generation.fused_sampler import (
+            FusedLogitsSampler,
+            fused_sample_next_token,
+        )
+
+        logits = torch.tensor([[1.0, 5.0, 2.0, 10.0, 3.0]])  # Token 3 has highest logit 10.0
+
+        # 1. Greedy fast-path (temperature=0.0 or do_sample=False)
+        greedy_token = fused_sample_next_token(logits, temperature=0.0, do_sample=False)
+        self.assertEqual(greedy_token.item(), 3)
+        self.assertEqual(greedy_token.shape, (1, 1))
+
+        # 2. Stateful FusedLogitsSampler
+        sampler = FusedLogitsSampler(temperature=1.0, top_k=2, top_p=0.95, do_sample=True)
+        sampled_token = sampler(logits)
+        self.assertEqual(sampled_token.shape, (1, 1))
+        # Top-2 tokens are token 3 (logit 10) and token 1 (logit 5)
+        self.assertIn(sampled_token.item(), [1, 3])

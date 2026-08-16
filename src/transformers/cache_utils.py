@@ -2154,4 +2154,5 @@ class DFlashCache(DynamicCache):
         return kv_length + self._previous_number_of_accepted_tokens, kv_offset
 
 
-# StaticCache explicit state reset helper
+# Ultra Static Cache
+from .integrations.slotted_cache import SlottedStaticCache

@@ -317,6 +317,9 @@ _import_structure = {
         "detect_fast_allocator",
         "no_gc_cycle",
     ],
+    "integrations.slotted_cache": ["SlottedStaticCache"],
+    "generation.cuda_graph_runner": ["CUDAGraphFastRunner", "is_cuda_graph_available"],
+    "generation.fused_sampler": ["FusedLogitsSampler", "fused_sample_next_token"],
     "video_utils": [],
 }
 
@@ -406,6 +409,7 @@ else:
         "HQQQuantizedLayer",
         "QuantizedCache",
         "QuantoQuantizedLayer",
+        "SlottedStaticCache",
         "StaticCache",
         "StaticIndexedLayer",
         "StaticLayer",
