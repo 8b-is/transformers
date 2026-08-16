@@ -44,6 +44,7 @@ Transformers provides everything you need for inference or training with state-o
 - [Trainer](./trainer): A comprehensive trainer that supports features such as mixed precision, torch.compile, and FlashAttention for training and distributed training for PyTorch models.
 - [generate](./llm_tutorial): Fast text generation with large language models (LLMs) and vision language models (VLMs), including support for streaming and multiple decoding strategies.
 - **Mesh Router**: Integrate discrete standalone checkpoints as a unified Mixture-of-Experts (MoE) via `MeshRouterWrapper` and the native `GenerationMixin` routing loop.
+- **Ultra Schemas**: Strict, zero-overhead Pydantic validation via `UltraGenerationConfigSchema` and `UltraQuantizationConfigSchema`, alongside the `UltraFastCausalLMOutput` dataclass natively exposed from the top-level namespace.
 
 ## Design
 

@@ -250,6 +250,11 @@ _import_structure = {
     ],
     "utils.import_utils": ["requires_backends"],
     "utils.kernel_config": ["KernelConfig"],
+    "utils.pydantic_schemas": [
+        "UltraFastCausalLMOutput",
+        "UltraGenerationConfigSchema",
+        "UltraQuantizationConfigSchema",
+    ],
     "utils.quantization_config": [
         "AqlmConfig",
         "AutoRoundConfig",
