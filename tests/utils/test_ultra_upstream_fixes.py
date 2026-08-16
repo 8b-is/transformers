@@ -398,3 +398,82 @@ class UltraUpstreamFixesTest(unittest.TestCase):
         # 8. Optimal attention backend resolution
         backend = get_recommended_attention_backend(0)
         self.assertIn(backend, ("flash_attention_3", "flash_attention_2", "sdpa", "eager"))
+
+    def test_nvidia_fp8_and_tma_acceleration(self):
+        """Ultra Feature: Hardware-aligned 128-byte TMA descriptors and FP8 linear layer."""
+        import ctypes
+        import torch
+        import torch.nn as nn
+        from transformers.integrations.nvidia_fp8_tma import (
+            NvidiaFp8Linear,
+            TmaDataType,
+            TmaDescriptor,
+            TmaSwizzle,
+            create_2d_tma_descriptor,
+            fp8_dynamic_quantize,
+            fp8_quantize,
+            replace_with_nvidia_fp8_linear,
+        )
+
+        # 1. TMA Descriptor 128-byte hardware alignment
+        desc = TmaDescriptor(
+            base_ptr=0x1000,
+            data_type=TmaDataType.FLOAT8_E4M3,
+            global_shape=(128, 64),
+            global_strides=(1, 128),
+            box_size=(64, 64),
+            swizzle=TmaSwizzle.SWIZZLE_128B,
+        )
+        packed_bytes = desc.pack()
+        self.assertEqual(len(packed_bytes), 128)
+
+        ctypes_buf = desc.as_ctypes_buffer()
+        self.assertEqual(len(ctypes_buf), 128)
+
+        # 2. 2D TMA Descriptor creation from 2D tensor
+        weight = torch.randn(64, 128, dtype=torch.bfloat16)
+        tma_2d = create_2d_tma_descriptor(weight, tile_m=32, tile_k=32)
+        self.assertEqual(len(tma_2d.pack()), 128)
+
+        # 3. Dynamic and explicit FP8 quantization
+        x = torch.randn(8, 128, dtype=torch.bfloat16)
+        x_fp8, scale_inv = fp8_dynamic_quantize(x, fp8_dtype=torch.float8_e4m3fn)
+        self.assertEqual(x_fp8.dtype, torch.float8_e4m3fn)
+        self.assertEqual(x_fp8.shape, x.shape)
+        self.assertGreater(scale_inv.item(), 0.0)
+
+        # 4. NvidiaFp8Linear layer and forward pass
+        lin = nn.Linear(128, 64)
+        fp8_lin = NvidiaFp8Linear.from_linear(lin, fp8_dtype=torch.float8_e4m3fn, use_tma=True)
+        self.assertEqual(fp8_lin.weight.dtype, torch.float8_e4m3fn)
+        self.assertEqual(len(fp8_lin.get_tma_descriptor().pack()), 128)
+
+        # Forward execution
+        out = fp8_lin(x)
+        self.assertEqual(out.shape, (8, 64))
+        self.assertEqual(out.dtype, x.dtype)
+
+        # 5. Recursive module replacement
+        model = nn.Sequential(nn.Linear(128, 64), nn.ReLU(), nn.Linear(64, 32))
+        replace_with_nvidia_fp8_linear(model, modules_to_not_convert=[])
+        self.assertIsInstance(model[0], NvidiaFp8Linear)
+        self.assertIsInstance(model[2], NvidiaFp8Linear)
+        seq_out = model(x)
+        self.assertEqual(seq_out.shape, (8, 32))
+
+    def test_nvidia_fp8_quantizer_pipeline(self):
+        """Ultra Feature: NvidiaFp8TmaConfig integration in auto quantization mapping."""
+        from transformers.quantizers.auto import (
+            AUTO_QUANTIZATION_CONFIG_MAPPING,
+            AUTO_QUANTIZER_MAPPING,
+        )
+        from transformers.utils.quantization_config import NvidiaFp8TmaConfig
+
+        cfg = NvidiaFp8TmaConfig(fp8_format="e4m3", use_tma=True)
+        self.assertEqual(cfg.quant_method, "nvidia_fp8_tma")
+        self.assertEqual(cfg.fp8_format, "e4m3")
+        self.assertTrue(cfg.use_tma)
+
+        self.assertIn("nvidia_fp8_tma", AUTO_QUANTIZER_MAPPING)
+        self.assertIn("nvidia_fp8_tma", AUTO_QUANTIZATION_CONFIG_MAPPING)
+        self.assertEqual(AUTO_QUANTIZATION_CONFIG_MAPPING["nvidia_fp8_tma"], NvidiaFp8TmaConfig)

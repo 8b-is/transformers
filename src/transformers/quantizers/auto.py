@@ -35,6 +35,7 @@ from ..utils.quantization_config import (
     HqqConfig,
     MetalConfig,
     Mxfp4Config,
+    NvidiaFp8TmaConfig,
     QuantizationConfigMixin,
     QuantizationMethod,
     QuantoConfig,
@@ -64,6 +65,7 @@ from .quantizer_higgs import HiggsHfQuantizer
 from .quantizer_hqq import HqqHfQuantizer
 from .quantizer_metal import MetalHfQuantizer
 from .quantizer_mxfp4 import Mxfp4HfQuantizer
+from .quantizer_nvidia_fp8_tma import NvidiaFp8TmaHfQuantizer
 from .quantizer_quanto import QuantoHfQuantizer
 from .quantizer_quark import QuarkHfQuantizer
 from .quantizer_sinq import SinqHfQuantizer
@@ -102,6 +104,7 @@ AUTO_QUANTIZER_MAPPING = {
     "metal": MetalHfQuantizer,
     "sinq": SinqHfQuantizer,
     "gemma": GemmaQuantizer,
+    "nvidia_fp8_tma": NvidiaFp8TmaHfQuantizer,
 }
 
 AUTO_QUANTIZATION_CONFIG_MAPPING = {
@@ -131,6 +134,7 @@ AUTO_QUANTIZATION_CONFIG_MAPPING = {
     "metal": MetalConfig,
     "sinq": SinqConfig,
     "gemma": GemmaQuantizationConfig,
+    "nvidia_fp8_tma": NvidiaFp8TmaConfig,
 }
 
 LOADING_ATTRIBUTES_CONFIG_TYPES = (

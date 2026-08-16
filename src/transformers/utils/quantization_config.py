@@ -66,6 +66,7 @@ class QuantizationMethod(StrEnum):
     FOUR_OVER_SIX = "fouroversix"
     SINQ = "sinq"
     GEMMA = "gemma"
+    NVIDIA_FP8_TMA = "nvidia_fp8_tma"
 
 
 class AwqFormat(StrEnum):
@@ -2079,3 +2080,31 @@ class GemmaQuantizationConfig(QuantizationConfigMixin):
         self.quantize_embeddings = quantize_embeddings
         self.module_quant_configs = module_quant_configs
         self.modules_to_not_convert = modules_to_not_convert
+
+
+class NvidiaFp8TmaConfig(QuantizationConfigMixin):
+    """
+    Configuration class for NVIDIA FP8 and Hopper/Blackwell TMA (Tensor Memory Accelerator) quantization.
+
+    Args:
+        fp8_format (`str`, *optional*, defaults to `"e4m3"`):
+            The FP8 numerical format to use. Either `"e4m3"` (for higher precision forward pass) or `"e5m2"` (for wider dynamic range).
+        use_tma (`bool`, *optional*, defaults to `True`):
+            Whether to generate and cache 128-byte hardware TMA descriptors for Hopper (SM90+) and Blackwell (SM100+).
+        modules_to_not_convert (`list[str]`, *optional*):
+            List of module names to keep in full precision (e.g. `["lm_head"]`).
+    """
+
+    def __init__(
+        self,
+        fp8_format: str = "e4m3",
+        use_tma: bool = True,
+        modules_to_not_convert: list[str] | None = None,
+        **kwargs,
+    ):
+        self.quant_method = QuantizationMethod.NVIDIA_FP8_TMA
+        self.fp8_format = fp8_format.lower()
+        self.use_tma = use_tma
+        self.modules_to_not_convert = modules_to_not_convert or ["lm_head"]
+        super().__init__(quant_method=QuantizationMethod.NVIDIA_FP8_TMA, **kwargs)
+
