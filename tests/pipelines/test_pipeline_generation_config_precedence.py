@@ -53,6 +53,7 @@ class PipelineGenerationConfigPrecedenceTest(unittest.TestCase):
             if generation_config is None:
                 generation_config = GenerationConfig()
             import copy
+
             cfg = copy.deepcopy(generation_config)
             unused_kwargs = cfg.update(**kwargs)
             return cfg, unused_kwargs

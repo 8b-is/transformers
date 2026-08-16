@@ -35,7 +35,7 @@ from ...video_utils import VideoInput
 
 
 if is_vision_available():
-    from .image_processing_gemma4_unified import Gemma4UnifiedImageProcessorKwargs, get_aspect_ratio_preserving_size
+    from .image_processing_gemma4_unified import Gemma2ImageProcessorKwargs, get_aspect_ratio_preserving_size
 
 
 logger = logging.get_logger(__name__)
@@ -58,7 +58,22 @@ class Gemma4UnifiedVideoProcessorKwargs(VideosKwargs, total=False):
 
 
 class Gemma4UnifiedProcessorKwargs(ProcessingKwargs, total=False):
-    images_kwargs: Gemma4UnifiedImageProcessorKwargs
+    images_kwargs: Gemma2ImageProcessorKwargs
+    _defaults = {
+        "text_kwargs": {
+            "padding": True,
+            "return_mm_token_type_ids": True,
+        },
+        "images_kwargs": {
+            "do_convert_rgb": True,
+        },
+        "audio_kwargs": {},
+        "videos_kwargs": {"return_metadata": True},
+    }
+
+
+class Gemma2ProcessorKwargs(ProcessingKwargs, total=False):
+    images_kwargs: Gemma2ImageProcessorKwargs
     _defaults = {
         "text_kwargs": {
             "padding": True,
@@ -75,7 +90,7 @@ class Gemma4UnifiedProcessorKwargs(ProcessingKwargs, total=False):
 @auto_docstring
 @requires(backends=("vision",))
 class Gemma4UnifiedProcessor(ProcessorMixin):
-    valid_processor_kwargs = Gemma4UnifiedProcessorKwargs
+    valid_processor_kwargs = Gemma2ProcessorKwargs
 
     def __init__(
         self,
@@ -202,7 +217,7 @@ class Gemma4UnifiedProcessor(ProcessorMixin):
 
         if metadata.fps is None:
             logger.warning_once(
-                "Gemma4Unified requires frame timestamps to construct prompts, but the `fps` of the input video could not be inferred. "
+                "Gemma2 requires frame timestamps to construct prompts, but the `fps` of the input video could not be inferred. "
                 "Probably `video_metadata` was missing from inputs and you passed pre-sampled frames. "
                 "Defaulting to `fps=24`. Please provide `video_metadata` for more accurate results."
             )
@@ -242,7 +257,7 @@ class Gemma4UnifiedProcessor(ProcessorMixin):
             input modalities, along with other useful data.
         """
 
-        images_kwargs = Gemma4UnifiedProcessorKwargs._defaults.get("images_kwargs", {})
+        images_kwargs = Gemma2ProcessorKwargs._defaults.get("images_kwargs", {})
         images_kwargs.update(kwargs)
         patch_size = images_kwargs.get("patch_size", None) or self.image_processor.patch_size
         pooling_kernel_size = (

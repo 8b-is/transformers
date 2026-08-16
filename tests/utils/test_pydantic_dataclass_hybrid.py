@@ -13,12 +13,13 @@
 # limitations under the License.
 
 import unittest
+
 import torch
 
 from transformers.utils.pydantic_schemas import (
+    UltraFastCausalLMOutput,
     UltraGenerationConfigSchema,
     UltraQuantizationConfigSchema,
-    UltraFastCausalLMOutput,
 )
 
 
@@ -34,7 +35,7 @@ class PydanticDataclassHybridTest(unittest.TestCase):
         )
         self.assertEqual(schema.temperature, 0.7)
         self.assertEqual(schema.max_new_tokens, 256)
-        
+
         cfg_dict = schema.to_dict()
         self.assertIn("temperature", cfg_dict)
         self.assertIn("max_new_tokens", cfg_dict)
@@ -60,7 +61,7 @@ class PydanticDataclassHybridTest(unittest.TestCase):
 
         # Test Structural Pattern Matching
         match output:
-            case UltraFastCausalLMOutput(loss=l, logits=lg) if l is not None:
+            case UltraFastCausalLMOutput(loss=l, logits=_) if l is not None:
                 matched = True
                 loss_val = float(l)
             case _:

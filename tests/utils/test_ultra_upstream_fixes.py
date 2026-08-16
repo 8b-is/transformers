@@ -13,17 +13,19 @@
 # limitations under the License.
 
 import unittest
-import numpy as np
+
 import pytest
 
-from transformers.utils import is_torch_available
-from transformers.models.auto.configuration_auto import CONFIG_MAPPING_NAMES
-from transformers.models.siglip2.configuration_siglip2 import Siglip2Config, Siglip2TextConfig
-from transformers.models.bitnet.configuration_bitnet import BitNetConfig
 from transformers.dependency_versions_table import deps
+from transformers.models.auto.configuration_auto import CONFIG_MAPPING_NAMES
+from transformers.models.bitnet.configuration_bitnet import BitNetConfig
+from transformers.models.siglip2.configuration_siglip2 import Siglip2Config, Siglip2TextConfig
+from transformers.utils import is_torch_available
+
 
 if is_torch_available():
     import torch
+
     from transformers.cache_utils import DynamicCache
     from transformers.generation.logits_process import RepetitionPenaltyLogitsProcessor
     from transformers.models.esm.openfold_utils.loss import compute_tm
@@ -134,14 +136,14 @@ class UltraUpstreamFixesTest(unittest.TestCase):
         model = DistilBertForMaskedLM(cfg)
         self.assertIn("vocab_projector.weight", model._tied_weights_keys)
         self.assertEqual(
-            model._tied_weights_keys["vocab_projector.weight"],
-            "distilbert.embeddings.word_embeddings.weight"
+            model._tied_weights_keys["vocab_projector.weight"], "distilbert.embeddings.word_embeddings.weight"
         )
         self.assertIs(model.vocab_projector.weight, model.distilbert.embeddings.word_embeddings.weight)
 
     def test_metal_quantizer_config(self):
         """Apple Silicon: MetalConfig initializes with correct bits and group_size defaults."""
         from transformers.utils.quantization_config import MetalConfig
+
         cfg = MetalConfig(bits=4, group_size=64)
         self.assertEqual(cfg.bits, 4)
         self.assertEqual(cfg.group_size, 64)
@@ -149,7 +151,8 @@ class UltraUpstreamFixesTest(unittest.TestCase):
 
     def test_optimal_mac_device_and_cache(self):
         """Apple Silicon: get_optimal_mac_device and clear_mps_memory_cache execute safely."""
-        from transformers.utils.import_utils import get_optimal_mac_device, clear_mps_memory_cache
+        from transformers.utils.import_utils import clear_mps_memory_cache, get_optimal_mac_device
+
         dev = get_optimal_mac_device()
         self.assertIn(dev.type, ["mps", "cpu"])
         clear_mps_memory_cache()
@@ -157,9 +160,9 @@ class UltraUpstreamFixesTest(unittest.TestCase):
     @pytest.mark.skipif(not is_torch_available(), reason="PyTorch required")
     def test_get_total_byte_count_bnb_attribute_error_resilience(self):
         """Fix #47914: get_total_byte_count safely ignores unregistered quantizer/PEFT state attributes."""
+        from transformers.modeling_utils import get_total_byte_count
         from transformers.models.distilbert.configuration_distilbert import DistilBertConfig
         from transformers.models.distilbert.modeling_distilbert import DistilBertForMaskedLM
-        from transformers.modeling_utils import get_total_byte_count
 
         cfg = DistilBertConfig(vocab_size=100, dim=32, n_layers=1, n_heads=2, hidden_dim=64)
         model = DistilBertForMaskedLM(cfg)
@@ -173,7 +176,6 @@ class UltraUpstreamFixesTest(unittest.TestCase):
 
     def test_additional_and_extra_special_tokens_preservation(self):
         """Fix #47838: additional_special_tokens is preserved and merged when extra_special_tokens is present."""
-        from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 
         # Case 1: extra_special_tokens is empty dict/list in config
         d = {"additional_special_tokens": ["<|im_end|>", "<|media_placeholder|>"], "extra_special_tokens": {}}
@@ -209,6 +211,7 @@ class UltraUpstreamFixesTest(unittest.TestCase):
     def test_pipeline_generation_config_model_precedence(self):
         """Fix #47752: pipeline inherits and respects model.generation_config user modifications."""
         import copy
+
         from transformers.generation.configuration_utils import GenerationConfig
 
         model_gen_config = GenerationConfig(max_new_tokens=500, do_sample=False)
@@ -231,9 +234,10 @@ class UltraUpstreamFixesTest(unittest.TestCase):
     @pytest.mark.skipif(not is_torch_available(), reason="PyTorch required")
     def test_is_hf_initialized_per_param_skip(self):
         """Fix #47427: _initialize_weights skips re-init when all direct params have _is_hf_initialized=True."""
+        import torch.nn as nn
+
         from transformers.models.distilbert.configuration_distilbert import DistilBertConfig
         from transformers.models.distilbert.modeling_distilbert import DistilBertForMaskedLM
-        import torch.nn as nn
 
         cfg = DistilBertConfig(vocab_size=50, dim=16, n_layers=1, n_heads=2, hidden_dim=32)
         model = DistilBertForMaskedLM(cfg)
@@ -267,11 +271,3 @@ class UltraUpstreamFixesTest(unittest.TestCase):
         config = NemotronHConfig(use_mamba_kernels=False, mamba_num_heads=2, mamba_head_dim=16, hidden_size=32)
         mixer = NemotronHMamba2Mixer(config, layer_idx=0, initialize_mixer_weights=False)
         self.assertFalse(mixer.use_mamba_kernels)
-
-
-
-
-
-
-
-

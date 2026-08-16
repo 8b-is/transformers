@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import unittest
-from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 
 
 class SpecialTokensPreservationTest(unittest.TestCase):

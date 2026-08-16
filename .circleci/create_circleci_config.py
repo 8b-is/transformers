@@ -163,7 +163,7 @@ class CircleCIJob:
 
         all_options = {**COMMON_PYTEST_OPTIONS, **self.pytest_options}
         pytest_flags = [
-            f"--{key}={value}" if (value is not None or key in ["doctest-modules"]) else f"-{key}"
+            f"--{key}={value}" if (value is not None or key == "doctest-modules") else f"-{key}"
             for key, value in all_options.items()
         ]
         pytest_flags.append(

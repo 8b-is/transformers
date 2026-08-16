@@ -256,4 +256,3 @@ class BitNetIntegrationTest(unittest.TestCase):
 
 
 # BitNetConfig serialization test fixture
-

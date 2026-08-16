@@ -15,7 +15,7 @@
 import unittest
 from unittest.mock import MagicMock
 
-from transformers.modeling_layers import GenericForSequenceClassification, GenericForTokenClassification
+from transformers.modeling_layers import GenericForSequenceClassification
 
 
 class LossKwargsPropagationTest(unittest.TestCase):
@@ -28,13 +28,13 @@ class LossKwargsPropagationTest(unittest.TestCase):
 
         # We test that loss_function receives **kwargs
         mock_loss_fn = MagicMock(return_value=1.0)
-        
+
         # Instantiate without calling super().__init__ directly
         head = object.__new__(GenericForSequenceClassification)
         head.config = config
         head.loss_function = mock_loss_fn
         head.base_model_prefix = "model"
-        
+
         mock_base = MagicMock()
         mock_output = MagicMock()
         mock_output.last_hidden_state = MagicMock()

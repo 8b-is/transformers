@@ -49,7 +49,7 @@ class ModernPythonFeaturesTest(unittest.TestCase):
         """Test the @ matrix multiplication operator for wave interference."""
         w1 = MEM8Wave(text="def attention(q, k): pass")
         w2 = MEM8Wave(text="fn attention(q: Tensor, k: Tensor) -> Tensor")
-        
+
         # Using @ operator
         score = w1 @ w2
         self.assertIsInstance(score, float)
@@ -58,7 +58,7 @@ class ModernPythonFeaturesTest(unittest.TestCase):
     def test_free_threading_nogil_concurrency(self):
         """Test multi-threaded recording and recall under Python 3.13 free-threading."""
         store = MEM8MemoryStore()
-        
+
         def worker(idx):
             store.record(f"def kernel_{idx}(x): return x * {idx}", kind="code")
 
@@ -67,7 +67,7 @@ class ModernPythonFeaturesTest(unittest.TestCase):
 
         self.assertEqual(len(store), 50)
         self.assertEqual(len(list(store)), 50)
-        
+
         recalled = store.recall("def kernel_eval(x):", top_k=5, threshold=0.05)
         self.assertLessEqual(len(recalled), 5)
         self.assertGreater(len(recalled), 0)
@@ -78,8 +78,10 @@ class ModernPythonFeaturesTest(unittest.TestCase):
 
         class MockCollator(DataCollatorMixin):
             return_tensors = "pt"
+
             def torch_call(self, features):
                 return {"format": "torch", "count": len(features)}
+
             def numpy_call(self, features):
                 return {"format": "numpy", "count": len(features)}
 
@@ -105,5 +107,3 @@ class ModernPythonFeaturesTest(unittest.TestCase):
         self.assertEqual(strtobool("off"), 0)
         with self.assertRaises(ValueError):
             strtobool("invalid_bool_string")
-
-

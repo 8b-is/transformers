@@ -1143,7 +1143,7 @@ def replace_class_node(
             new_decorators = get_decorators_to_keep(mapper, modular_node, node)
 
             # Keep return annotation in modular if any, else original return annotation
-            new_return_annotation = modular_node.returns if modular_node.returns else node.returns
+            new_return_annotation = modular_node.returns or node.returns
 
             # Update the method node
             node = node.with_changes(

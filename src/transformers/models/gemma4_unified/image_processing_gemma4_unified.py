@@ -48,6 +48,22 @@ class Gemma4UnifiedImageProcessorKwargs(ImagesKwargs, total=False):
     pooling_kernel_size: int
 
 
+class Gemma2ImageProcessorKwargs(ImagesKwargs, total=False):
+    """
+    patch_size (`int`, *optional*):
+        Size of each image patch in pixels.
+    max_soft_tokens (`int`, *optional*):
+        Maximum number of soft (vision) tokens per image.
+        Must be one of {70, 140, 280, 560, 1120}.
+    pooling_kernel_size (`int`, *optional*):
+        Spatial pooling kernel size applied after patchification.
+    """
+
+    patch_size: int
+    max_soft_tokens: int
+    pooling_kernel_size: int
+
+
 _SUPPORTED_SOFT_TOKENS = (70, 140, 280, 560, 1120)
 
 
@@ -224,17 +240,17 @@ class Gemma4UnifiedImageProcessor(TorchvisionBackend):
     patch_size = 16
     max_soft_tokens = 280
     pooling_kernel_size = 3
-    valid_kwargs = Gemma4UnifiedImageProcessorKwargs
+    valid_kwargs = Gemma2ImageProcessorKwargs
     model_input_names = ["pixel_values", "image_position_ids", "num_soft_tokens_per_image"]
 
-    def __init__(self, **kwargs: Unpack[Gemma4UnifiedImageProcessorKwargs]):
+    def __init__(self, **kwargs: Unpack[Gemma2ImageProcessorKwargs]):
         super().__init__(**kwargs)
 
         if self.max_soft_tokens not in _SUPPORTED_SOFT_TOKENS:
             raise ValueError(f"`max_soft_tokens` must be one of {_SUPPORTED_SOFT_TOKENS}, got {self.max_soft_tokens}.")
 
     def _validate_preprocess_kwargs(self, **kwargs):
-        # Gemma4Unified uses aspect_ratio_preserving_resize driven by patch_size,
+        # Gemma2 uses aspect_ratio_preserving_resize driven by patch_size,
         # max_soft_tokens, and pooling_kernel_size — not the standard `size`
         # parameter. Temporarily disable do_resize so the base validation
         # doesn't require `size` to be set.
@@ -271,7 +287,7 @@ class Gemma4UnifiedImageProcessor(TorchvisionBackend):
     def preprocess(
         self,
         images: ImageInput,
-        **kwargs: Unpack[Gemma4UnifiedImageProcessorKwargs],
+        **kwargs: Unpack[Gemma2ImageProcessorKwargs],
     ) -> BatchFeature:
         return super().preprocess(images, **kwargs)
 

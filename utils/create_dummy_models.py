@@ -711,7 +711,7 @@ def get_tiny_config(config_class, model_class=None, **model_tester_kwargs):
     # TODO: This part is necessary for Gemma3Model!
     # TODO: Make this part much better without duplicating the code and less error prone
     if not isinstance(config, config_class):
-        model_tester_class_name = config_class_to_model_tester_map.get(config_class.__name__, None)
+        model_tester_class_name = config_class_to_model_tester_map.get(config_class.__name__)
         if model_tester_class_name is not None:
             test_module = get_test_module(test_file)
             new_model_tester_class = getattr(test_module, model_tester_class_name)
@@ -1515,7 +1515,7 @@ def _build_inner(config_class, models_to_create, output_dir, keep_model=False):
     processor_classes = models_to_create["processor"]
 
     # AutoTokenizer can't load from hub repo ...
-    if config_class.__name__ in ["FastSpeech2ConformerWithHifiGanConfig"]:
+    if config_class.__name__ == "FastSpeech2ConformerWithHifiGanConfig":
         processor_classes = (FastSpeech2ConformerTokenizer,) + processor_classes
 
     if len(processor_classes) == 0:

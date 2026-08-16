@@ -42,7 +42,7 @@ from .configuration_bitnet import BitNetConfig
 
 @use_kernel_forward_from_hub("RMSNorm")
 class BitNetRMSNorm(nn.Module):
-    def __init__(self, hidden_size, eps: float = 1e-6) -> None:
+    def __init__(self, hidden_size, eps=1e-6) -> None:
         """
         BitNetRMSNorm is equivalent to T5LayerNorm
         """
@@ -116,8 +116,10 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
     Returns:
         `tuple(torch.Tensor)` comprising of the query and key tensors rotated using the Rotary Position Embedding.
     """
-    cos = cos.unsqueeze(unsqueeze_dim)
-    sin = sin.unsqueeze(unsqueeze_dim)
+    if cos.ndim != q.ndim:
+        cos = cos.unsqueeze(unsqueeze_dim)
+    if sin.ndim != q.ndim:
+        sin = sin.unsqueeze(unsqueeze_dim)
     q_embed = (q * cos) + (rotate_half(q) * sin)
     k_embed = (k * cos) + (rotate_half(k) * sin)
     return q_embed, k_embed
@@ -429,6 +431,7 @@ class BitNetForCausalLM(BitNetPreTrainedModel, GenerationMixin):
     _tp_plan = None
     _pp_plan = None
     _fsdp_plan = {"lm_head": "keep_full_weight"}
+    _supports_quantized_ternary = True
 
     def __init__(self, config):
         super().__init__(config)

@@ -80,19 +80,15 @@ class HubertPositionalConvEmbedding(nn.Module):
         self.padding = HubertSamePadLayer(config.num_conv_pos_embeddings)
         self.activation = ACT2FN[config.feat_extract_activation]
 
-    def forward(self, hidden_states, padding_mask=None):
+    def forward(self, hidden_states):
         hidden_states = hidden_states.transpose(1, 2)
         if self.batch_norm is not None:
             hidden_states = self.batch_norm(hidden_states)
-            if padding_mask is not None:
-                hidden_states = hidden_states.masked_fill(padding_mask.unsqueeze(1), 0.0)
         hidden_states = self.conv(hidden_states)
         hidden_states = self.padding(hidden_states)
         hidden_states = self.activation(hidden_states)
 
         hidden_states = hidden_states.transpose(1, 2)
-        if padding_mask is not None:
-            hidden_states = hidden_states.masked_fill(padding_mask.unsqueeze(-1), 0.0)
         return hidden_states
 
 
@@ -429,7 +425,6 @@ class HubertEncoder(nn.Module):
         all_hidden_states = () if output_hidden_states else None
         all_self_attentions = () if output_attentions else None
 
-        padding_mask = (attention_mask == 0) if attention_mask is not None else None
         if attention_mask is not None:
             # make sure padded tokens output 0
             expand_attention_mask = attention_mask.unsqueeze(-1).repeat(1, 1, hidden_states.shape[2])
@@ -441,7 +436,7 @@ class HubertEncoder(nn.Module):
             attention_mask=attention_mask,
         )
 
-        position_embeddings = self.pos_conv_embed(hidden_states, padding_mask=padding_mask)
+        position_embeddings = self.pos_conv_embed(hidden_states)
         hidden_states = hidden_states + position_embeddings.to(hidden_states.device)
         hidden_states = self.layer_norm(hidden_states)
         hidden_states = self.dropout(hidden_states)
@@ -575,7 +570,6 @@ class HubertEncoderStableLayerNorm(nn.Module):
         all_hidden_states = () if output_hidden_states else None
         all_self_attentions = () if output_attentions else None
 
-        padding_mask = (attention_mask == 0) if attention_mask is not None else None
         if attention_mask is not None:
             # make sure padded tokens output 0
             expand_attention_mask = attention_mask.unsqueeze(-1).repeat(1, 1, hidden_states.shape[2])
@@ -587,7 +581,7 @@ class HubertEncoderStableLayerNorm(nn.Module):
             attention_mask=attention_mask,
         )
 
-        position_embeddings = self.pos_conv_embed(hidden_states, padding_mask=padding_mask)
+        position_embeddings = self.pos_conv_embed(hidden_states)
         hidden_states = hidden_states + position_embeddings
         hidden_states = self.dropout(hidden_states)
 

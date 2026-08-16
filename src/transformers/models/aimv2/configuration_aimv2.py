@@ -165,6 +165,9 @@ class Aimv2Config(PreTrainedConfig):
         elif isinstance(self.vision_config, dict):
             self.vision_config = Aimv2VisionConfig(**self.vision_config)
 
+        if hasattr(self.text_config, "vocab_size"):
+            self.vocab_size = self.text_config.vocab_size
+
         super().__post_init__(**kwargs)
 
 

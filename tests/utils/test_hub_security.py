@@ -25,7 +25,7 @@ class HubSecurityTest(unittest.TestCase):
         """Fixes Issue #47176: Reject shard filenames containing path traversal or absolute paths."""
         with tempfile.TemporaryDirectory() as tmp_dir:
             index_path = os.path.join(tmp_dir, "model.safetensors.index.json")
-            
+
             # Malicious index pointing outside directory
             malicious_index = {
                 "metadata": {"total_size": 1024},
@@ -46,7 +46,7 @@ class HubSecurityTest(unittest.TestCase):
         """Fixes Issue #47176: Reject absolute shard filenames in checkpoint index."""
         with tempfile.TemporaryDirectory() as tmp_dir:
             index_path = os.path.join(tmp_dir, "model.safetensors.index.json")
-            
+
             malicious_index = {
                 "metadata": {"total_size": 1024},
                 "weight_map": {

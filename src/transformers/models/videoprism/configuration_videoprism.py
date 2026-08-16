@@ -142,6 +142,9 @@ class VideoPrismConfig(PreTrainedConfig):
         elif isinstance(self.vision_config, dict):
             self.vision_config = VideoPrismVisionConfig(**self.vision_config)
 
+        if hasattr(self.text_config, "vocab_size"):
+            self.vocab_size = self.text_config.vocab_size
+
         super().__post_init__(**kwargs)
 
 

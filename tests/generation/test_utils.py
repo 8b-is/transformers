@@ -730,7 +730,7 @@ class GenerationTesterMixin(ExportGenerateTesterMixin):
             output_assisted = model.generate(**generation_kwargs, **inputs_dict, **logits_processor_kwargs)
 
             # some models requires larger tolerance
-            if model.config.model_type in ["vibevoice_asr"]:
+            if model.config.model_type == "vibevoice_asr":
                 atol = rtol = 5e-3
             elif is_moe_model(config):
                 atol = rtol = 1e-3

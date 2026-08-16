@@ -145,24 +145,23 @@ class DiffusionGemmaTextRotaryEmbedding(nn.Module):
 
 
 class DiffusionGemmaRMSNorm(nn.Module):
-    def __init__(self, dim: int, eps: float = 1e-6, with_scale: bool = True):
+    def __init__(self, dim: int, eps: float = 1e-6):
         super().__init__()
         self.eps = eps
-        self.with_scale = with_scale
+        self.weight = nn.Parameter(torch.zeros(dim))
 
-        if self.with_scale:
-            self.weight = nn.Parameter(torch.ones(dim), requires_grad=True)
+    def _norm(self, x):
+        return x * torch.rsqrt(x.pow(2).mean(-1, keepdim=True) + self.eps)
 
-    def _norm(self, hidden_states: torch.Tensor):
-        mean_squared = hidden_states.pow(2).mean(-1, keepdim=True) + self.eps
-        # Use torch.pow() (over torch.sqrt() or torch.rsqrt()) to address compiler differences between Torch and JAX
-        return hidden_states * torch.pow(mean_squared, -0.5)
+    def forward(self, x):
+        output = self._norm(x.float())
+        # Llama does x.to(float16) * w whilst DiffusionGemma is (x * w).to(float16)
+        # See https://github.com/huggingface/transformers/pull/29402
+        output = output * (1.0 + self.weight.float())
+        return output.type_as(x)
 
-    def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:
-        normed_output = self._norm(hidden_states.float())
-        if self.with_scale:
-            normed_output = normed_output * self.weight.float()
-        return normed_output.type_as(hidden_states)
+    def extra_repr(self):
+        return f"{tuple(self.weight.shape)}, eps={self.eps}"
 
 
 class DiffusionGemmaClippableLinear(nn.Module):
@@ -768,23 +767,46 @@ class DiffusionGemmaMultimodalEmbedder(nn.Module):
     ):
         super().__init__()
 
-        self.multimodal_hidden_size = getattr(multimodal_config, "output_proj_dims", multimodal_config.hidden_size)
+        self.multimodal_hidden_size = multimodal_config.hidden_size
         self.eps = multimodal_config.rms_norm_eps
+        self.vocab_offset = multimodal_config.vocab_offset
+        self.vocab_size = multimodal_config.vocab_size
         self.text_hidden_size = text_config.hidden_size
+
+        self.embedding = nn.Embedding(self.vocab_size, self.multimodal_hidden_size)
+        self.hard_embedding_norm = DiffusionGemmaRMSNorm(self.multimodal_hidden_size, eps=self.eps)
+        self.soft_embedding_norm = DiffusionGemmaRMSNorm(self.multimodal_hidden_size, eps=self.eps)
         self.embedding_projection = nn.Linear(self.multimodal_hidden_size, self.text_hidden_size, bias=False)
-        self.embedding_pre_projection_norm = DiffusionGemmaRMSNorm(
-            self.multimodal_hidden_size, eps=self.eps, with_scale=False
+        self.embedding_post_projection_norm = DiffusionGemmaRMSNorm(
+            self.text_hidden_size, eps=self.eps, with_scale=False
         )
 
-    def forward(self, inputs_embeds: torch.Tensor) -> torch.Tensor:
+    def forward(
+        self,
+        input_ids: torch.LongTensor | None = None,
+        inputs_embeds: torch.Tensor | None = None,
+    ) -> torch.Tensor:
         """Embeds token ids or soft tokens for multimodal content into language model space.
+
         Args:
+            input_ids: A torch.LongTensor containing the token ids to embed. Values should be in the range
+                `[vocab_offset, vocab_offset + vocab_size)`.
             inputs_embeds: A torch.Tensor containing the soft tokens to embed.
+
         Returns:
-            A torch.Tensor of embeddings with shape `[batch_size, seq_len, self.config.text_config.hidden_size]`.
+            A torch.Tensor of embeddings with  shape `[batch_size, seq_len, self.config.text_config.hidden_size]`.
         """
-        embs_normed = self.embedding_pre_projection_norm(inputs_embeds)
-        return self.embedding_projection(embs_normed)
+        if (input_ids is None) ^ (inputs_embeds is not None):
+            raise ValueError("You must specify exactly one of input_ids or inputs_embeds")
+
+        if inputs_embeds is not None:
+            emb_norm = self.soft_embedding_norm(inputs_embeds)
+        else:
+            hard_emb = self.embedding(input_ids - self.vocab_offset)
+            emb_norm = self.hard_embedding_norm(hard_emb)
+
+        emb_norm_proj = self.embedding_projection(emb_norm)
+        return self.embedding_post_projection_norm(emb_norm_proj)
 
 
 class DiffusionGemmaSelfConditioning(nn.Module):
@@ -1071,9 +1093,7 @@ class DiffusionGemmaEncoderModel(DiffusionGemmaPreTrainedModel):
 
         return special_image_mask
 
-    @merge_with_config_defaults
     @can_return_tuple
-    @auto_docstring
     def forward(
         self,
         input_ids: torch.LongTensor | None = None,
@@ -1158,6 +1178,9 @@ class DiffusionGemmaEncoderModel(DiffusionGemmaPreTrainedModel):
 
     def set_per_layer_input_embeddings(self, value):
         self.language_model.embed_tokens_per_layer = value
+
+    def get_video_features(self, *args, **kwargs):
+        raise NotImplementedError("DiffusionGemma does not support video inputs.")
 
     @staticmethod
     def create_masks_for_generate(

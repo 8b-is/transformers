@@ -200,7 +200,6 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 
 
 class Phi3Attention(nn.Module):
-    # Phi3 Attention with boundary checking
     """Multi-headed attention from 'Attention Is All You Need' paper"""
 
     def __init__(self, config: Phi3Config, layer_idx: int | None = None):

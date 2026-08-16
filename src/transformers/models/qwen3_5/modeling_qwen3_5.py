@@ -572,8 +572,10 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
     Returns:
         `tuple(torch.Tensor)` comprising of the query and key tensors rotated using the Rotary Position Embedding.
     """
-    cos = cos.unsqueeze(unsqueeze_dim)
-    sin = sin.unsqueeze(unsqueeze_dim)
+    if cos.ndim != q.ndim:
+        cos = cos.unsqueeze(unsqueeze_dim)
+    if sin.ndim != q.ndim:
+        sin = sin.unsqueeze(unsqueeze_dim)
 
     # Keep half or full tensor for later concatenation
     rotary_dim = cos.shape[-1]
