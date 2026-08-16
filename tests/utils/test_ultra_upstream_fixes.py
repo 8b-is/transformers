@@ -271,3 +271,51 @@ class UltraUpstreamFixesTest(unittest.TestCase):
         config = NemotronHConfig(use_mamba_kernels=False, mamba_num_heads=2, mamba_head_dim=16, hidden_size=32)
         mixer = NemotronHMamba2Mixer(config, layer_idx=0, initialize_mixer_weights=False)
         self.assertFalse(mixer.use_mamba_kernels)
+
+    def test_apple_silicon_hardware_capabilities(self):
+        """Ultra Feature: Apple Silicon first-class citizens (MPS, MLX, unified memory budget)."""
+        import platform
+        from transformers.utils import (
+            get_apple_unified_memory,
+            get_optimal_device,
+            is_apple_silicon,
+            is_mlx_available,
+        )
+
+        is_arm_mac = platform.system() == "Darwin" and platform.machine() in ("arm64", "aarch64")
+        self.assertEqual(is_apple_silicon(), is_arm_mac)
+
+        if is_arm_mac:
+            mem = get_apple_unified_memory()
+            self.assertGreater(mem, 0)
+            opt_dev = get_optimal_device()
+            self.assertIn(opt_dev.type, ("cuda", "mps", "cpu"))
+
+        # MLX availability check executes without error
+        self.assertIsInstance(is_mlx_available(), bool)
+
+    def test_h200_and_hopper_fp8_contracts(self):
+        """Ultra Feature: NVIDIA H200 and Hopper SM90 native FP8/TMA capability contracts."""
+        from unittest.mock import MagicMock, patch
+        from transformers.utils import is_fp8_supported, is_h200_available, is_hopper_available
+
+        # Test contract without CUDA
+        with patch("transformers.utils.import_utils.is_torch_cuda_available", return_value=False):
+            self.assertFalse(is_hopper_available())
+            self.assertFalse(is_h200_available())
+            self.assertFalse(is_fp8_supported())
+
+        # Test simulated H200 GPU environment
+        mock_props = MagicMock()
+        mock_props.total_memory = 141 * (1024**3)  # 141 GB HBM3e
+
+        with (
+            patch("transformers.utils.import_utils.is_torch_cuda_available", return_value=True),
+            patch("torch.cuda.device_count", return_value=1),
+            patch("torch.cuda.get_device_capability", return_value=(9, 0)),
+            patch("torch.cuda.get_device_name", return_value="NVIDIA H200 PCIe"),
+            patch("torch.cuda.get_device_properties", return_value=mock_props),
+        ):
+            self.assertTrue(is_hopper_available(0))
+            self.assertTrue(is_h200_available(0))
+            self.assertTrue(is_fp8_supported(0))

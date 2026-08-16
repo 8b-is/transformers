@@ -359,6 +359,98 @@ def get_optimal_mac_device() -> "torch.device":  # noqa: F821
     return torch.device("cpu")
 
 
+def is_apple_silicon() -> bool:
+    """Returns True if the system is running on Apple Silicon (ARM64 Darwin)."""
+    import platform
+
+    return platform.system() == "Darwin" and platform.machine() in ("arm64", "aarch64")
+
+
+def is_mlx_available() -> bool:
+    """Checks if Apple MLX framework is available."""
+    return _is_package_available("mlx")[0]
+
+
+def get_apple_unified_memory() -> int:
+    """
+    Returns the total system unified memory in bytes on Apple Silicon macOS,
+    enabling optimal unified memory zero-copy allocation. Returns 0 on non-macOS.
+    """
+    if not is_apple_silicon():
+        return 0
+    try:
+        import subprocess
+
+        res = subprocess.run(["sysctl", "-n", "hw.memsize"], capture_output=True, text=True, check=True)
+        return int(res.stdout.strip())
+    except Exception:
+        return 0
+
+
+def is_hopper_available(device_idx: int = 0) -> bool:
+    """
+    Returns True if NVIDIA Hopper architecture GPU (SM90/SM90a, compute capability 9.0+)
+    such as H100, H200, or GH200 is available.
+    """
+    if not is_torch_cuda_available():
+        return False
+    import torch
+
+    if torch.cuda.device_count() <= device_idx:
+        return False
+    major, _ = torch.cuda.get_device_capability(device_idx)
+    return major >= 9
+
+
+def is_h200_available(device_idx: int = 0) -> bool:
+    """
+    Returns True if an NVIDIA H200 (141GB HBM3e) GPU is detected.
+    """
+    if not is_hopper_available(device_idx):
+        return False
+    import torch
+
+    device_name = torch.cuda.get_device_name(device_idx).upper()
+    total_mem_gb = torch.cuda.get_device_properties(device_idx).total_memory / (1024**3)
+    return "H200" in device_name or total_mem_gb >= 130.0
+
+
+def is_fp8_supported(device_idx: int = 0) -> bool:
+    """
+    Returns True if native FP8 (E4M3 / E5M2) Tensor Core execution is supported
+    on the current GPU (Hopper CC 9.0+, Ada CC 8.9+, Blackwell CC 10.0+).
+    """
+    if not is_torch_cuda_available():
+        return False
+    import torch
+
+    if torch.cuda.device_count() <= device_idx:
+        return False
+    major, minor = torch.cuda.get_device_capability(device_idx)
+    return (major, minor) >= (8, 9)
+
+
+def get_optimal_device() -> "torch.device":  # noqa: F821
+    """
+    Resolves the best available hardware accelerator for inference/training:
+    1. CUDA (NVIDIA H200 / Hopper / Ampere)
+    2. MPS (Apple Silicon Mac)
+    3. XPU / NPU / HPU
+    4. CPU fallback
+    """
+    import torch
+
+    if is_torch_cuda_available():
+        return torch.device("cuda:0")
+    if is_torch_mps_available():
+        return torch.device("mps")
+    if is_torch_xpu_available(check_device=True):
+        return torch.device("xpu:0")
+    if is_torch_npu_available(check_device=True):
+        return torch.device("npu:0")
+    return torch.device("cpu")
+
+
 @lru_cache
 @_make_compile_constant
 def is_torch_npu_available(check_device=False) -> bool:
