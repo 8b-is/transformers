@@ -106,6 +106,8 @@ What a weird world. But open source belongs to no single gatekeeper. We didn't c
   - Decoupled `_AutogradFunction` abstractions in `tensor_parallel.py`, `accelerate.py`, and `monkey_patching.py` for cross-platform imports.
 - **⚡ Quantized PEFT Allocation Crash Fix ([#47914](https://github.com/huggingface/transformers/issues/47914))**:
   - Resolves `caching_allocator_warmup` `AttributeError` when loading bitsandbytes quantized models with PEFT adapters.
+- **📝 MistralCommonBackend Doc Rendering Fix ([#47504](https://github.com/huggingface/transformers/issues/47504))**:
+  - Dynamically bypassed `mistral_common` dependency checking at module initialization to allow proper docstring parsing for `MistralCommonBackend` without falling back to a dummy object.
 
 
 ---
