@@ -319,3 +319,82 @@ class UltraUpstreamFixesTest(unittest.TestCase):
             self.assertTrue(is_hopper_available(0))
             self.assertTrue(is_h200_available(0))
             self.assertTrue(is_fp8_supported(0))
+
+    def test_top_hf_gpu_tiers_and_attention_backends(self):
+        """Ultra Feature: Top Hugging Face GPU tier detection (B200, H100, MI300X, L40S, A100, L4, A10G)."""
+        from unittest.mock import MagicMock, patch
+        from transformers.utils import (
+            get_hf_gpu_tier,
+            get_recommended_attention_backend,
+            is_a100_available,
+            is_a10g_available,
+            is_b200_available,
+            is_blackwell_available,
+            is_h100_available,
+            is_l40s_available,
+            is_l4_available,
+            is_mi300_available,
+        )
+
+        def mock_gpu(name, cap, mem_gb):
+            props = MagicMock()
+            props.total_memory = mem_gb * (1024**3)
+            return (
+                patch("transformers.utils.import_utils.is_torch_cuda_available", return_value=True),
+                patch("transformers.utils.import_utils.is_apple_silicon", return_value=False),
+                patch("transformers.utils.import_utils.is_habana_gaudi1", return_value=False),
+                patch("transformers.utils.import_utils.is_torch_hpu_available", return_value=False),
+                patch("transformers.utils.import_utils.is_torch_neuroncore_available", return_value=False),
+                patch("transformers.utils.import_utils.is_torch_npu_available", return_value=False),
+                patch("torch.cuda.device_count", return_value=1),
+                patch("torch.cuda.get_device_capability", return_value=cap),
+                patch("torch.cuda.get_device_name", return_value=name),
+                patch("torch.cuda.get_device_properties", return_value=props),
+            )
+
+        # 1. NVIDIA Blackwell B200 (192GB HBM3e)
+        p = mock_gpu("NVIDIA B200 SXM 192GB", (10, 0), 192)
+        with p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9]:
+            self.assertTrue(is_blackwell_available(0))
+            self.assertTrue(is_b200_available(0))
+            self.assertEqual(get_hf_gpu_tier(0), "b200")
+
+        # 2. NVIDIA Hopper H100 (80GB SXM5)
+        p = mock_gpu("NVIDIA H100 80GB HBM3", (9, 0), 80)
+        with p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9]:
+            self.assertTrue(is_h100_available(0))
+            self.assertEqual(get_hf_gpu_tier(0), "h100")
+
+        # 3. AMD Instinct MI300X (192GB CDNA3)
+        p = mock_gpu("AMD Instinct MI300X", (9, 4), 192)
+        with p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9]:
+            self.assertTrue(is_mi300_available(0))
+            self.assertEqual(get_hf_gpu_tier(0), "mi300x")
+
+        # 4. NVIDIA Ada Lovelace L40S (48GB)
+        p = mock_gpu("NVIDIA L40S", (8, 9), 48)
+        with p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9]:
+            self.assertTrue(is_l40s_available(0))
+            self.assertEqual(get_hf_gpu_tier(0), "l40s")
+
+        # 5. NVIDIA Ada Lovelace L4 (24GB)
+        p = mock_gpu("NVIDIA L4", (8, 9), 24)
+        with p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9]:
+            self.assertTrue(is_l4_available(0))
+            self.assertEqual(get_hf_gpu_tier(0), "l4")
+
+        # 6. NVIDIA Ampere A100 (80GB)
+        p = mock_gpu("NVIDIA A100-SXM4-80GB", (8, 0), 80)
+        with p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9]:
+            self.assertTrue(is_a100_available(0))
+            self.assertEqual(get_hf_gpu_tier(0), "a100")
+
+        # 7. NVIDIA Ampere A10G (24GB HF standard)
+        p = mock_gpu("NVIDIA A10G", (8, 6), 24)
+        with p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9]:
+            self.assertTrue(is_a10g_available(0))
+            self.assertEqual(get_hf_gpu_tier(0), "a10g")
+
+        # 8. Optimal attention backend resolution
+        backend = get_recommended_attention_backend(0)
+        self.assertIn(backend, ("flash_attention_3", "flash_attention_2", "sdpa", "eager"))

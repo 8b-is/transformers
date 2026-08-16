@@ -392,14 +392,17 @@ def is_hopper_available(device_idx: int = 0) -> bool:
     Returns True if NVIDIA Hopper architecture GPU (SM90/SM90a, compute capability 9.0+)
     such as H100, H200, or GH200 is available.
     """
-    if not is_torch_cuda_available():
+    if not is_torch_cuda_available() or is_rocm_platform():
         return False
     import torch
 
     if torch.cuda.device_count() <= device_idx:
         return False
+    device_name = torch.cuda.get_device_name(device_idx).upper()
+    if "MI" in device_name or "AMD" in device_name or "RADEON" in device_name:
+        return False
     major, _ = torch.cuda.get_device_capability(device_idx)
-    return major >= 9
+    return major == 9
 
 
 def is_h200_available(device_idx: int = 0) -> bool:
@@ -412,7 +415,7 @@ def is_h200_available(device_idx: int = 0) -> bool:
 
     device_name = torch.cuda.get_device_name(device_idx).upper()
     total_mem_gb = torch.cuda.get_device_properties(device_idx).total_memory / (1024**3)
-    return "H200" in device_name or total_mem_gb >= 130.0
+    return "H200" in device_name or (total_mem_gb >= 130.0 and "H100" not in device_name)
 
 
 def is_fp8_supported(device_idx: int = 0) -> bool:
@@ -428,6 +431,166 @@ def is_fp8_supported(device_idx: int = 0) -> bool:
         return False
     major, minor = torch.cuda.get_device_capability(device_idx)
     return (major, minor) >= (8, 9)
+
+
+def is_h100_available(device_idx: int = 0) -> bool:
+    """Returns True if an NVIDIA H100 (80GB SXM5/PCIe) GPU is detected."""
+    if not is_hopper_available(device_idx):
+        return False
+    import torch
+
+    device_name = torch.cuda.get_device_name(device_idx).upper()
+    total_mem_gb = torch.cuda.get_device_properties(device_idx).total_memory / (1024**3)
+    return "H100" in device_name and total_mem_gb < 130.0
+
+
+def is_blackwell_available(device_idx: int = 0) -> bool:
+    """Returns True if NVIDIA Blackwell architecture GPU (SM100/SM120, compute capability 10.0+) is available."""
+    if not is_torch_cuda_available():
+        return False
+    import torch
+
+    if torch.cuda.device_count() <= device_idx:
+        return False
+    major, _ = torch.cuda.get_device_capability(device_idx)
+    return major >= 10
+
+
+def is_b200_available(device_idx: int = 0) -> bool:
+    """Returns True if an NVIDIA B200 (192GB HBM3e) GPU is detected."""
+    if not is_blackwell_available(device_idx):
+        return False
+    import torch
+
+    device_name = torch.cuda.get_device_name(device_idx).upper()
+    return "B200" in device_name or "GB200" in device_name
+
+
+def is_l40s_available(device_idx: int = 0) -> bool:
+    """Returns True if an NVIDIA L40S (48GB Ada Lovelace) GPU is detected."""
+    if not is_torch_cuda_available():
+        return False
+    import torch
+
+    if torch.cuda.device_count() <= device_idx:
+        return False
+    device_name = torch.cuda.get_device_name(device_idx).upper()
+    return "L40S" in device_name or "L40" in device_name
+
+
+def is_l4_available(device_idx: int = 0) -> bool:
+    """Returns True if an NVIDIA L4 (24GB Ada Lovelace) GPU is detected."""
+    if not is_torch_cuda_available():
+        return False
+    import torch
+
+    if torch.cuda.device_count() <= device_idx:
+        return False
+    device_name = torch.cuda.get_device_name(device_idx).upper()
+    return "L4" in device_name and "L40" not in device_name
+
+
+def is_a100_available(device_idx: int = 0) -> bool:
+    """Returns True if an NVIDIA A100 (40GB/80GB Ampere SM80) GPU is detected."""
+    if not is_torch_cuda_available():
+        return False
+    import torch
+
+    if torch.cuda.device_count() <= device_idx:
+        return False
+    device_name = torch.cuda.get_device_name(device_idx).upper()
+    major, minor = torch.cuda.get_device_capability(device_idx)
+    return "A100" in device_name or (major == 8 and minor == 0)
+
+
+def is_a10g_available(device_idx: int = 0) -> bool:
+    """Returns True if an NVIDIA A10G (24GB Ampere SM86, HF standard instance) is detected."""
+    if not is_torch_cuda_available():
+        return False
+    import torch
+
+    if torch.cuda.device_count() <= device_idx:
+        return False
+    device_name = torch.cuda.get_device_name(device_idx).upper()
+    return "A10G" in device_name or "A10" in device_name
+
+
+def is_mi300_available(device_idx: int = 0) -> bool:
+    """Returns True if an AMD Instinct MI300X/MI300A (192GB CDNA3) GPU is detected."""
+    if not is_rocm_platform() and not is_torch_cuda_available():
+        return False
+    import torch
+
+    if torch.cuda.device_count() <= device_idx:
+        return False
+    device_name = torch.cuda.get_device_name(device_idx).upper()
+    return "MI300" in device_name or "GFX942" in device_name
+
+
+def get_hf_gpu_tier(device_idx: int = 0) -> str:
+    """
+    Classifies the active hardware accelerator into Hugging Face infrastructure tiers:
+    'b200', 'h200', 'h100', 'mi300x', 'l40s', 'a100', 'l4', 'a10g', 't4',
+    'apple_silicon', 'gaudi', 'neuron', or 'cpu'.
+    """
+    if is_apple_silicon():
+        return "apple_silicon"
+    if is_habana_gaudi1() or is_torch_hpu_available():
+        return "gaudi"
+    if is_torch_neuroncore_available() or is_torch_npu_available():
+        return "neuron"
+    if not is_torch_cuda_available():
+        return "cpu"
+
+    if is_b200_available(device_idx):
+        return "b200"
+    if is_mi300_available(device_idx):
+        return "mi300x"
+    if is_h200_available(device_idx):
+        return "h200"
+    if is_h100_available(device_idx):
+        return "h100"
+    if is_l40s_available(device_idx):
+        return "l40s"
+    if is_a100_available(device_idx):
+        return "a100"
+    if is_l4_available(device_idx):
+        return "l4"
+    if is_a10g_available(device_idx):
+        return "a10g"
+
+    import torch
+
+    device_name = torch.cuda.get_device_name(device_idx).upper()
+    if "T4" in device_name:
+        return "t4"
+    return "generic_cuda"
+
+
+def is_torch_sdpa_available() -> bool:
+    """Returns True if PyTorch scaled_dot_product_attention (SDPA) is available."""
+    if not is_torch_available():
+        return False
+    import torch
+
+    return hasattr(torch.nn.functional, "scaled_dot_product_attention")
+
+
+def get_recommended_attention_backend(device_idx: int = 0) -> str:
+    """
+    Returns the optimal attention implementation for the current HF GPU tier:
+    - 'flash_attention_3': for Hopper (H100/H200) & Blackwell (B200) when FA3 is installed
+    - 'flash_attention_2': for Ampere/Ada/Hopper (A100, A10G, L4, L40S, H100, H200) and AMD MI300X
+    - 'sdpa': PyTorch scaled dot-product attention (Apple Silicon, Ada fallback, CPU)
+    - 'eager': baseline fallback
+    """
+    if is_flash_attn_3_available() and (is_hopper_available(device_idx) or is_blackwell_available(device_idx)):
+        return "flash_attention_3"
+    if is_flash_attn_2_available():
+        return "flash_attention_2"
+    if is_torch_sdpa_available():
+        return "sdpa"
+    return "eager"
 
 
 def get_optimal_device() -> "torch.device":  # noqa: F821
