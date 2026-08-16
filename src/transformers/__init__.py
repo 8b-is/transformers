@@ -311,17 +311,7 @@ else:
         "convert_slow_tokenizer",
     ]
 
-try:
-    if not (is_mistral_common_available()):
-        raise OptionalDependencyNotAvailable()
-except OptionalDependencyNotAvailable:
-    from .utils import dummy_mistral_common_objects
-
-    _import_structure["utils.dummy_mistral_common_objects"] = [
-        name for name in dir(dummy_mistral_common_objects) if not name.startswith("_")
-    ]
-else:
-    _import_structure["tokenization_mistral_common"] = ["MistralCommonBackend"]
+_import_structure["tokenization_mistral_common"] = ["MistralCommonBackend"]
 
 # Vision-specific objects
 try:

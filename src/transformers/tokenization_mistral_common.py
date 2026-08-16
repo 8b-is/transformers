@@ -34,13 +34,18 @@ from transformers.tokenization_utils_base import (
     TruncationStrategy,
 )
 from transformers.utils import PaddingStrategy, TensorType, add_end_docstrings, hf_api, logging, to_py_obj
-from transformers.utils.import_utils import is_mistral_common_available, is_torch_available, requires
+from transformers.utils.import_utils import (
+    is_mistral_common_available,
+    is_torch_available,
+    requires,
+    requires_backends,
+)
 
 
 if is_mistral_common_available():
     from mistral_common.protocol.instruct.request import ChatCompletionRequest, ReasoningEffort
     from mistral_common.protocol.instruct.validator import ValidationMode
-    from mistral_common.tokens.tokenizers.base import SpecialTokenPolicy, SpecialTokens
+    from mistral_common.tokens.tokenizers.base import SpecialTokenPolicy
     from mistral_common.tokens.tokenizers.mistral import MistralTokenizer
     from mistral_common.tokens.tokenizers.tekken import Tekkenizer
     from mistral_common.tokens.tokenizers.utils import (
@@ -49,10 +54,10 @@ if is_mistral_common_available():
     )
 
     _MAP_SPECIAL_TOKENS: dict[str, str] = {
-        "bos_token": SpecialTokens.bos.value,
-        "eos_token": SpecialTokens.eos.value,
-        "pad_token": SpecialTokens.pad.value,
-        "unk_token": SpecialTokens.unk.value,
+        "bos_token": "<s>",
+        "eos_token": "</s>",
+        "pad_token": "<pad>",
+        "unk_token": "<unk>",
     }
 
 
@@ -265,6 +270,9 @@ class MistralCommonBackend(PreTrainedTokenizerBase):
                 Whether or not the model should clean up the spaces that were added when splitting the input text during the
                 tokenization process.
         """
+        if not is_mistral_common_available():
+            requires_backends(self, ["mistral-common"])
+
         if kwargs and not set(kwargs.keys()).issubset(_VALID_INIT_KWARGS):
             raise ValueError(f"Kwargs {list(kwargs.keys())} are not supported to init `MistralCommonBackend`.")
 
