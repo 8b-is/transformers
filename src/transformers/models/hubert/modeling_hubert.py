@@ -80,7 +80,7 @@ class HubertPositionalConvEmbedding(nn.Module):
         self.padding = HubertSamePadLayer(config.num_conv_pos_embeddings)
         self.activation = ACT2FN[config.feat_extract_activation]
 
-    def forward(self, hidden_states):
+    def forward(self, hidden_states, padding_mask=None):
         hidden_states = hidden_states.transpose(1, 2)
         if self.batch_norm is not None:
             hidden_states = self.batch_norm(hidden_states)
@@ -89,6 +89,8 @@ class HubertPositionalConvEmbedding(nn.Module):
         hidden_states = self.activation(hidden_states)
 
         hidden_states = hidden_states.transpose(1, 2)
+        if padding_mask is not None:
+            hidden_states[padding_mask] = 0.0
         return hidden_states
 
 

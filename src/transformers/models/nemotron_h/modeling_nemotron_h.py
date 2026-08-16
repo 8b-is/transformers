@@ -415,6 +415,7 @@ class NemotronHMamba2Mixer(nn.Module):
 
         self.layer_type = config.layer_types[layer_idx]
         self.use_mem_eff_path = True
+        self.use_mamba_kernels = getattr(config, "use_mamba_kernels", True)
 
     @torch.no_grad()
     def init_nemotron_h_mamba2_weights(self):
