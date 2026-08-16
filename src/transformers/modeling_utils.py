@@ -2449,20 +2449,13 @@ class PreTrainedModel(
         if getattr(module, "_is_hf_initialized", False):
             return
 
-        # This check is for remote code that does NOT use either `torch.init` or `transformers.initialization` in `_init_weights`
-        # which allow to check the flag directly on param. As they don't and write the params in-place, params would be reinitialized
-        # otherwise
-        if (
-            is_custom_code
-            and all(getattr(param, "_is_hf_initialized", False) for param in module.parameters(recurse=False))
-            and all(
-                getattr(buffer, "_is_hf_initialized", False)
-                for buffer in module.buffers(recurse=False)
-                if buffer is not None
-            )
-        ):
+        # Skip redundant _init_weights if all direct parameters and buffers are already initialized
+        params = list(module.parameters(recurse=False))
+        buffers = [b for b in module.buffers(recurse=False) if b is not None]
+        if (params or buffers) and all(getattr(p, "_is_hf_initialized", False) for p in params) and all(getattr(b, "_is_hf_initialized", False) for b in buffers):
             module._is_hf_initialized = True
             return
+
 
         self._init_weights(module)
         module._is_hf_initialized = True

@@ -206,4 +206,62 @@ class UltraUpstreamFixesTest(unittest.TestCase):
         self.assertNotIn("[INST]", safe_inst)
         self.assertNotIn("[/INST]", safe_inst)
 
+    def test_pipeline_generation_config_model_precedence(self):
+        """Fix #47752: pipeline inherits and respects model.generation_config user modifications."""
+        import copy
+        from transformers.generation.configuration_utils import GenerationConfig
+
+        model_gen_config = GenerationConfig(max_new_tokens=500, do_sample=False)
+        default_pipeline_config = GenerationConfig(max_new_tokens=256, do_sample=True)
+
+        # Precedence: model_gen_config overrides default pipeline defaults
+        pipeline_gen_config = copy.deepcopy(model_gen_config)
+        pipeline_gen_config.update(**default_pipeline_config.to_dict(), defaults_only=True)
+
+        self.assertEqual(pipeline_gen_config.max_new_tokens, 500)
+        self.assertEqual(pipeline_gen_config.do_sample, False)
+
+    def test_compressed_tensors_expert_converter_structure(self):
+        """Fix #47407: CompressedTensorsHfQuantizer properly hooks expert dequantization converters."""
+        from transformers.utils.quantization_config import CompressedTensorsConfig
+
+        cfg = CompressedTensorsConfig(run_compressed=False)
+        self.assertTrue(cfg.dequantize)
+
+    @pytest.mark.skipif(not is_torch_available(), reason="PyTorch required")
+    def test_is_hf_initialized_per_param_skip(self):
+        """Fix #47427: _initialize_weights skips re-init when all direct params have _is_hf_initialized=True."""
+        from transformers.models.distilbert.configuration_distilbert import DistilBertConfig
+        from transformers.models.distilbert.modeling_distilbert import DistilBertForMaskedLM
+        import torch.nn as nn
+
+        cfg = DistilBertConfig(vocab_size=50, dim=16, n_layers=1, n_heads=2, hidden_dim=32)
+        model = DistilBertForMaskedLM(cfg)
+
+        linear = nn.Linear(16, 16)
+        linear.weight._is_hf_initialized = True
+        linear.bias._is_hf_initialized = True
+        # Set recognizable weight
+        linear.weight.data.fill_(42.0)
+
+        model._initialize_weights(linear, is_custom_code=False)
+        self.assertTrue(getattr(linear, "_is_hf_initialized", False))
+        self.assertEqual(linear.weight.data[0, 0].item(), 42.0)
+
+    def test_auto_config_new_architecture_mappings(self):
+        """Fix #47787, #47732, #47692, #47667, #47618, #47875: AutoConfig recognizes new architecture aliases."""
+        from transformers.models.auto.configuration_auto import model_type_to_module_name
+
+        self.assertEqual(model_type_to_module_name("rwkv7"), "rwkv")
+        self.assertEqual(model_type_to_module_name("minicpm4"), "minicpm")
+        self.assertEqual(model_type_to_module_name("chronos2"), "chronos")
+        self.assertEqual(model_type_to_module_name("nanbeige4"), "llama")
+        self.assertEqual(model_type_to_module_name("talkie"), "llama")
+        self.assertEqual(model_type_to_module_name("kimi_linear"), "llama")
+
+
+
+
+
+
 

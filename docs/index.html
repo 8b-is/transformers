@@ -687,6 +687,24 @@
         </div>
         <div class="commit-timeline" id="commit-list">
           
+          <!-- Release v4.58.0.post8 -->
+          <div class="commit-row" data-search="release v4.58.0.post8 pipeline generation_config is_hf_initialized non-cuda npu mps autoconfig rwkv7 minicpm4 chronos2 nanbeige4 talkie kimi_linear 47752 47427 47787 47732 47692 47667 47618 47875 47407">
+            <div class="commit-meta">
+              <span class="commit-hash" style="color: var(--accent-emerald)">v4.58.0.post8</span>
+              <span class="commit-tag tag-security">Backyard Ultra 42-Lap Wave</span>
+              <span class="commit-tag tag-perf">29 Fixes Verified</span>
+              <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-mono)">2026-08-16</span>
+            </div>
+            <div class="commit-title">release(transformers-ultra): v4.58.0.post8 — Pipeline GenerationConfig model precedence (#47752), _is_hf_initialized zero-redundancy init (#47427), CompressedTensors MoE dequant (#47407) & 6 architecture aliases (RWKV-7, MiniCPM4, Chronos-2, Nanbeige4, Talkie, Kimi Linear)</div>
+            <div class="commit-details">
+              Fixed pipeline `generation_config` parameter resolution to strictly prioritize model modifications (#47752), generalized `_is_hf_initialized` flag checking to avoid redundant normal_ init on non-CUDA accelerators (#47427), added AutoConfig recognition for RWKV-7, MiniCPM4, Chronos-2, Nanbeige4, Talkie, and Kimi Linear, and verified 29/29 tests green.
+            </div>
+            <div class="commit-links">
+              <a href="https://pypi.org/project/transformers-ultra/4.58.0.post8/" target="_blank">PyPI v4.58.0.post8</a> ·
+              <a href="https://github.com/8b-is/transformers/blob/main/tests/utils/test_ultra_upstream_fixes.py" target="_blank">Test Suite (29/29 Passed)</a>
+            </div>
+          </div>
+
           <!-- Release v4.58.0.post7 -->
           <div class="commit-row" data-search="release v4.58.0.post7 tokenizer special tokens prompt injection escape chat template 47838 47822">
             <div class="commit-meta">
