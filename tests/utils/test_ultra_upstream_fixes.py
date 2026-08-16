@@ -259,6 +259,16 @@ class UltraUpstreamFixesTest(unittest.TestCase):
         self.assertEqual(model_type_to_module_name("talkie"), "llama")
         self.assertEqual(model_type_to_module_name("kimi_linear"), "llama")
 
+    def test_nemotron_h_use_mamba_kernels_flag(self):
+        """Fix #47577: NemotronHMamba2Mixer respects use_mamba_kernels=False config flag."""
+        from transformers.models.nemotron_h.configuration_nemotron_h import NemotronHConfig
+        from transformers.models.nemotron_h.modeling_nemotron_h import NemotronHMamba2Mixer
+
+        config = NemotronHConfig(use_mamba_kernels=False, mamba_num_heads=2, mamba_head_dim=16, hidden_size=32)
+        mixer = NemotronHMamba2Mixer(config, layer_idx=0, initialize_mixer_weights=False)
+        self.assertFalse(mixer.use_mamba_kernels)
+
+
 
 
 

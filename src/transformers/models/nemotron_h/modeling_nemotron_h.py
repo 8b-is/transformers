@@ -415,6 +415,7 @@ class NemotronHMamba2Mixer(nn.Module):
 
         self.layer_type = config.layer_types[layer_idx]
         self.use_mem_eff_path = True
+        self.use_mamba_kernels = getattr(config, "use_mamba_kernels", True)
 
     @torch.no_grad()
     def init_nemotron_h_mamba2_weights(self):
@@ -441,8 +442,9 @@ class NemotronHMamba2Mixer(nn.Module):
 
         A = -torch.exp(self.A_log.float())
         fused_kwargs = kwargs | {"dt_limit": self.time_step_limit}
-        if self.training and cache_params is None:
+        if self.use_mamba_kernels and self.training and cache_params is None:
             fused_output = mamba2_split_conv1d_scan_combined(
+
                 projected_states,
                 self.conv1d.weight.squeeze(1),
                 self.conv1d.bias,
