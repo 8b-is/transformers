@@ -46,6 +46,7 @@ limitations under the License.
   - [13. 🌊 MEM8 Wave-Interference Associative Memory (`hf-mac`)](#13-mem8-wave-interference-associative-memory-hf-mac)
   - [14. 🏎️ Hot Path Zero-Overhead Generation (>2.2× Speedup)](#14-hot-path-zero-overhead-generation-22-speedup)
   - [15. 🐍 Modern Python 3.11+ / 3.12+ / 3.13 Runtime Architecture](#15-modern-python-311--312--313-runtime-architecture)
+  - [16. 📐 High-Performance Sparse Linear Algebra Engine (`sparsemat/sprs`)](#16--high-performance-sparse-linear-algebra-engine-sparsematsprs)
 - [📦 Quick Installation](#-quick-installation)
 - [🧪 Verifying the Test Suite](#-verifying-the-test-suite)
 - [📜 License & Sovereign Heritage](#-license--sovereign-heritage)
@@ -522,6 +523,32 @@ Expand each modality below to see a few example models for various use cases.
 - Text classification with [Qwen](https://huggingface.co/Qwen/Qwen2.5-0.5B)
 
 </details>
+
+---
+
+### 16. 📐 High-Performance Sparse Linear Algebra Engine (`sparsemat/sprs`)
+
+[`sparsemat/sprs`](https://github.com/sparsemat/sprs) is the official sparse linear algebra foundation for `transformers-ultra` and the sovereign constellation:
+
+* **Compressed Sparse Row (CSR) & Column (CSC) Structures**:
+  Enables zero-allocation Sparse Matrix Multiplication ($\text{SpMM}$) and Sparse Matrix-Vector Multiplication ($\text{SpMV}$) for token positions pruned by the **DYAD Asymmetric Loss Modulation Engine**.
+* **$O(\text{nnz})$ Linear Scalability**:
+  When context masks are pruned to 10%–30% density, `sprs` representation cuts attention FLOPs from $O(N^2)$ to $O(\text{nnz})$, eliminating memory bandwidth bottlenecks.
+* **Ternary BitNet 1.58b Structural Sparsity**:
+  Leverages zero-weight sparsity in ternary networks ($\{-1, 0, +1\}$) to skip arithmetic operations entirely, using `sprs` compressed index traversal.
+
+```rust
+use sprs::{CsMatI, TriMatI};
+
+// Constructing a DYAD sparse attention mask kernel (O(nnz) compute)
+let mut tri = TriMatI::<f32, u32>::new((seq_len, seq_len));
+for (row, col, weight) in dyad_sparse_entries {
+    tri.add_triplet(row, col, weight);
+}
+let csr_attention_mask: CsMatI<f32, u32> = tri.to_csr();
+```
+
+---
 
 ## Citation
 
