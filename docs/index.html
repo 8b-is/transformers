@@ -702,6 +702,23 @@
         </div>
         <div class="commit-timeline" id="commit-list">
           
+          <!-- Release v4.58.0.post12 -->
+          <div class="commit-row" data-search="release v4.58.0.post12 speculativefastrunner speculative decoding metal msl simdgroup matrix bitnet fp8 apple silicon m1 m2 m3 m4">
+            <div class="commit-meta">
+              <span class="commit-hash" style="color: var(--accent-emerald)">v4.58.0.post12</span>
+              <span class="commit-tag tag-security">Backyard Ultra Lap 100+</span>
+              <span class="commit-tag tag-perf">Speculative Engine & Metal MSL</span>
+              <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-mono)">2026-08-17</span>
+            </div>
+            <div class="commit-title">feat(speculative+metal): SpeculativeFastRunner Zero-Allocation Acceptance & Apple Silicon Metal (MSL) Simdgroup Matrix Kernels</div>
+            <div class="commit-details">
+              Implemented `SpeculativeFastRunner` paired draft-target speculation with pre-allocated slotted acceptance trees and O(1) cache rollbacks via `SlottedStaticCache.crop()`, alongside native Apple Silicon Metal Shading Language (MSL) compute shaders (`METAL_BITNET_TERNARY_GEMM_MSL`, `METAL_FP8_DYNAMIC_GEMM_MSL`, `metal_bitnet_matmul`, `metal_fp8_matmul`, `MetalBitNetLinear`, `MetalFp8Linear`).
+            </div>
+            <div class="commit-links">
+              <a href="https://github.com/8b-is/transformers/blob/main/tests/utils/test_ultra_upstream_fixes.py" target="_blank">Test Suite (32/32 Passed)</a>
+            </div>
+          </div>
+          
           <!-- Release v4.58.0.post11 -->
           <div class="commit-row" data-search="release v4.58.0.post11 slottedstaticcache cuda graph fast runner fused logits sampler zero allocation decoding in register sampling">
             <div class="commit-meta">
