@@ -26,13 +26,14 @@ Derived from the DYAD / kompress-v8 research paper (https://kompress.vaked.dev/p
 from __future__ import annotations
 
 import re
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .slotted_cache import SlottedStaticCache
+if TYPE_CHECKING:
+    from .slotted_cache import SlottedStaticCache
 
 # Mechanism B: Critical-syntactic token pattern (Identifiers, Paths, Flags, Hex, Exit codes)
 MUST_KEEP_PATTERN: re.Pattern = re.compile(
