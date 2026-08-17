@@ -20,6 +20,33 @@ limitations under the License.
 > Maintained with love by **[8b-is](https://github.com/8b-is)** & Peter Lodri.  
 > PyPI: [`transformers-ultra`](https://pypi.org/project/transformers-ultra/) · Web: **[transformers.vaked.dev](https://transformers.vaked.dev/)** · Sovereign CI: Trusted GitHub Actions.
 
+<p align="center">
+  <img src="docs/assets/hero.jpg" alt="transformers-ultra hardware inference engine" width="100%" style="border-radius: 14px; box-shadow: 0 20px 60px rgba(0, 240, 255, 0.2);">
+</p>
+
+---
+
+## 📑 Table of Contents
+
+- [📖 The Origin Story: Why `transformers-ultra` Exists](#-the-origin-story-why-transformers-ultra-exists)
+- [🛡️ Sovereign Hard Fork & Downstream Upgrades](#️-sovereign-hard-fork--downstream-upgrades)
+- [🚀 What's New in `transformers-ultra`](#-whats-new-in-transformers-ultra)
+  - [1. 🏎️ 1+2+3 Ultra-Hot-Path Inference Acceleration Trio](#1-️-123-ultra-hot-path-inference-acceleration-trio)
+  - [2. 🌳 Non-Linear Tree-Based Speculative Drafting Engine (`MedusaTreeFastRunner`)](#2--non-linear-tree-based-speculative-drafting-engine-medusatreefastrunner)
+  - [3. ⚡ Split-KV Flash-Decoding for 32k+ Long Context (`split_kv_decode_attention`)](#3--split-kv-flash-decoding-attention-for-32k-long-context-split_kv_decode_attention)
+  - [4. 🔮 Zero-Allocation Speculative Fast Runner (`SpeculativeFastRunner`)](#4--zero-allocation-speculative-decoding-engine-speculativefastrunner)
+  - [5. 🍎 Apple Silicon Metal (MSL) Simdgroup Matrix Kernels (`metal_msl_kernels`)](#5--apple-silicon-metal-msl-simdgroup-matrix-kernels-metal_msl_kernels)
+  - [6. ⚡ NVIDIA FP8 & Hopper/Blackwell 128-Byte TMA Engine](#6--nvidia-fp8--hopperblackwell-128-byte-tma-engine)
+  - [7. 🍏 Apple Silicon UMA & Top Hugging Face GPU Matrix](#7--apple-silicon-uma--top-hugging-face-gpu-fleet-intelligence)
+  - [8. 🚀 High-Throughput Memory Allocators & Zero-Pause GC Tuning](#8--high-throughput-memory-allocators--zero-pause-gc-tuning-memory_tuning)
+  - [9. 💎 2-Bit / 1.58-Bit Ternary Packing (`MLX-QUANT`)](#9-2-bit--158-bit-ternary-packing-mlx-quant)
+  - [10. 🌊 MEM8 Wave-Interference Associative Memory (`hf-mac`)](#10-mem8-wave-interference-associative-memory-hf-mac)
+  - [11. 🏎️ Hot Path Zero-Overhead Generation (>2.2× Speedup)](#11-hot-path-zero-overhead-generation-22-speedup)
+  - [12. 🐍 Modern Python 3.11+ / 3.12+ / 3.13 Runtime Architecture](#12-modern-python-311--312--313-runtime-architecture)
+- [📦 Quick Installation](#-quick-installation)
+- [🧪 Verifying the Test Suite](#-verifying-the-test-suite)
+- [📜 License & Sovereign Heritage](#-license--sovereign-heritage)
+
 ---
 
 ### 📖 The Origin Story: Why `transformers-ultra` Exists
@@ -142,30 +169,30 @@ What a weird world. But open source belongs to no single gatekeeper. We didn't c
    - Direct C ABI structure (`CUtensorMapStruct`) and in-place zero-allocation buffer packing (`TmaDescriptor.pack_into`).
    - Hardware-accelerated FP8 GEMM via `torch._scaled_mm` with fast accumulation and dynamic scaling (`fp8_dynamic_quantize`).
    - Full AutoQuantizer pipeline integration (`NvidiaFp8TmaConfig`, `NvidiaFp8TmaHfQuantizer`).
-3. **🍏 Apple Silicon UMA & Top Hugging Face GPU Fleet Intelligence**:
+7. **🍏 Apple Silicon UMA & Top Hugging Face GPU Fleet Intelligence**:
    - Native Darwin ARM64 detection, zero-copy Unified Memory Architecture query (`sysctl hw.memsize`), MPS cache flushing (`torch.mps.empty_cache()`), and MLX availability resolver.
    - Comprehensive compute tier classifier (`get_hf_gpu_tier`): B200, H200, H100, MI300X, L40S, A100, L4, A10G, T4, Apple Silicon, Gaudi, and Neuron.
    - Automated attention backend resolution (`get_recommended_attention_backend` -> `flash_attention_3`, `flash_attention_2`, `sdpa`, `eager`).
-4. **🚀 High-Throughput Memory Allocators & Zero-Pause GC Tuning (`memory_tuning`)**:
+8. **🚀 High-Throughput Memory Allocators & Zero-Pause GC Tuning (`memory_tuning`)**:
    - `mimalloc` and `jemalloc` automatic process detection and low-latency environment tuning (`MIMALLOC_LARGE_OS_PAGES=1`, `PYTORCH_CUDA_ALLOC_CONF="expandable_segments:True"`).
    - Generational GC object freezing (`gc.freeze()`) to skip weight graph scans during inference.
    - `no_gc_cycle()` context manager to eliminate stop-the-world GC pauses during token generation loops.
    - `FastTmaBufferPool` for zero-allocation C buffer acquisition and recycling.
-5. **2-Bit / 1.58-Bit Ternary Packing ([`MLX-QUANT`](https://github.com/peterlodri-sec/MLX-QUANT))**:
+9. **2-Bit / 1.58-Bit Ternary Packing ([`MLX-QUANT`](https://github.com/peterlodri-sec/MLX-QUANT))**:
    - Ported native ternary bitmask packing & unpacking (`quantize_ternary_numpy`, `unpack_ternary_numpy`) in [`src/transformers/integrations/bitnet_mlx.py`](src/transformers/integrations/bitnet_mlx.py) ([commit `476ebc6`](https://github.com/8b-is/transformers/commit/476ebc6380)).
    - Native Apple Silicon `MPS` accelerator detection and memory view optimizations in [`src/transformers/quantizers/quantizer_bitnet.py`](src/transformers/quantizers/quantizer_bitnet.py).
-6. **MEM8 Wave-Interference Associative Memory ([`hf-mac`](https://github.com/peterlodri-sec/hf-mac))**:
+10. **MEM8 Wave-Interference Associative Memory ([`hf-mac`](https://github.com/peterlodri-sec/hf-mac))**:
    - Neural wave interference memory engine (`MEM8Wave`, `MEM8MemoryStore`) operating across four distinct cognitive frequency bands (Math $\Gamma$, Code $\text{B}$, Reasoning $\text{A}$, General $\Theta$) in [`src/transformers/integrations/mem8_wave.py`](src/transformers/integrations/mem8_wave.py) ([commit `476ebc6`](https://github.com/8b-is/transformers/commit/476ebc6380)).
-7. **Hot Path Zero-Overhead Generation (>2.2× Speedup)**:
+11. **Hot Path Zero-Overhead Generation (>2.2× Speedup)**:
    - Eliminated per-token `inspect.signature` AST parsing in `LogitsProcessorList.__call__` via class-level signature caching (`_cached_signatures`) in [`src/transformers/generation/logits_process.py`](src/transformers/generation/logits_process.py) ([commit `476ebc6`](https://github.com/8b-is/transformers/commit/476ebc6380)).
    - Dimension-guarded RoPE embeddings across Llama, Gemma, Gemma2, Starcoder2, Mixtral, Cohere, Phi3, and GPT-NeoX in [`src/transformers/models/`](src/transformers/models/) to eliminate redundant `unsqueeze` memory view allocations ([commit `f736202`](https://github.com/8b-is/transformers/commit/f736202a6a)).
    - Dynamic KV Cache prefill bypasses `torch.cat` on empty tensors for direct tensor assignment in [`src/transformers/cache_utils.py`](src/transformers/cache_utils.py) ([commit `476ebc6`](https://github.com/8b-is/transformers/commit/476ebc6380)).
-8. **Modern Python 3.11+ / 3.12+ / 3.13 Runtime Architecture**:
+12. **Modern Python 3.11+ / 3.12+ / 3.13 Runtime Architecture**:
    - Modernized baseline to Python 3.11+ (`target-version = "py311"`, `python_requires = ">=3.11.0"`).
    - Replaced bloated dynamic dictionaries with `__slots__` memory layouts across wave states and descriptors, dropping per-object memory overhead by up to 50%.
    - Integrated `StrEnum` for zero-overhead string enum comparisons and structural `match/case` pattern matching.
    - Thread-safe synchronization on memory stores for native Python 3.13 free-threaded (`nogil`) execution.
-8. **Pydantic v2 Ingress & Slotted Dataclass Fast-Path Engine**:
+13. **Pydantic v2 Ingress & Slotted Dataclass Fast-Path Engine**:
    - Rust-core Pydantic v2 validation schemas (`UltraGenerationConfigSchema`, `UltraQuantizationConfigSchema`) for strict, rapid ingress deserialization.
    - Zero-overhead `@dataclass(slots=True, kw_only=True)` inference containers (`UltraFastCausalLMOutput`) for lightning-fast pattern matching in model outputs.
 
