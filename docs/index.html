@@ -213,6 +213,131 @@
       color: var(--text-main);
     }
 
+    /* Hero Banner Image */
+    .hero-banner-wrap {
+      max-width: 1120px;
+      margin: 40px auto 48px auto;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      box-shadow: 0 20px 60px rgba(0, 240, 255, 0.12), 0 0 100px rgba(0, 0, 0, 0.8);
+      position: relative;
+      background: #06080d;
+    }
+
+    .hero-banner-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hero-banner-wrap:hover .hero-banner-img {
+      transform: scale(1.02);
+    }
+
+    .hero-banner-badge {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      background: rgba(6, 8, 13, 0.88);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--accent-cyan);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
+      animation: pulse 1.5s infinite;
+    }
+
+    /* Table of Contents (ToC) Index */
+    .toc-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 24px;
+      margin: 0 auto 60px auto;
+      max-width: 1120px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(12px);
+    }
+
+    .toc-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .toc-icon {
+      font-size: 1.2rem;
+      color: var(--accent-cyan);
+    }
+
+    .toc-title {
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    .toc-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+      transition: all 0.2s ease;
+    }
+
+    .toc-item:hover {
+      background: rgba(0, 240, 255, 0.08);
+      border-color: rgba(0, 240, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .toc-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      letter-spacing: 0.05em;
+    }
+
+    .toc-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .toc-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
     /* WebGPU Classroom Training Visualizer Canvas */
     .visualizer-section {
       margin: 40px 0 80px 0;
@@ -597,6 +722,60 @@
         <code>$ pip install transformers-ultra</code>
         <button class="copy-btn" onclick="navigator.clipboard.writeText('pip install transformers-ultra'); this.innerText='Copied!'; setTimeout(()=>this.innerText='Copy', 2000)">Copy</button>
       </div>
+
+      <!-- Hero Visual Banner -->
+      <div class="hero-banner-wrap">
+        <img src="assets/hero.jpg" alt="Transformers Ultra Hardware Inference Engine" class="hero-banner-img">
+        <div class="hero-banner-badge">
+          <span class="pulse-dot"></span>
+          Zero-Allocation Hardware Acceleration Active
+        </div>
+      </div>
+
+      <!-- Table of Contents (ToC) Index -->
+      <nav class="toc-container" id="toc">
+        <div class="toc-header">
+          <span class="toc-icon">⚡</span>
+          <span class="toc-title">Table of Contents · Architecture & Engineering Matrix</span>
+        </div>
+        <div class="toc-grid">
+          <a href="#trio" class="toc-item">
+            <span class="toc-tag">HOT-PATH</span>
+            <span class="toc-name">1+2+3 Inference Trio</span>
+            <span class="toc-desc">&lt;5µs CUDA Graphs, Slotted KV Cache, Fused Sampling</span>
+          </a>
+          <a href="#tree-speculation" class="toc-item">
+            <span class="toc-tag" style="color: var(--accent-emerald)">MEDUSA / EAGLE</span>
+            <span class="toc-name">Tree Speculative Drafting</span>
+            <span class="toc-desc">2D Causal Masks & Parallel Branch Verification</span>
+          </a>
+          <a href="#split-kv" class="toc-item">
+            <span class="toc-tag" style="color: var(--accent-cyan)">FLASH-DECODING</span>
+            <span class="toc-name">Split-KV 32k+ Attention</span>
+            <span class="toc-desc">SM Split Partitioning & Online Log-Sum-Exp</span>
+          </a>
+          <a href="#metal-msl" class="toc-item">
+            <span class="toc-tag" style="color: var(--accent-amber)">APPLE SILICON</span>
+            <span class="toc-name">Metal MSL Simdgroup</span>
+            <span class="toc-desc">1.58-Bit Ternary & FP8 Dynamic GEMM</span>
+          </a>
+          <a href="#nvidia-tma" class="toc-item">
+            <span class="toc-tag" style="color: var(--accent-rose)">NVIDIA SM90/100</span>
+            <span class="toc-name">128-Byte TMA & FP8</span>
+            <span class="toc-desc">Hopper/Blackwell ABI & Mimalloc GC Freezing</span>
+          </a>
+          <a href="#visualizer" class="toc-item">
+            <span class="toc-tag" style="color: var(--accent-indigo)">WEBGPU / CANVAS</span>
+            <span class="toc-name">SOTA Visualizer</span>
+            <span class="toc-desc">Real-Time Cognitive Band Swarm</span>
+          </a>
+          <a href="#ledger" class="toc-item">
+            <span class="toc-tag" style="color: var(--accent-emerald)">RELEASE LEDGER</span>
+            <span class="toc-name">Commit Ledger</span>
+            <span class="toc-desc">v4.58.0.post13 & Append-Only Log</span>
+          </a>
+        </div>
+      </nav>
     </section>
 
     <!-- SOTA Classroom Training Run Visualizer -->
@@ -642,12 +821,27 @@
       <h2 class="section-title">⚡ Architectural Innovations</h2>
       <p class="section-subtitle">Engineered from ground up for maximum throughput and mathematical purity.</p>
       <div class="features-grid">
-        <div class="feature-card">
+        <div class="feature-card" id="trio">
           <div class="feature-icon">🏎️</div>
           <h3>1+2+3 Hot-Path Inference Trio</h3>
           <p><code>SlottedStaticCache</code> for zero-allocation in-place slice KV caching, <code>CUDAGraphFastRunner</code> for &lt;5µs token forward dispatch, and <code>FusedLogitsSampler</code> for $O(K)$ in-register sampling.</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card" id="tree-speculation">
+          <div class="feature-icon">🌳</div>
+          <h3>Tree-Based Speculative Drafting</h3>
+          <p><code>MedusaTreeFastRunner</code> and <code>MedusaTreeTopology</code> verify non-linear candidate token trees with pre-computed 2D causal visibility masks in a single target model forward pass with $O(1)$ rollback.</p>
+        </div>
+        <div class="feature-card" id="split-kv">
+          <div class="feature-icon">🌊</div>
+          <h3>Split-KV Flash-Decoding (32k+)</h3>
+          <p><code>split_kv_decode_attention</code> partitions long sequence dimensions into parallel GPU SM splits (<code>BLOCK_N=512</code>) with online log-sum-exp reduction, maximizing occupancy during single-query decoding.</p>
+        </div>
+        <div class="feature-card" id="metal-msl">
+          <div class="feature-icon">🍎</div>
+          <h3>Apple Silicon Metal MSL Simdgroup</h3>
+          <p>Native Metal Shading Language compute shaders (<code>METAL_BITNET_TERNARY_GEMM_MSL</code>, <code>METAL_FP8_DYNAMIC_GEMM_MSL</code>) for 16-trit per uint32 unpacking, 1.58-bit BitNet, and hardware FP8 GEMM.</p>
+        </div>
+        <div class="feature-card" id="nvidia-tma">
           <div class="feature-icon">⚡</div>
           <h3>NVIDIA FP8 & 128-Byte TMA Engine</h3>
           <p>Native 128-byte hardware <code>CUtensorMap</code> layout for Hopper (H100/H200 SM90+) and Blackwell (B200 SM100+), with direct C ABI structure, in-place packing, and <code>torch._scaled_mm</code> FP8 GEMM acceleration.</p>
@@ -663,7 +857,7 @@
           <p>Auto-detection of high-throughput allocators (<code>mimalloc</code>/<code>jemalloc</code>), large OS page tuning, permanent object freezing via <code>gc.freeze()</code>, and <code>no_gc_cycle()</code> zero-pause token loops.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🌊</div>
+          <div class="feature-icon">🔮</div>
           <h3>MEM8 Wave Interference</h3>
           <p>Associative recall across 4 cognitive frequency bands (Math Γ, Code B, Logic A, General Θ) operating in $O(1)$ memory without re-evaluating deep transformer layers.</p>
         </div>
@@ -673,7 +867,7 @@
           <p>Hardware-accelerated bitmask packing and unpacking routines ported from MLX-QUANT and BitNet b1.58 for ultra-compact LLM weights and integer matrix multiplication.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🏎️</div>
+          <div class="feature-icon">⚡</div>
           <h3>>2.2× Hot Path Acceleration</h3>
           <p>Eliminated per-token <code>inspect.signature</code> reflection in <code>LogitsProcessorList</code>, dimension-guarded RoPE embeddings, and bypassed <code>torch.cat</code> on empty prefill caches.</p>
         </div>
