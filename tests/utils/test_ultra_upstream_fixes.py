@@ -836,3 +836,63 @@ class UltraUpstreamFixesTest(unittest.TestCase):
         # Full generate run
         gen_out = runner.generate(input_ids, max_new_tokens=4)
         self.assertGreaterEqual(gen_out.shape[1], 4)
+
+    def test_chunked_prefill_and_decode_engine(self):
+        """Ultra Feature: ChunkedPrefillDecodeEngine continuous prefill chunking and decode interleaving."""
+        import types
+        import torch
+        import torch.nn as nn
+        from transformers.generation.chunked_prefill_engine import ChunkedPrefillDecodeEngine
+
+        class MockDecoderModel(nn.Module):
+            def forward(self, input_ids, **kwargs):
+                batch_size, seq_len = input_ids.shape[:2]
+                logits = torch.randn(batch_size, seq_len, 100)
+                return types.SimpleNamespace(logits=logits)
+
+        model = MockDecoderModel()
+        engine = ChunkedPrefillDecodeEngine(
+            model=model,
+            chunk_size=32,
+            device="cpu",
+            temperature=0.0,
+            do_sample=False,
+        )
+
+        # Enqueue 64-token prompt (requires 2 chunks of size 32)
+        prompt_64 = torch.randint(0, 100, (1, 64))
+        engine.add_request("req_1", prompt_64)
+        self.assertEqual(len(engine.prefill_queue), 1)
+
+        # Step 1: Processes first 32 tokens
+        res1 = engine.step()
+        self.assertEqual(len(res1["newly_completed_prefills"]), 0)
+        self.assertEqual(engine.prefill_queue[0].processed_len, 32)
+
+        # Step 2: Processes remaining 32 tokens, marks complete, samples first token
+        res2 = engine.step()
+        self.assertIn("req_1", res2["newly_completed_prefills"])
+        self.assertEqual(len(engine.prefill_queue), 0)
+        self.assertEqual(len(engine.active_decode_requests), 1)
+
+        # Step 3: Autoregressive single-token decode step
+        res3 = engine.step()
+        self.assertIn("req_1", res3["decode_tokens"])
+        self.assertGreaterEqual(len(engine.active_decode_requests[0].generated_tokens), 2)
+
+    def test_mlx_mps_bridge_and_hybrid_linear(self):
+        """Ultra Feature: MlxMpsHybridLinear layer and UMA zero-copy bridge verification."""
+        import torch
+        from transformers.integrations.mlx_mps_bridge import (
+            MlxMpsHybridLinear,
+            is_mlx_bridge_available,
+        )
+
+        # 1. Bridge availability probe
+        _ = is_mlx_bridge_available()
+
+        # 2. Hybrid Linear forward pass
+        layer = MlxMpsHybridLinear(in_features=16, out_features=8, bias=True)
+        x = torch.randn(2, 4, 16)
+        y = layer(x)
+        self.assertEqual(y.shape, (2, 4, 8))

@@ -105,6 +105,10 @@ else:
         "MedusaTreeStepResult",
         "MedusaTreePath",
     ]
+    _import_structure["chunked_prefill_engine"] = [
+        "ChunkedPrefillDecodeEngine",
+        "PrefillRequestState",
+    ]
     _import_structure["continuous_batching"] = [
         "ContinuousBatchingManager",
         "ContinuousMixin",

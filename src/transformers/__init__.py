@@ -328,6 +328,12 @@ _import_structure = {
         "metal_fp8_matmul",
     ],
     "integrations.flashinfer_split_kv": ["split_kv_decode_attention"],
+    "integrations.mlx_mps_bridge": [
+        "MlxMpsHybridLinear",
+        "is_mlx_bridge_available",
+        "mlx_to_torch",
+        "torch_to_mlx",
+    ],
     "generation.cuda_graph_runner": ["CUDAGraphFastRunner", "is_cuda_graph_available"],
     "generation.fused_sampler": ["FusedLogitsSampler", "fused_sample_next_token"],
     "generation.speculative_fast_runner": ["SpeculativeFastRunner", "SpeculativeStepResult"],
@@ -336,6 +342,10 @@ _import_structure = {
         "MedusaTreePath",
         "MedusaTreeStepResult",
         "MedusaTreeTopology",
+    ],
+    "generation.chunked_prefill_engine": [
+        "ChunkedPrefillDecodeEngine",
+        "PrefillRequestState",
     ],
     "video_utils": [],
 }
