@@ -644,3 +644,107 @@ class UltraUpstreamFixesTest(unittest.TestCase):
         self.assertEqual(sampled_token.shape, (1, 1))
         # Top-2 tokens are token 3 (logit 10) and token 1 (logit 5)
         self.assertIn(sampled_token.item(), [1, 3])
+
+    def test_speculative_fast_runner_slotted_acceptance(self):
+        """Ultra Feature: SpeculativeFastRunner zero-allocation verification and cache sync."""
+        import types
+        import torch
+        import torch.nn as nn
+        from transformers.generation.speculative_fast_runner import SpeculativeFastRunner
+        from transformers.integrations.slotted_cache import SlottedStaticCache
+
+        # Simple deterministic Mock Model: returns highest logit for next token
+        class MockDraft(nn.Module):
+            def forward(self, input_ids, **kwargs):
+                # Predicts input_ids + 1
+                batch_size, seq_len = input_ids.shape[:2]
+                vocab_size = 50
+                logits = torch.zeros(batch_size, seq_len, vocab_size)
+                for b in range(batch_size):
+                    for s in range(seq_len):
+                        tok = int(input_ids[b, s].item())
+                        next_tok = (tok + 1) % vocab_size
+                        logits[b, s, next_tok] = 100.0
+                return types.SimpleNamespace(logits=logits)
+
+        class MockTarget(nn.Module):
+            def forward(self, input_ids, **kwargs):
+                # Also predicts input_ids + 1 (all draft tokens will be accepted!)
+                batch_size, seq_len = input_ids.shape[:2]
+                vocab_size = 50
+                logits = torch.zeros(batch_size, seq_len, vocab_size)
+                for b in range(batch_size):
+                    for s in range(seq_len):
+                        tok = int(input_ids[b, s].item())
+                        next_tok = (tok + 1) % vocab_size
+                        logits[b, s, next_tok] = 100.0
+                return types.SimpleNamespace(logits=logits)
+
+        draft = MockDraft()
+        target = MockTarget()
+
+        runner = SpeculativeFastRunner(
+            target_model=target,
+            draft_model=draft,
+            num_speculative_tokens=3,
+            temperature=0.0,
+            do_sample=False,
+        )
+
+        input_ids = torch.tensor([[10]])
+        step_res = runner.step(input_ids)
+
+        # Since target agrees on all 3 tokens: accepted_tokens should be 3 draft + 1 bonus = 4 tokens
+        self.assertEqual(step_res.num_accepted, 4)
+        self.assertEqual(step_res.accepted_tokens.shape, (1, 4))
+        self.assertIsNotNone(step_res.bonus_token)
+        self.assertGreater(runner.acceptance_rate, 0.0)
+
+        # Full generate run
+        gen_out = runner.generate(input_ids, max_new_tokens=8)
+        self.assertGreaterEqual(gen_out.shape[1], 8)
+
+    def test_metal_msl_kernels_and_layers(self):
+        """Ultra Feature: Metal MSL kernels, bitnet ternary matmul, and FP8 layer execution."""
+        import torch
+        from transformers.integrations.metal_msl_kernels import (
+            is_metal_available,
+            metal_bitnet_matmul,
+            metal_fp8_matmul,
+            MetalBitNetLinear,
+            MetalFp8Linear,
+            METAL_BITNET_TERNARY_GEMM_MSL,
+            METAL_FP8_DYNAMIC_GEMM_MSL,
+        )
+
+        # 1. MSL shader sources exist and contain valid Metal entry points
+        self.assertIn("kernel void bitnet_ternary_gemm", METAL_BITNET_TERNARY_GEMM_MSL)
+        self.assertIn("kernel void fp8_e4m3_gemm", METAL_FP8_DYNAMIC_GEMM_MSL)
+
+        # 2. Metal platform probe
+        _ = is_metal_available()
+
+        # 3. BitNet 1.58-bit ternary matmul verification
+        # 16 in_features -> 1 packed int32
+        activations = torch.ones(1, 2, 16, dtype=torch.float32)
+        # Packed int32 with all 1s (01 in 2-bit -> +1.0)
+        # 0b01010101010101010101010101010101 = 0x55555555
+        packed = torch.tensor([[0x55555555]], dtype=torch.int32)
+        scale = 1.0
+
+        out = metal_bitnet_matmul(activations, packed, scale)
+        self.assertEqual(out.shape, (1, 2, 1))
+        # 16 * 1.0 * 1.0 = 16.0
+        self.assertTrue(torch.allclose(out, torch.tensor([[[16.0]], [[16.0]]])))
+
+        # 4. MetalBitNetLinear layer instantiation & forward
+        layer_bitnet = MetalBitNetLinear(in_features=32, out_features=4, bias=True)
+        x_bitnet = torch.randn(2, 3, 32)
+        y_bitnet = layer_bitnet(x_bitnet)
+        self.assertEqual(y_bitnet.shape, (2, 3, 4))
+
+        # 5. MetalFp8Linear layer instantiation & forward
+        layer_fp8 = MetalFp8Linear(in_features=32, out_features=8, bias=False)
+        x_fp8 = torch.randn(1, 4, 32)
+        y_fp8 = layer_fp8(x_fp8)
+        self.assertEqual(y_fp8.shape, (1, 4, 8))

@@ -318,8 +318,18 @@ _import_structure = {
         "no_gc_cycle",
     ],
     "integrations.slotted_cache": ["SlottedStaticCache"],
+    "integrations.metal_msl_kernels": [
+        "METAL_BITNET_TERNARY_GEMM_MSL",
+        "METAL_FP8_DYNAMIC_GEMM_MSL",
+        "MetalBitNetLinear",
+        "MetalFp8Linear",
+        "is_metal_available",
+        "metal_bitnet_matmul",
+        "metal_fp8_matmul",
+    ],
     "generation.cuda_graph_runner": ["CUDAGraphFastRunner", "is_cuda_graph_available"],
     "generation.fused_sampler": ["FusedLogitsSampler", "fused_sample_next_token"],
+    "generation.speculative_fast_runner": ["SpeculativeFastRunner", "SpeculativeStepResult"],
     "video_utils": [],
 }
 

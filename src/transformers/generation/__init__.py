@@ -95,6 +95,10 @@ else:
         "FusedLogitsSampler",
         "fused_sample_next_token",
     ]
+    _import_structure["speculative_fast_runner"] = [
+        "SpeculativeFastRunner",
+        "SpeculativeStepResult",
+    ]
     _import_structure["continuous_batching"] = [
         "ContinuousBatchingManager",
         "ContinuousMixin",
