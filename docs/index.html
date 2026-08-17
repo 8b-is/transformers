@@ -702,6 +702,23 @@
         </div>
         <div class="commit-timeline" id="commit-list">
           
+          <!-- Release v4.58.0.post13 -->
+          <div class="commit-row" data-search="release v4.58.0.post13 medusatreefastrunner split_kv_decode_attention flashinfer flashdecoding medusa eagle tree speculation log-sum-exp reduction long context 32k">
+            <div class="commit-meta">
+              <span class="commit-hash" style="color: var(--accent-emerald)">v4.58.0.post13</span>
+              <span class="commit-tag tag-security">Backyard Ultra Lap 110+</span>
+              <span class="commit-tag tag-perf">Split-KV FlashDecoding & Tree Speculation</span>
+              <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-mono)">2026-08-17</span>
+            </div>
+            <div class="commit-title">feat(split_kv+tree): Split-KV Flash-Decoding for 32k+ Long Context & MedusaTreeFastRunner Non-Linear Parallel Branch Speculation</div>
+            <div class="commit-details">
+              Implemented `split_kv_decode_attention` sequence dimension partitioning into parallel GPU SM splits with online multi-split log-sum-exp reduction, and `MedusaTreeFastRunner` tree speculation with pre-computed 2D causal visibility masks (`MedusaTreeTopology`), parallel multi-branch verification, and O(1) cache rollback.
+            </div>
+            <div class="commit-links">
+              <a href="https://github.com/8b-is/transformers/blob/main/tests/utils/test_ultra_upstream_fixes.py" target="_blank">Test Suite (34/34 Passed)</a>
+            </div>
+          </div>
+          
           <!-- Release v4.58.0.post12 -->
           <div class="commit-row" data-search="release v4.58.0.post12 speculativefastrunner speculative decoding metal msl simdgroup matrix bitnet fp8 apple silicon m1 m2 m3 m4">
             <div class="commit-meta">

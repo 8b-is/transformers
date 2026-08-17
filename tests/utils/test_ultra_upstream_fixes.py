@@ -748,3 +748,91 @@ class UltraUpstreamFixesTest(unittest.TestCase):
         x_fp8 = torch.randn(1, 4, 32)
         y_fp8 = layer_fp8(x_fp8)
         self.assertEqual(y_fp8.shape, (1, 4, 8))
+
+    def test_split_kv_decode_attention_and_lse_reduction(self):
+        """Ultra Feature: Split-KV Flash-Decoding Attention & Log-Sum-Exp Reduction."""
+        import math
+        import torch
+        from transformers.integrations.flashinfer_split_kv import split_kv_decode_attention
+
+        batch_size = 2
+        num_heads = 4
+        head_dim = 32
+        seq_len = 512
+
+        q = torch.randn(batch_size, num_heads, 1, head_dim)
+        k = torch.randn(batch_size, num_heads, seq_len, head_dim)
+        v = torch.randn(batch_size, num_heads, seq_len, head_dim)
+
+        # 1. Single split baseline
+        out_single = split_kv_decode_attention(q, k, v, split_size=1024)
+        self.assertEqual(out_single.shape, (batch_size, num_heads, 1, head_dim))
+
+        # 2. Multi-split (split_size=128 -> 4 splits) log-sum-exp reduction
+        out_multi = split_kv_decode_attention(q, k, v, split_size=128)
+        self.assertEqual(out_multi.shape, (batch_size, num_heads, 1, head_dim))
+
+        # Check numerical equivalence between single-split and multi-split LSE reduction
+        self.assertTrue(torch.allclose(out_single, out_multi, atol=1e-4, rtol=1e-4))
+
+        # 3. GQA expansion check (num_heads=4, num_kv_heads=2)
+        k_gqa = torch.randn(batch_size, 2, seq_len, head_dim)
+        v_gqa = torch.randn(batch_size, 2, seq_len, head_dim)
+        out_gqa = split_kv_decode_attention(q, k_gqa, v_gqa, split_size=256)
+        self.assertEqual(out_gqa.shape, (batch_size, num_heads, 1, head_dim))
+
+    def test_medusa_tree_fast_runner_speculation(self):
+        """Ultra Feature: MedusaTreeFastRunner tree topology and non-linear branch verification."""
+        import types
+        import torch
+        import torch.nn as nn
+        from transformers.generation.medusa_tree_runner import (
+            MedusaTreeFastRunner,
+            MedusaTreeTopology,
+        )
+
+        # 1. Topology & 2D Causal Attention Mask verification
+        topology = MedusaTreeTopology(
+            tree_paths=[[0, 1, 2], [0, 1, 3]],
+            device="cpu",
+        )
+        self.assertEqual(topology.num_nodes, 4)
+        # Node 2 can see Node 0 and Node 1
+        self.assertTrue(topology.tree_mask[2, 0].item())
+        self.assertTrue(topology.tree_mask[2, 1].item())
+        self.assertTrue(topology.tree_mask[2, 2].item())
+        # Node 2 CANNOT see Node 3 (sibling branch)
+        self.assertFalse(topology.tree_mask[2, 3].item())
+
+        # 2. Mock Models
+        class MockHead(nn.Module):
+            def forward(self, x):
+                # Predicts x + 1
+                return types.SimpleNamespace(logits=torch.zeros(x.shape[0], x.shape[1], 50))
+
+        class MockTarget(nn.Module):
+            def forward(self, input_ids, **kwargs):
+                batch_size, num_nodes = input_ids.shape[:2]
+                logits = torch.zeros(batch_size, num_nodes, 50)
+                return types.SimpleNamespace(logits=logits)
+
+        heads = [MockHead(), MockHead()]
+        target = MockTarget()
+
+        runner = MedusaTreeFastRunner(
+            target_model=target,
+            draft_heads=heads,
+            topology=topology,
+            temperature=0.0,
+            do_sample=False,
+        )
+
+        input_ids = torch.tensor([[10]])
+        step_res = runner.step(input_ids)
+        self.assertGreaterEqual(step_res.num_accepted, 1)
+        self.assertIsNotNone(step_res.winning_path)
+        self.assertEqual(step_res.accepted_tokens.shape[0], 1)
+
+        # Full generate run
+        gen_out = runner.generate(input_ids, max_new_tokens=4)
+        self.assertGreaterEqual(gen_out.shape[1], 4)

@@ -1,0 +1,1405 @@
+└── transformers
+    ├── transformers.dependency_versions_check
+    │   ├── transformers.dependency_versions_table
+    │   ├── transformers.utils
+    │   │   ├── packaging
+    │   │   ├── packaging.version
+    │   │   ├── transformers.utils.auto_docstring
+    │   │   │   ├── regex
+    │   │   │   │   └── regex._main
+    │   │   │   │       └── regex._regex_core
+    │   │   │   │           ├── string
+    │   │   │   │           │   └── _string
+    │   │   │   │           ├── unicodedata
+    │   │   │   │           └── regex._regex
+    │   │   │   ├── typing_extensions
+    │   │   │   │   └── _socket
+    │   │   │   ├── transformers.utils.doc
+    │   │   │   │   └── textwrap
+    │   │   │   └── transformers.utils.generic
+    │   │   │       ├── json
+    │   │   │       │   ├── json.decoder
+    │   │   │       │   │   └── json.scanner
+    │   │   │       │   │       └── _json
+    │   │   │       │   └── json.encoder
+    │   │   │       ├── numpy
+    │   │   │       │   ├── numpy.version
+    │   │   │       │   ├── numpy._expired_attrs_2_0
+    │   │   │       │   ├── numpy._globals
+    │   │   │       │   │   └── numpy._utils
+    │   │   │       │   │       └── numpy._utils._convertions
+    │   │   │       │   ├── numpy._distributor_init
+    │   │   │       │   ├── numpy.__config__
+    │   │   │       │   │   └── numpy._core
+    │   │   │       │   │       ├── numpy._core.multiarray
+    │   │   │       │   │       │   ├── numpy._core._multiarray_umath
+    │   │   │       │   │       │   ├── datetime
+    │   │   │       │   │       │   │   └── _datetime
+    │   │   │       │   │       │   ├── numpy.exceptions
+    │   │   │       │   │       │   ├── numpy._core._exceptions
+    │   │   │       │   │       │   ├── numpy._core.printoptions
+    │   │   │       │   │       │   │   └── contextvars
+    │   │   │       │   │       │   │       └── _contextvars
+    │   │   │       │   │       │   ├── numpy.dtypes
+    │   │   │       │   │       │   └── numpy._core.overrides
+    │   │   │       │   │       │       └── numpy._utils._inspect
+    │   │   │       │   │       ├── numpy._core.umath
+    │   │   │       │   │       ├── numpy._core.numerictypes
+    │   │   │       │   │       │   ├── numbers
+    │   │   │       │   │       │   ├── numpy._core._dtype
+    │   │   │       │   │       │   ├── numpy._core._string_helpers
+    │   │   │       │   │       │   └── numpy._core._type_aliases
+    │   │   │       │   │       ├── numpy._core._machar
+    │   │   │       │   │       │   ├── numpy._core._ufunc_config
+    │   │   │       │   │       │   └── numpy._core.fromnumeric
+    │   │   │       │   │       │       └── numpy._core._methods
+    │   │   │       │   │       │           └── pickle
+    │   │   │       │   │       │               ├── struct
+    │   │   │       │   │       │               │   └── _struct
+    │   │   │       │   │       │               ├── _compat_pickle
+    │   │   │       │   │       │               └── _pickle
+    │   │   │       │   │       ├── numpy._core.einsumfunc
+    │   │   │       │   │       │   └── numpy._core.numeric
+    │   │   │       │   │       │       ├── numpy._core.shape_base
+    │   │   │       │   │       │       ├── numpy._core._asarray
+    │   │   │       │   │       │       └── numpy._core.arrayprint
+    │   │   │       │   │       ├── numpy._core.function_base
+    │   │   │       │   │       ├── numpy._core.getlimits
+    │   │   │       │   │       ├── numpy._core.memmap
+    │   │   │       │   │       ├── numpy._core.records
+    │   │   │       │   │       ├── numpy._core._add_newdocs
+    │   │   │       │   │       ├── numpy._core._add_newdocs_scalars
+    │   │   │       │   │       ├── numpy._core._dtype_ctypes
+    │   │   │       │   │       ├── numpy._core._internal
+    │   │   │       │   │       │   └── ctypes
+    │   │   │       │   │       │       ├── _ctypes
+    │   │   │       │   │       │       └── ctypes._endian
+    │   │   │       │   │       └── numpy._pytesttester
+    │   │   │       │   ├── numpy.lib
+    │   │   │       │   │   ├── numpy.lib._arraypad_impl
+    │   │   │       │   │   │   └── numpy.lib._index_tricks_impl
+    │   │   │       │   │   │       ├── numpy.matrixlib
+    │   │   │       │   │   │       │   └── numpy.matrixlib.defmatrix
+    │   │   │       │   │   │       │       └── numpy.linalg
+    │   │   │       │   │   │       │           ├── numpy.linalg._linalg
+    │   │   │       │   │   │       │           │   ├── numpy._typing
+    │   │   │       │   │   │       │           │   │   ├── numpy._typing._array_like
+    │   │   │       │   │   │       │           │   │   │   ├── numpy._typing._nbit_base
+    │   │   │       │   │   │       │           │   │   │   ├── numpy._typing._nested_sequence
+    │   │   │       │   │   │       │           │   │   │   └── numpy._typing._shape
+    │   │   │       │   │   │       │           │   │   ├── numpy._typing._char_codes
+    │   │   │       │   │   │       │           │   │   ├── numpy._typing._dtype_like
+    │   │   │       │   │   │       │           │   │   ├── numpy._typing._nbit
+    │   │   │       │   │   │       │           │   │   ├── numpy._typing._scalars
+    │   │   │       │   │   │       │           │   │   └── numpy._typing._ufunc
+    │   │   │       │   │   │       │           │   ├── numpy.lib._twodim_base_impl
+    │   │   │       │   │   │       │           │   │   └── numpy.lib._stride_tricks_impl
+    │   │   │       │   │   │       │           │   ├── numpy.lib.array_utils
+    │   │   │       │   │   │       │           │   │   └── numpy.lib._array_utils_impl
+    │   │   │       │   │   │       │           │   └── numpy.linalg._umath_linalg
+    │   │   │       │   │   │       │           └── numpy.linalg.linalg
+    │   │   │       │   │   │       ├── numpy.lib._function_base_impl
+    │   │   │       │   │   │       │   └── numpy.lib._histograms_impl
+    │   │   │       │   │   │       └── numpy.lib.stride_tricks
+    │   │   │       │   │   ├── numpy.lib._arraysetops_impl
+    │   │   │       │   │   ├── numpy.lib._arrayterator_impl
+    │   │   │       │   │   ├── numpy.lib._nanfunctions_impl
+    │   │   │       │   │   ├── numpy.lib._npyio_impl
+    │   │   │       │   │   │   ├── numpy.lib.format
+    │   │   │       │   │   │   │   └── numpy.lib._format_impl
+    │   │   │       │   │   │   │       └── numpy.lib._utils_impl
+    │   │   │       │   │   │   │           └── platform
+    │   │   │       │   │   │   ├── numpy.lib._datasource
+    │   │   │       │   │   │   └── numpy.lib._iotools
+    │   │   │       │   │   ├── numpy.lib._polynomial_impl
+    │   │   │       │   │   │   └── numpy.lib._type_check_impl
+    │   │   │       │   │   │       └── numpy.lib._ufunclike_impl
+    │   │   │       │   │   ├── numpy.lib._shape_base_impl
+    │   │   │       │   │   ├── numpy.lib._version
+    │   │   │       │   │   ├── numpy.lib.introspect
+    │   │   │       │   │   ├── numpy.lib.mixins
+    │   │   │       │   │   ├── numpy.lib.npyio
+    │   │   │       │   │   └── numpy.lib.scimath
+    │   │   │       │   │       └── numpy.lib._scimath_impl
+    │   │   │       │   └── numpy._array_api_info
+    │   │   │       ├── transformers.utils.logging
+    │   │   │       │   ├── logging
+    │   │   │       │   │   ├── traceback
+    │   │   │       │   │   └── atexit
+    │   │   │       │   ├── huggingface_hub
+    │   │   │       │   ├── huggingface_hub.utils
+    │   │   │       │   │   ├── huggingface_hub.errors
+    │   │   │       │   │   │   └── httpx
+    │   │   │       │   │   │       ├── httpx.__version__
+    │   │   │       │   │   │       ├── httpx._api
+    │   │   │       │   │   │       │   └── httpx._client
+    │   │   │       │   │   │       │       ├── httpx._auth
+    │   │   │       │   │   │       │       │   ├── hashlib
+    │   │   │       │   │   │       │       │   │   ├── _hashlib
+    │   │   │       │   │   │       │       │   │   └── _blake2
+    │   │   │       │   │   │       │       │   ├── base64
+    │   │   │       │   │   │       │       │   │   └── binascii
+    │   │   │       │   │   │       │       │   ├── urllib.request
+    │   │   │       │   │   │       │       │   │   ├── email
+    │   │   │       │   │   │       │       │   │   ├── http
+    │   │   │       │   │   │       │       │   │   ├── http.client
+    │   │   │       │   │   │       │       │   │   │   ├── email.parser
+    │   │   │       │   │   │       │       │   │   │   │   └── email.feedparser
+    │   │   │       │   │   │       │       │   │   │   │       ├── email.errors
+    │   │   │       │   │   │       │       │   │   │   │       └── email._policybase
+    │   │   │       │   │   │       │       │   │   │   │           ├── email.header
+    │   │   │       │   │   │       │       │   │   │   │           │   ├── email.quoprimime
+    │   │   │       │   │   │       │       │   │   │   │           │   ├── email.base64mime
+    │   │   │       │   │   │       │       │   │   │   │           │   └── email.charset
+    │   │   │       │   │   │       │       │   │   │   │           │       └── email.encoders
+    │   │   │       │   │   │       │       │   │   │   │           │           └── quopri
+    │   │   │       │   │   │       │       │   │   │   │           └── email.utils
+    │   │   │       │   │   │       │       │   │   │   │               ├── socket
+    │   │   │       │   │   │       │       │   │   │   │               │   ├── selectors
+    │   │   │       │   │   │       │       │   │   │   │               │   │   └── select
+    │   │   │       │   │   │       │       │   │   │   │               │   └── array
+    │   │   │       │   │   │       │       │   │   │   │               └── email._parseaddr
+    │   │   │       │   │   │       │       │   │   │   │                   └── calendar
+    │   │   │       │   │   │       │       │   │   │   ├── email.message
+    │   │   │       │   │   │       │       │   │   │   │   ├── email._encoded_words
+    │   │   │       │   │   │       │       │   │   │   │   └── email.iterators
+    │   │   │       │   │   │       │       │   │   │   └── ssl
+    │   │   │       │   │   │       │       │   │   │       └── _ssl
+    │   │   │       │   │   │       │       │   │   ├── urllib.error
+    │   │   │       │   │   │       │       │   │   │   └── urllib.response
+    │   │   │       │   │   │       │       │   │   └── _scproxy
+    │   │   │       │   │   │       │       │   ├── httpx._exceptions
+    │   │   │       │   │   │       │       │   └── httpx._models
+    │   │   │       │   │   │       │       │       ├── http.cookiejar
+    │   │   │       │   │   │       │       │       ├── httpx._content
+    │   │   │       │   │   │       │       │       │   └── httpx._multipart
+    │   │   │       │   │   │       │       │       │       ├── mimetypes
+    │   │   │       │   │   │       │       │       │       ├── httpx._types
+    │   │   │       │   │   │       │       │       │       └── httpx._utils
+    │   │   │       │   │   │       │       │       ├── httpx._decoders
+    │   │   │       │   │   │       │       │       ├── httpx._status_codes
+    │   │   │       │   │   │       │       │       └── httpx._urls
+    │   │   │       │   │   │       │       │           ├── idna
+    │   │   │       │   │   │       │       │           │   ├── idna.core
+    │   │   │       │   │   │       │       │           │   │   ├── idna.idnadata
+    │   │   │       │   │   │       │       │           │   │   └── idna.intranges
+    │   │   │       │   │   │       │       │           │   └── idna.package_data
+    │   │   │       │   │   │       │       │           └── httpx._urlparse
+    │   │   │       │   │   │       │       ├── httpx._config
+    │   │   │       │   │   │       │       └── httpx._transports
+    │   │   │       │   │   │       │           ├── httpx._transports.asgi
+    │   │   │       │   │   │       │           │   └── httpx._transports.base
+    │   │   │       │   │   │       │           ├── httpx._transports.default
+    │   │   │       │   │   │       │           ├── httpx._transports.mock
+    │   │   │       │   │   │       │           └── httpx._transports.wsgi
+    │   │   │       │   │   │       └── httpx._main
+    │   │   │       │   │   │           ├── click
+    │   │   │       │   │   │           │   ├── click.core
+    │   │   │       │   │   │           │   │   ├── click.types
+    │   │   │       │   │   │           │   │   │   ├── uuid
+    │   │   │       │   │   │           │   │   │   │   └── _uuid
+    │   │   │       │   │   │           │   │   │   ├── click._compat
+    │   │   │       │   │   │           │   │   │   └── click.exceptions
+    │   │   │       │   │   │           │   │   │       ├── click.globals
+    │   │   │       │   │   │           │   │   │       └── click.utils
+    │   │   │       │   │   │           │   │   ├── click._utils
+    │   │   │       │   │   │           │   │   ├── click.formatting
+    │   │   │       │   │   │           │   │   │   └── click.parser
+    │   │   │       │   │   │           │   │   └── click.termui
+    │   │   │       │   │   │           │   └── click.decorators
+    │   │   │       │   │   │           ├── pygments
+    │   │   │       │   │   │           ├── pygments.lexers
+    │   │   │       │   │   │           │   ├── pygments.lexers._mapping
+    │   │   │       │   │   │           │   ├── pygments.modeline
+    │   │   │       │   │   │           │   ├── pygments.plugin
+    │   │   │       │   │   │           │   │   └── importlib.metadata
+    │   │   │       │   │   │           │   │       ├── csv
+    │   │   │       │   │   │           │   │       │   └── _csv
+    │   │   │       │   │   │           │   │       ├── zipfile
+    │   │   │       │   │   │           │   │       │   ├── importlib.util
+    │   │   │       │   │   │           │   │       │   └── zipfile._path
+    │   │   │       │   │   │           │   │       │       └── zipfile._path.glob
+    │   │   │       │   │   │           │   │       ├── importlib.metadata._adapters
+    │   │   │       │   │   │           │   │       │   └── importlib.metadata._text
+    │   │   │       │   │   │           │   │       │       └── importlib.metadata._functools
+    │   │   │       │   │   │           │   │       ├── importlib.metadata._meta
+    │   │   │       │   │   │           │   │       ├── importlib.metadata._collections
+    │   │   │       │   │   │           │   │       └── importlib.metadata._itertools
+    │   │   │       │   │   │           │   └── pygments.util
+    │   │   │       │   │   │           ├── rich
+    │   │   │       │   │   │           │   └── rich._extension
+    │   │   │       │   │   │           ├── rich.console
+    │   │   │       │   │   │           │   ├── rich._null_file
+    │   │   │       │   │   │           │   ├── rich.errors
+    │   │   │       │   │   │           │   ├── rich.themes
+    │   │   │       │   │   │           │   │   ├── rich.default_styles
+    │   │   │       │   │   │           │   │   │   └── rich.style
+    │   │   │       │   │   │           │   │   │       └── rich.color
+    │   │   │       │   │   │           │   │   │           ├── colorsys
+    │   │   │       │   │   │           │   │   │           ├── rich._palettes
+    │   │   │       │   │   │           │   │   │           │   └── rich.palette
+    │   │   │       │   │   │           │   │   │           │       └── rich.color_triplet
+    │   │   │       │   │   │           │   │   │           ├── rich.repr
+    │   │   │       │   │   │           │   │   │           └── rich.terminal_theme
+    │   │   │       │   │   │           │   │   └── rich.theme
+    │   │   │       │   │   │           │   ├── rich._emoji_replace
+    │   │   │       │   │   │           │   ├── rich._export_format
+    │   │   │       │   │   │           │   ├── rich._fileno
+    │   │   │       │   │   │           │   ├── rich._log_render
+    │   │   │       │   │   │           │   │   └── rich.text
+    │   │   │       │   │   │           │   │       ├── rich._loop
+    │   │   │       │   │   │           │   │       ├── rich._pick
+    │   │   │       │   │   │           │   │       ├── rich._wrap
+    │   │   │       │   │   │           │   │       │   └── rich.cells
+    │   │   │       │   │   │           │   │       │       └── rich._unicode_data
+    │   │   │       │   │   │           │   │       │           └── rich._unicode_data._versions
+    │   │   │       │   │   │           │   │       ├── rich.align
+    │   │   │       │   │   │           │   │       │   └── rich.constrain
+    │   │   │       │   │   │           │   │       │       ├── rich.jupyter
+    │   │   │       │   │   │           │   │       │       │   └── rich.segment
+    │   │   │       │   │   │           │   │       │       └── rich.measure
+    │   │   │       │   │   │           │   │       │           └── rich.protocol
+    │   │   │       │   │   │           │   │       ├── rich.containers
+    │   │   │       │   │   │           │   │       ├── rich.control
+    │   │   │       │   │   │           │   │       └── rich.emoji
+    │   │   │       │   │   │           │   ├── rich.highlighter
+    │   │   │       │   │   │           │   ├── rich.markup
+    │   │   │       │   │   │           │   ├── rich.pager
+    │   │   │       │   │   │           │   ├── rich.region
+    │   │   │       │   │   │           │   ├── rich.screen
+    │   │   │       │   │   │           │   └── rich.styled
+    │   │   │       │   │   │           ├── rich.progress
+    │   │   │       │   │   │           │   ├── mmap
+    │   │   │       │   │   │           │   ├── rich.filesize
+    │   │   │       │   │   │           │   ├── rich.live
+    │   │   │       │   │   │           │   │   ├── rich.file_proxy
+    │   │   │       │   │   │           │   │   │   └── rich.ansi
+    │   │   │       │   │   │           │   │   └── rich.live_render
+    │   │   │       │   │   │           │   ├── rich.progress_bar
+    │   │   │       │   │   │           │   └── rich.spinner
+    │   │   │       │   │   │           │       ├── rich._spinners
+    │   │   │       │   │   │           │       └── rich.table
+    │   │   │       │   │   │           │           ├── rich.box
+    │   │   │       │   │   │           │           ├── rich._ratio
+    │   │   │       │   │   │           │           │   └── fractions
+    │   │   │       │   │   │           │           │       └── decimal
+    │   │   │       │   │   │           │           │           └── _decimal
+    │   │   │       │   │   │           │           └── rich.padding
+    │   │   │       │   │   │           └── rich.syntax
+    │   │   │       │   │   │               ├── pygments.lexer
+    │   │   │       │   │   │               │   ├── pygments.filter
+    │   │   │       │   │   │               │   ├── pygments.filters
+    │   │   │       │   │   │               │   │   └── pygments.token
+    │   │   │       │   │   │               │   └── pygments.regexopt
+    │   │   │       │   │   │               ├── pygments.style
+    │   │   │       │   │   │               └── pygments.styles
+    │   │   │       │   │   │                   └── pygments.styles._mapping
+    │   │   │       │   │   ├── huggingface_hub.utils.tqdm
+    │   │   │       │   │   │   ├── concurrent
+    │   │   │       │   │   │   ├── concurrent.futures
+    │   │   │       │   │   │   │   └── concurrent.futures._base
+    │   │   │       │   │   │   ├── concurrent.futures.thread
+    │   │   │       │   │   │   │   └── queue
+    │   │   │       │   │   │   │       ├── heapq
+    │   │   │       │   │   │   │       │   └── _heapq
+    │   │   │       │   │   │   │       └── _queue
+    │   │   │       │   │   │   ├── tqdm
+    │   │   │       │   │   │   │   ├── tqdm._monitor
+    │   │   │       │   │   │   │   ├── tqdm._tqdm_pandas
+    │   │   │       │   │   │   │   ├── tqdm.cli
+    │   │   │       │   │   │   │   │   ├── tqdm.std
+    │   │   │       │   │   │   │   │   │   └── tqdm.utils
+    │   │   │       │   │   │   │   │   └── tqdm.version
+    │   │   │       │   │   │   │   └── tqdm.gui
+    │   │   │       │   │   │   ├── tqdm.auto
+    │   │   │       │   │   │   │   ├── tqdm.autonotebook
+    │   │   │       │   │   │   │   └── tqdm.asyncio
+    │   │   │       │   │   │   │       └── asyncio
+    │   │   │       │   │   │   │           ├── asyncio.base_events
+    │   │   │       │   │   │   │           │   ├── subprocess
+    │   │   │       │   │   │   │           │   │   ├── signal
+    │   │   │       │   │   │   │           │   │   ├── fcntl
+    │   │   │       │   │   │   │           │   │   └── _posixsubprocess
+    │   │   │       │   │   │   │           │   ├── asyncio.constants
+    │   │   │       │   │   │   │           │   ├── asyncio.coroutines
+    │   │   │       │   │   │   │           │   ├── asyncio.events
+    │   │   │       │   │   │   │           │   │   ├── asyncio.format_helpers
+    │   │   │       │   │   │   │           │   │   └── _asyncio
+    │   │   │       │   │   │   │           │   │       ├── asyncio.base_futures
+    │   │   │       │   │   │   │           │   │       ├── asyncio.exceptions
+    │   │   │       │   │   │   │           │   │       └── asyncio.base_tasks
+    │   │   │       │   │   │   │           │   ├── asyncio.futures
+    │   │   │       │   │   │   │           │   ├── asyncio.protocols
+    │   │   │       │   │   │   │           │   ├── asyncio.sslproto
+    │   │   │       │   │   │   │           │   │   ├── asyncio.transports
+    │   │   │       │   │   │   │           │   │   └── asyncio.log
+    │   │   │       │   │   │   │           │   ├── asyncio.staggered
+    │   │   │       │   │   │   │           │   │   ├── asyncio.locks
+    │   │   │       │   │   │   │           │   │   │   └── asyncio.mixins
+    │   │   │       │   │   │   │           │   │   └── asyncio.tasks
+    │   │   │       │   │   │   │           │   │       └── asyncio.timeouts
+    │   │   │       │   │   │   │           │   └── asyncio.trsock
+    │   │   │       │   │   │   │           ├── asyncio.runners
+    │   │   │       │   │   │   │           ├── asyncio.queues
+    │   │   │       │   │   │   │           ├── asyncio.streams
+    │   │   │       │   │   │   │           ├── asyncio.subprocess
+    │   │   │       │   │   │   │           ├── asyncio.taskgroups
+    │   │   │       │   │   │   │           ├── asyncio.threads
+    │   │   │       │   │   │   │           └── asyncio.unix_events
+    │   │   │       │   │   │   │               ├── asyncio.base_subprocess
+    │   │   │       │   │   │   │               └── asyncio.selector_events
+    │   │   │       │   │   │   └── huggingface_hub.constants
+    │   │   │       │   │   ├── huggingface_hub.utils._auth
+    │   │   │       │   │   │   ├── configparser
+    │   │   │       │   │   │   ├── huggingface_hub.utils._fixes
+    │   │   │       │   │   │   │   ├── yaml
+    │   │   │       │   │   │   │   │   ├── yaml.error
+    │   │   │       │   │   │   │   │   ├── yaml.tokens
+    │   │   │       │   │   │   │   │   ├── yaml.events
+    │   │   │       │   │   │   │   │   ├── yaml.nodes
+    │   │   │       │   │   │   │   │   ├── yaml.loader
+    │   │   │       │   │   │   │   │   │   ├── yaml.reader
+    │   │   │       │   │   │   │   │   │   ├── yaml.scanner
+    │   │   │       │   │   │   │   │   │   ├── yaml.parser
+    │   │   │       │   │   │   │   │   │   ├── yaml.composer
+    │   │   │       │   │   │   │   │   │   ├── yaml.constructor
+    │   │   │       │   │   │   │   │   │   └── yaml.resolver
+    │   │   │       │   │   │   │   │   ├── yaml.dumper
+    │   │   │       │   │   │   │   │   │   ├── yaml.emitter
+    │   │   │       │   │   │   │   │   │   ├── yaml.serializer
+    │   │   │       │   │   │   │   │   │   └── yaml.representer
+    │   │   │       │   │   │   │   │   └── yaml.cyaml
+    │   │   │       │   │   │   │   │       └── yaml._yaml
+    │   │   │       │   │   │   │   ├── filelock
+    │   │   │       │   │   │   │   │   ├── filelock._api
+    │   │   │       │   │   │   │   │   │   ├── secrets
+    │   │   │       │   │   │   │   │   │   │   └── hmac
+    │   │   │       │   │   │   │   │   │   ├── filelock._error
+    │   │   │       │   │   │   │   │   │   └── filelock._util
+    │   │   │       │   │   │   │   │   ├── filelock._descriptor
+    │   │   │       │   │   │   │   │   │   └── filelock._unix
+    │   │   │       │   │   │   │   │   ├── filelock._lease
+    │   │   │       │   │   │   │   │   │   ├── filelock._identity
+    │   │   │       │   │   │   │   │   │   └── filelock._marker
+    │   │   │       │   │   │   │   │   │       └── filelock._soft
+    │   │   │       │   │   │   │   │   │           └── filelock._soft_protocol
+    │   │   │       │   │   │   │   │   ├── filelock._async_read_write
+    │   │   │       │   │   │   │   │   │   ├── sqlite3
+    │   │   │       │   │   │   │   │   │   │   └── sqlite3.dbapi2
+    │   │   │       │   │   │   │   │   │   │       └── _sqlite3
+    │   │   │       │   │   │   │   │   │   ├── filelock._async
+    │   │   │       │   │   │   │   │   │   └── filelock._read_write
+    │   │   │       │   │   │   │   │   ├── filelock._soft_rw
+    │   │   │       │   │   │   │   │   │   └── filelock._soft_rw._async
+    │   │   │       │   │   │   │   │   │       └── filelock._soft_rw._sync
+    │   │   │       │   │   │   │   │   ├── filelock._strict
+    │   │   │       │   │   │   │   │   ├── filelock._windows
+    │   │   │       │   │   │   │   │   ├── filelock.asyncio
+    │   │   │       │   │   │   │   │   └── filelock.version
+    │   │   │       │   │   │   │   └── huggingface_hub.utils.logging
+    │   │   │       │   │   │   ├── huggingface_hub.utils._oauth_device
+    │   │   │       │   │   │   │   └── huggingface_hub.utils._http
+    │   │   │       │   │   │   │       ├── shlex
+    │   │   │       │   │   │   │       ├── huggingface_hub.utils._lfs
+    │   │   │       │   │   │   │       └── huggingface_hub.utils._typing
+    │   │   │       │   │   │   └── huggingface_hub.utils._runtime
+    │   │   │       │   │   ├── huggingface_hub.utils._cache_assets
+    │   │   │       │   │   ├── huggingface_hub.utils._cache_manager
+    │   │   │       │   │   │   ├── huggingface_hub.utils._parsing
+    │   │   │       │   │   │   └── huggingface_hub.utils._terminal
+    │   │   │       │   │   │       ├── huggingface_hub.utils._detect_agent
+    │   │   │       │   │   │       ├── termios
+    │   │   │       │   │   │       └── tty
+    │   │   │       │   │   ├── huggingface_hub.utils._chunk_utils
+    │   │   │       │   │   ├── huggingface_hub.utils._datetime
+    │   │   │       │   │   ├── huggingface_hub.utils._experimental
+    │   │   │       │   │   ├── huggingface_hub.utils._git_credential
+    │   │   │       │   │   │   └── huggingface_hub.utils._subprocess
+    │   │   │       │   │   ├── huggingface_hub.utils._headers
+    │   │   │       │   │   │   └── huggingface_hub.utils._validators
+    │   │   │       │   │   ├── huggingface_hub.utils._hf_uris
+    │   │   │       │   │   ├── huggingface_hub.utils._pagination
+    │   │   │       │   │   ├── huggingface_hub.utils._paths
+    │   │   │       │   │   ├── huggingface_hub.utils._safetensors
+    │   │   │       │   │   ├── huggingface_hub.utils._telemetry
+    │   │   │       │   │   └── huggingface_hub.utils._xet
+    │   │   │       │   └── transformers._typing
+    │   │   │       ├── transformers.utils.import_utils
+    │   │   │       └── torch
+    │   │   ├── transformers.utils.chat_template_utils
+    │   │   │   ├── jinja2
+    │   │   │   ├── jinja2.bccache
+    │   │   │   ├── jinja2.environment
+    │   │   │   │   ├── markupsafe
+    │   │   │   │   │   └── markupsafe._speedups
+    │   │   │   │   ├── jinja2.nodes
+    │   │   │   │   │   └── jinja2.utils
+    │   │   │   │   ├── jinja2.compiler
+    │   │   │   │   │   ├── jinja2.exceptions
+    │   │   │   │   │   ├── jinja2.idtracking
+    │   │   │   │   │   │   └── jinja2.visitor
+    │   │   │   │   │   └── jinja2.optimizer
+    │   │   │   │   ├── jinja2.defaults
+    │   │   │   │   │   ├── jinja2.filters
+    │   │   │   │   │   │   ├── jinja2.async_utils
+    │   │   │   │   │   │   └── jinja2.runtime
+    │   │   │   │   │   └── jinja2.tests
+    │   │   │   │   ├── jinja2.lexer
+    │   │   │   │   │   └── jinja2._identifier
+    │   │   │   │   └── jinja2.parser
+    │   │   │   ├── jinja2.loaders
+    │   │   │   ├── jinja2.ext
+    │   │   │   │   └── pprint
+    │   │   │   ├── jinja2.meta
+    │   │   │   ├── jinja2.sandbox
+    │   │   │   ├── PIL
+    │   │   │   │   └── PIL._version
+    │   │   │   └── PIL.Image
+    │   │   │       ├── PIL.ExifTags
+    │   │   │       ├── PIL.ImageMode
+    │   │   │       ├── PIL.TiffTags
+    │   │   │       ├── PIL._binary
+    │   │   │       ├── PIL._deprecate
+    │   │   │       ├── PIL._util
+    │   │   │       └── PIL._imaging
+    │   │   ├── transformers.utils.constants
+    │   │   ├── transformers.utils.hub
+    │   │   │   ├── huggingface_hub.file_download
+    │   │   │   │   ├── huggingface_hub._local_folder
+    │   │   │   │   ├── huggingface_hub._revision
+    │   │   │   │   ├── huggingface_hub._tree_cache
+    │   │   │   │   └── huggingface_hub.utils.sha
+    │   │   │   │       └── huggingface_hub.utils.insecure_hashlib
+    │   │   │   ├── huggingface_hub.hf_api
+    │   │   │   │   ├── httpcore
+    │   │   │   │   │   ├── httpcore._api
+    │   │   │   │   │   │   ├── httpcore._models
+    │   │   │   │   │   │   └── httpcore._sync
+    │   │   │   │   │   │       ├── httpcore._sync.connection
+    │   │   │   │   │   │       │   ├── httpcore._backends
+    │   │   │   │   │   │       │   ├── httpcore._backends.sync
+    │   │   │   │   │   │       │   │   ├── httpcore._exceptions
+    │   │   │   │   │   │       │   │   ├── httpcore._utils
+    │   │   │   │   │   │       │   │   └── httpcore._backends.base
+    │   │   │   │   │   │       │   ├── httpcore._ssl
+    │   │   │   │   │   │       │   │   └── certifi
+    │   │   │   │   │   │       │   │       └── certifi.core
+    │   │   │   │   │   │       │   ├── httpcore._synchronization
+    │   │   │   │   │   │       │   │   └── anyio
+    │   │   │   │   │   │       │   │       ├── anyio._core
+    │   │   │   │   │   │       │   │       ├── anyio._core._contextmanagers
+    │   │   │   │   │   │       │   │       ├── anyio._core._eventloop
+    │   │   │   │   │   │       │   │       │   └── anyio._core._exceptions
+    │   │   │   │   │   │       │   │       ├── anyio._core._fileio
+    │   │   │   │   │   │       │   │       │   ├── anyio.to_thread
+    │   │   │   │   │   │       │   │       │   └── anyio.abc
+    │   │   │   │   │   │       │   │       │       ├── anyio.abc._eventloop
+    │   │   │   │   │   │       │   │       │       ├── anyio.abc._resources
+    │   │   │   │   │   │       │   │       │       ├── anyio.abc._sockets
+    │   │   │   │   │   │       │   │       │       │   ├── anyio._core._typedattr
+    │   │   │   │   │   │       │   │       │       │   └── anyio.abc._streams
+    │   │   │   │   │   │       │   │       │       │       └── anyio.abc._tasks
+    │   │   │   │   │   │       │   │       │       ├── anyio.abc._subprocesses
+    │   │   │   │   │   │       │   │       │       ├── anyio.abc._testing
+    │   │   │   │   │   │       │   │       │       ├── anyio._core._synchronization
+    │   │   │   │   │   │       │   │       │       │   ├── anyio.lowlevel
+    │   │   │   │   │   │       │   │       │       │   ├── anyio._core._tasks
+    │   │   │   │   │   │       │   │       │       │   └── anyio._core._testing
+    │   │   │   │   │   │       │   │       │       └── anyio.from_thread
+    │   │   │   │   │   │       │   │       ├── anyio._core._resources
+    │   │   │   │   │   │       │   │       ├── anyio._core._signals
+    │   │   │   │   │   │       │   │       ├── anyio._core._sockets
+    │   │   │   │   │   │       │   │       │   ├── anyio.streams
+    │   │   │   │   │   │       │   │       │   ├── anyio.streams.stapled
+    │   │   │   │   │   │       │   │       │   └── anyio.streams.tls
+    │   │   │   │   │   │       │   │       ├── anyio._core._streams
+    │   │   │   │   │   │       │   │       │   └── anyio.streams.memory
+    │   │   │   │   │   │       │   │       ├── anyio._core._subprocesses
+    │   │   │   │   │   │       │   │       └── anyio._core._tempfile
+    │   │   │   │   │   │       │   ├── httpcore._trace
+    │   │   │   │   │   │       │   └── httpcore._sync.http11
+    │   │   │   │   │   │       │       ├── h11
+    │   │   │   │   │   │       │       │   ├── h11._connection
+    │   │   │   │   │   │       │       │   │   ├── h11._events
+    │   │   │   │   │   │       │       │   │   │   ├── h11._abnf
+    │   │   │   │   │   │       │       │   │   │   └── h11._headers
+    │   │   │   │   │   │       │       │   │   │       └── h11._util
+    │   │   │   │   │   │       │       │   │   ├── h11._readers
+    │   │   │   │   │   │       │       │   │   │   ├── h11._receivebuffer
+    │   │   │   │   │   │       │       │   │   │   └── h11._state
+    │   │   │   │   │   │       │       │   │   └── h11._writers
+    │   │   │   │   │   │       │       │   └── h11._version
+    │   │   │   │   │   │       │       └── httpcore._sync.interfaces
+    │   │   │   │   │   │       ├── httpcore._sync.connection_pool
+    │   │   │   │   │   │       ├── httpcore._sync.http_proxy
+    │   │   │   │   │   │       ├── httpcore._sync.http2
+    │   │   │   │   │   │       └── httpcore._sync.socks_proxy
+    │   │   │   │   │   ├── httpcore._async
+    │   │   │   │   │   │   ├── httpcore._async.connection
+    │   │   │   │   │   │   │   ├── httpcore._backends.auto
+    │   │   │   │   │   │   │   └── httpcore._async.http11
+    │   │   │   │   │   │   │       └── httpcore._async.interfaces
+    │   │   │   │   │   │   ├── httpcore._async.connection_pool
+    │   │   │   │   │   │   ├── httpcore._async.http_proxy
+    │   │   │   │   │   │   ├── httpcore._async.http2
+    │   │   │   │   │   │   └── httpcore._async.socks_proxy
+    │   │   │   │   │   ├── httpcore._backends.mock
+    │   │   │   │   │   ├── httpcore._backends.anyio
+    │   │   │   │   │   └── httpcore._backends.trio
+    │   │   │   │   ├── huggingface_hub._buckets
+    │   │   │   │   ├── huggingface_hub._commit_api
+    │   │   │   │   │   └── huggingface_hub.lfs
+    │   │   │   │   ├── huggingface_hub._dataset_viewer
+    │   │   │   │   ├── huggingface_hub._eval_results
+    │   │   │   │   ├── huggingface_hub._inference_endpoints
+    │   │   │   │   ├── huggingface_hub._jobs_api
+    │   │   │   │   │   └── huggingface_hub._space_api
+    │   │   │   │   ├── huggingface_hub._upload_large_folder
+    │   │   │   │   ├── huggingface_hub._upload_pipeline
+    │   │   │   │   ├── huggingface_hub.community
+    │   │   │   │   ├── huggingface_hub.repocard_data
+    │   │   │   │   ├── huggingface_hub.utils._deprecation
+    │   │   │   │   ├── huggingface_hub.utils._verification
+    │   │   │   │   └── huggingface_hub.utils.endpoint_helpers
+    │   │   │   ├── huggingface_hub.repocard
+    │   │   │   └── huggingface_hub._snapshot_download
+    │   │   │       └── huggingface_hub.utils._xet_progress_reporting
+    │   │   ├── transformers.utils.kernel_config
+    │   │   ├── transformers.utils.peft_utils
+    │   │   └── transformers.utils.pydantic_schemas
+    │   │       ├── glob
+    │   │       ├── torch._utils
+    │   │       ├── torch._utils_internal
+    │   │       │   ├── torch._strobelight
+    │   │       │   └── torch._strobelight.compile_time_profiler
+    │   │       │       └── torch._strobelight.cli_function_profiler
+    │   │       │           └── timeit
+    │   │       │               └── gc
+    │   │       ├── torch.torch_version
+    │   │       │   ├── torch._vendor
+    │   │       │   ├── torch._vendor.packaging
+    │   │       │   ├── torch._vendor.packaging.version
+    │   │       │   │   └── torch._vendor.packaging._structures
+    │   │       │   └── torch.version
+    │   │       ├── torch._C
+    │   │       ├── torch._opaque_base
+    │   │       ├── torch._tensor
+    │   │       │   └── torch.overrides
+    │   │       ├── torch.storage
+    │   │       │   └── torch.types
+    │   │       ├── torch.amp
+    │   │       │   ├── torch.amp.autocast_mode
+    │   │       │   └── torch.amp.grad_scaler
+    │   │       ├── torch.random
+    │   │       ├── torch.serialization
+    │   │       │   ├── difflib
+    │   │       │   ├── tarfile
+    │   │       │   │   ├── pwd
+    │   │       │   │   └── grp
+    │   │       │   ├── torch._weights_only_unpickler
+    │   │       │   └── torch._sources
+    │   │       ├── torch._tensor_str
+    │   │       ├── torch.cuda
+    │   │       │   ├── torch.cuda._device_limits
+    │   │       │   ├── torch.cuda.gds
+    │   │       │   ├── torch.cuda._utils
+    │   │       │   ├── torch.cuda.graphs
+    │   │       │   ├── torch.cuda.green_contexts
+    │   │       │   ├── torch.cuda.streams
+    │   │       │   ├── torch.cuda.memory
+    │   │       │   │   └── torch.cuda._memory_viz
+    │   │       │   ├── torch.cuda.random
+    │   │       │   ├── torch.cuda.amp
+    │   │       │   │   ├── torch.cuda.amp.autocast_mode
+    │   │       │   │   ├── torch.cuda.amp.common
+    │   │       │   │   └── torch.cuda.amp.grad_scaler
+    │   │       │   ├── torch.cuda.jiterator
+    │   │       │   ├── torch.cuda.nvtx
+    │   │       │   ├── torch.cuda.profiler
+    │   │       │   ├── torch.cuda.sparse
+    │   │       │   └── torch.cuda.tunable
+    │   │       │       └── multiprocessing
+    │   │       │           └── multiprocessing.context
+    │   │       │               ├── multiprocessing.process
+    │   │       │               └── multiprocessing.reduction
+    │   │       ├── torch.sparse
+    │   │       │   └── torch.sparse.semi_structured
+    │   │       │       ├── torch.sparse._semi_structured_conversions
+    │   │       │       └── torch.sparse._semi_structured_ops
+    │   │       ├── torch._compile
+    │   │       ├── torch._VF
+    │   │       ├── torch.functional
+    │   │       │   ├── torch.nn
+    │   │       │   │   ├── torch.nn.parameter
+    │   │       │   │   ├── torch.nn.modules
+    │   │       │   │   │   ├── torch.nn.modules.module
+    │   │       │   │   │   │   ├── torch._prims_common
+    │   │       │   │   │   │   ├── torch.utils
+    │   │       │   │   │   │   │   ├── torch.utils.backcompat
+    │   │       │   │   │   │   │   ├── torch.utils.collect_env
+    │   │       │   │   │   │   │   ├── torch.utils.data
+    │   │       │   │   │   │   │   │   ├── torch.utils.data.dataloader
+    │   │       │   │   │   │   │   │   │   ├── torch.distributed
+    │   │       │   │   │   │   │   │   │   │   ├── torch.distributed.device_mesh
+    │   │       │   │   │   │   │   │   │   │   │   ├── torch.distributed._mesh_layout
+    │   │       │   │   │   │   │   │   │   │   │   │   └── torch.distributed._pycute
+    │   │       │   │   │   │   │   │   │   │   │   │       ├── torch.distributed._pycute.int_tuple
+    │   │       │   │   │   │   │   │   │   │   │   │       │   └── torch.distributed._pycute.typing
+    │   │       │   │   │   │   │   │   │   │   │   │       └── torch.distributed._pycute.layout
+    │   │       │   │   │   │   │   │   │   │   │   ├── torch.utils._typing_utils
+    │   │       │   │   │   │   │   │   │   │   │   ├── torch.distributed.config
+    │   │       │   │   │   │   │   │   │   │   │   │   └── torch.utils._config_module
+    │   │       │   │   │   │   │   │   │   │   │   │       └── unittest
+    │   │       │   │   │   │   │   │   │   │   │   │           ├── unittest.result
+    │   │       │   │   │   │   │   │   │   │   │   │           │   └── unittest.util
+    │   │       │   │   │   │   │   │   │   │   │   │           ├── unittest.case
+    │   │       │   │   │   │   │   │   │   │   │   │           ├── unittest.suite
+    │   │       │   │   │   │   │   │   │   │   │   │           ├── unittest.loader
+    │   │       │   │   │   │   │   │   │   │   │   │           └── unittest.main
+    │   │       │   │   │   │   │   │   │   │   │   │               └── unittest.runner
+    │   │       │   │   │   │   │   │   │   │   │   │                   └── unittest.signals
+    │   │       │   │   │   │   │   │   │   │   │   └── torch.distributed.distributed_c10d
+    │   │       │   │   │   │   │   │   │   │   │       ├── torch.monitor
+    │   │       │   │   │   │   │   │   │   │   │       ├── torch.distributed.c10d_logger
+    │   │       │   │   │   │   │   │   │   │   │       │   └── torch.distributed.logging_handlers
+    │   │       │   │   │   │   │   │   │   │   │       ├── torch.distributed.constants
+    │   │       │   │   │   │   │   │   │   │   │       └── torch.distributed.rendezvous
+    │   │       │   │   │   │   │   │   │   │   └── torch.distributed.remote_device
+    │   │       │   │   │   │   │   │   │   └── torch.utils.data.graph_settings
+    │   │       │   │   │   │   │   │   │       ├── torch.utils.data.datapipes
+    │   │       │   │   │   │   │   │   │       │   ├── torch.utils.data.datapipes.dataframe
+    │   │       │   │   │   │   │   │   │       │   │   ├── torch.utils.data.datapipes.dataframe.dataframes
+    │   │       │   │   │   │   │   │   │       │   │   │   ├── torch.utils.data.datapipes._decorator
+    │   │       │   │   │   │   │   │   │       │   │   │   │   ├── torch.utils.data.datapipes._typing
+    │   │       │   │   │   │   │   │   │       │   │   │   │   │   └── torch.utils.data.datapipes._hook_iterator
+    │   │       │   │   │   │   │   │   │       │   │   │   │   └── torch.utils.data.datapipes.datapipe
+    │   │       │   │   │   │   │   │   │       │   │   │   │       ├── torch.utils._import_utils
+    │   │       │   │   │   │   │   │   │       │   │   │   │       ├── torch.utils.data.datapipes.utils
+    │   │       │   │   │   │   │   │   │       │   │   │   │       ├── torch.utils.data.datapipes.utils.common
+    │   │       │   │   │   │   │   │   │       │   │   │   │       │   └── dill
+    │   │       │   │   │   │   │   │   │       │   │   │   │       ├── torch.utils.data.dataset
+    │   │       │   │   │   │   │   │   │       │   │   │   │       ├── dill.__info__
+    │   │       │   │   │   │   │   │   │       │   │   │   │       ├── dill._dill
+    │   │       │   │   │   │   │   │   │       │   │   │   │       │   ├── dill.logger
+    │   │       │   │   │   │   │   │   │       │   │   │   │       │   ├── _pyio
+    │   │       │   │   │   │   │   │   │       │   │   │   │       │   ├── dill._shims
+    │   │       │   │   │   │   │   │   │       │   │   │   │       │   └── dill.settings
+    │   │       │   │   │   │   │   │   │       │   │   │   │       ├── dill.session
+    │   │       │   │   │   │   │   │   │       │   │   │   │       ├── dill.detect
+    │   │       │   │   │   │   │   │   │       │   │   │   │       │   └── dill.pointers
+    │   │       │   │   │   │   │   │   │       │   │   │   │       ├── dill.source
+    │   │       │   │   │   │   │   │   │       │   │   │   │       ├── dill.temp
+    │   │       │   │   │   │   │   │   │       │   │   │   │       └── dill.objtypes
+    │   │       │   │   │   │   │   │   │       │   │   │   └── torch.utils.data.datapipes.dataframe.structures
+    │   │       │   │   │   │   │   │   │       │   │   │       └── torch.utils.data.datapipes.dataframe.dataframe_wrapper
+    │   │       │   │   │   │   │   │   │       │   │   └── torch.utils.data.datapipes.dataframe.datapipes
+    │   │       │   │   │   │   │   │   │       │   ├── torch.utils.data.datapipes.iter
+    │   │       │   │   │   │   │   │   │       │   │   ├── torch.utils.data.datapipes.iter.callable
+    │   │       │   │   │   │   │   │   │       │   │   │   └── torch.utils.data._utils
+    │   │       │   │   │   │   │   │   │       │   │   │       ├── torch.utils.data._utils.collate
+    │   │       │   │   │   │   │   │   │       │   │   │       ├── torch.utils.data._utils.fetch
+    │   │       │   │   │   │   │   │   │       │   │   │       ├── torch.utils.data._utils.pin_memory
+    │   │       │   │   │   │   │   │   │       │   │   │       ├── torch.utils.data._utils.signal_handling
+    │   │       │   │   │   │   │   │   │       │   │   │       └── torch.utils.data._utils.worker
+    │   │       │   │   │   │   │   │   │       │   │   ├── torch.utils.data.datapipes.iter.combinatorics
+    │   │       │   │   │   │   │   │   │       │   │   │   └── torch.utils.data.sampler
+    │   │       │   │   │   │   │   │   │       │   │   ├── torch.utils.data.datapipes.iter.combining
+    │   │       │   │   │   │   │   │   │       │   │   ├── torch.utils.data.datapipes.iter.filelister
+    │   │       │   │   │   │   │   │   │       │   │   │   └── torch.utils.data.datapipes.iter.utils
+    │   │       │   │   │   │   │   │   │       │   │   ├── torch.utils.data.datapipes.iter.fileopener
+    │   │       │   │   │   │   │   │   │       │   │   ├── torch.utils.data.datapipes.iter.grouping
+    │   │       │   │   │   │   │   │   │       │   │   ├── torch.utils.data.datapipes.iter.routeddecoder
+    │   │       │   │   │   │   │   │   │       │   │   │   └── torch.utils.data.datapipes.utils.decoder
+    │   │       │   │   │   │   │   │   │       │   │   ├── torch.utils.data.datapipes.iter.selecting
+    │   │       │   │   │   │   │   │   │       │   │   ├── torch.utils.data.datapipes.iter.sharding
+    │   │       │   │   │   │   │   │   │       │   │   └── torch.utils.data.datapipes.iter.streamreader
+    │   │       │   │   │   │   │   │   │       │   └── torch.utils.data.datapipes.map
+    │   │       │   │   │   │   │   │   │       │       ├── torch.utils.data.datapipes.map.callable
+    │   │       │   │   │   │   │   │   │       │       ├── torch.utils.data.datapipes.map.combinatorics
+    │   │       │   │   │   │   │   │   │       │       ├── torch.utils.data.datapipes.map.combining
+    │   │       │   │   │   │   │   │   │       │       ├── torch.utils.data.datapipes.map.grouping
+    │   │       │   │   │   │   │   │   │       │       └── torch.utils.data.datapipes.map.utils
+    │   │       │   │   │   │   │   │   │       └── torch.utils.data.graph
+    │   │       │   │   │   │   │   │   └── torch.utils.data.distributed
+    │   │       │   │   │   │   │   ├── torch.utils.deterministic
+    │   │       │   │   │   │   │   ├── torch.utils.hooks
+    │   │       │   │   │   │   │   ├── torch.utils.backend_registration
+    │   │       │   │   │   │   │   ├── torch.utils.cpp_backtrace
+    │   │       │   │   │   │   │   └── torch.utils.throughput_benchmark
+    │   │       │   │   │   │   └── torch.utils._python_dispatch
+    │   │       │   │   │   │       ├── torchgen
+    │   │       │   │   │   │       └── torchgen.model
+    │   │       │   │   │   │           └── torchgen.utils
+    │   │       │   │   │   │               └── torchgen.code_template
+    │   │       │   │   │   ├── torch.nn.modules.linear
+    │   │       │   │   │   │   ├── torch.nn.functional
+    │   │       │   │   │   │   │   ├── torch._jit_internal
+    │   │       │   │   │   │   │   │   ├── torch.distributed.rpc
+    │   │       │   │   │   │   │   │   │   ├── torch.distributed.autograd
+    │   │       │   │   │   │   │   │   │   ├── torch.distributed.rpc.api
+    │   │       │   │   │   │   │   │   │   │   ├── torch.futures
+    │   │       │   │   │   │   │   │   │   │   ├── torch.distributed.rpc._utils
+    │   │       │   │   │   │   │   │   │   │   ├── torch.distributed.rpc.constants
+    │   │       │   │   │   │   │   │   │   │   └── torch.distributed.rpc.internal
+    │   │       │   │   │   │   │   │   │   ├── torch.distributed.rpc.backend_registry
+    │   │       │   │   │   │   │   │   │   ├── torch.distributed.rpc.functions
+    │   │       │   │   │   │   │   │   │   ├── torch.distributed.rpc.options
+    │   │       │   │   │   │   │   │   │   └── torch.distributed.rpc.server_process_global_profiler
+    │   │       │   │   │   │   │   │   │       ├── torch.autograd
+    │   │       │   │   │   │   │   │   │       │   ├── torch._vmap_internals
+    │   │       │   │   │   │   │   │   │       │   │   └── torch.utils._pytree
+    │   │       │   │   │   │   │   │   │       │   │       └── torch._library
+    │   │       │   │   │   │   │   │   │       │   │           ├── torch._library.autograd
+    │   │       │   │   │   │   │   │   │       │   │           │   ├── torch._ops
+    │   │       │   │   │   │   │   │   │       │   │           │   │   ├── torch._functorch
+    │   │       │   │   │   │   │   │   │       │   │           │   │   └── torch._functorch.pyfunctorch
+    │   │       │   │   │   │   │   │   │       │   │           │   │       └── torch.autograd.forward_ad
+    │   │       │   │   │   │   │   │   │       │   │           │   │           └── torch.autograd.grad_mode
+    │   │       │   │   │   │   │   │   │       │   │           │   │               └── torch.utils._contextlib
+    │   │       │   │   │   │   │   │   │       │   │           │   └── torch._library.utils
+    │   │       │   │   │   │   │   │   │       │   │           ├── torch._library.fake_impl
+    │   │       │   │   │   │   │   │   │       │   │           ├── torch._library.simple_registry
+    │   │       │   │   │   │   │   │   │       │   │           │   ├── torch.utils._ordered_set
+    │   │       │   │   │   │   │   │   │       │   │           │   └── torch._library.effects
+    │   │       │   │   │   │   │   │   │       │   │           ├── torch._library.fake_class_registry
+    │   │       │   │   │   │   │   │   │       │   │           └── torch._library.triton
+    │   │       │   │   │   │   │   │   │       │   │               ├── torch.utils._exposed_in
+    │   │       │   │   │   │   │   │   │       │   │               ├── torch._library.custom_ops
+    │   │       │   │   │   │   │   │   │       │   │               └── torch._library.infer_schema
+    │   │       │   │   │   │   │   │   │       │   │                   └── torch._library.opaque_object
+    │   │       │   │   │   │   │   │   │       │   ├── torch.autograd.functional
+    │   │       │   │   │   │   │   │   │       │   ├── torch.autograd.graph
+    │   │       │   │   │   │   │   │   │       │   │   └── torch.autograd.variable
+    │   │       │   │   │   │   │   │   │       │   ├── torch.autograd.anomaly_mode
+    │   │       │   │   │   │   │   │   │       │   ├── torch.autograd.function
+    │   │       │   │   │   │   │   │   │       │   │   └── torch._functorch.autograd_function
+    │   │       │   │   │   │   │   │   │       │   │       └── torch._functorch.apis
+    │   │       │   │   │   │   │   │   │       │   │           ├── torch._functorch.utils
+    │   │       │   │   │   │   │   │   │       │   │           └── torch._functorch.vmap
+    │   │       │   │   │   │   │   │   │       │   │               └── torch._functorch.predispatch
+    │   │       │   │   │   │   │   │   │       │   ├── torch.autograd.gradcheck
+    │   │       │   │   │   │   │   │   │       │   │   └── torch.testing
+    │   │       │   │   │   │   │   │   │       │   │       ├── torch.testing._utils
+    │   │       │   │   │   │   │   │   │       │   │       ├── torch.testing._comparison
+    │   │       │   │   │   │   │   │   │       │   │       │   └── cmath
+    │   │       │   │   │   │   │   │   │       │   │       └── torch.testing._creation
+    │   │       │   │   │   │   │   │   │       │   └── torch.autograd.profiler
+    │   │       │   │   │   │   │   │   │       │       └── torch.autograd.profiler_util
+    │   │       │   │   │   │   │   │   │       └── torch.autograd.profiler_legacy
+    │   │       │   │   │   │   │   │   ├── torch.package
+    │   │       │   │   │   │   │   │   │   ├── torch.package.analyze
+    │   │       │   │   │   │   │   │   │   │   ├── torch.package.analyze.find_first_use_of_broken_modules
+    │   │       │   │   │   │   │   │   │   │   │   └── torch.package.package_exporter
+    │   │       │   │   │   │   │   │   │   │   │       ├── pickletools
+    │   │       │   │   │   │   │   │   │   │   │       ├── torch.package._digraph
+    │   │       │   │   │   │   │   │   │   │   │       ├── torch.package._importlib
+    │   │       │   │   │   │   │   │   │   │   │       ├── torch.package._mangling
+    │   │       │   │   │   │   │   │   │   │   │       ├── torch.package._package_pickler
+    │   │       │   │   │   │   │   │   │   │   │       │   └── torch.package.importer
+    │   │       │   │   │   │   │   │   │   │   │       ├── torch.package._stdlib
+    │   │       │   │   │   │   │   │   │   │   │       ├── torch.package.find_file_dependencies
+    │   │       │   │   │   │   │   │   │   │   │       └── torch.package.glob_group
+    │   │       │   │   │   │   │   │   │   │   └── torch.package.analyze.trace_dependencies
+    │   │       │   │   │   │   │   │   │   ├── torch.package.analyze.is_from_package
+    │   │       │   │   │   │   │   │   │   ├── torch.package.file_structure_representation
+    │   │       │   │   │   │   │   │   │   └── torch.package.package_importer
+    │   │       │   │   │   │   │   │   │       ├── torch.package._directory_reader
+    │   │       │   │   │   │   │   │   │       └── torch.package._package_unpickler
+    │   │       │   │   │   │   │   │   └── torch._awaits
+    │   │       │   │   │   │   │   ├── torch._torch_docs
+    │   │       │   │   │   │   │   ├── torch.nn._reduction
+    │   │       │   │   │   │   │   └── torch.nn.grad
+    │   │       │   │   │   │   │       └── torch.nn.modules.utils
+    │   │       │   │   │   │   ├── torch.nn.init
+    │   │       │   │   │   │   └── torch.nn.modules.lazy
+    │   │       │   │   │   ├── torch.nn.modules.activation
+    │   │       │   │   │   ├── torch.nn.modules.adaptive
+    │   │       │   │   │   │   └── torch.nn.modules.container
+    │   │       │   │   │   ├── torch.nn.modules.batchnorm
+    │   │       │   │   │   │   └── torch.nn.modules._functions
+    │   │       │   │   │   ├── torch.nn.modules.channelshuffle
+    │   │       │   │   │   ├── torch.nn.modules.conv
+    │   │       │   │   │   │   └── torch.nn.common_types
+    │   │       │   │   │   ├── torch.nn.modules.distance
+    │   │       │   │   │   ├── torch.nn.modules.dropout
+    │   │       │   │   │   ├── torch.nn.modules.flatten
+    │   │       │   │   │   ├── torch.nn.modules.fold
+    │   │       │   │   │   ├── torch.nn.modules.instancenorm
+    │   │       │   │   │   ├── torch.nn.modules.linear_cross_entropy_options
+    │   │       │   │   │   ├── torch.nn.modules.loss
+    │   │       │   │   │   ├── torch.nn.modules.normalization
+    │   │       │   │   │   ├── torch.nn.modules.padding
+    │   │       │   │   │   ├── torch.nn.modules.pixelshuffle
+    │   │       │   │   │   ├── torch.nn.modules.pooling
+    │   │       │   │   │   ├── torch.nn.modules.rnn
+    │   │       │   │   │   │   └── torch.nn.utils
+    │   │       │   │   │   │       ├── torch.nn.utils.parametrizations
+    │   │       │   │   │   │       │   └── torch.nn.utils.parametrize
+    │   │       │   │   │   │       │       └── torch.__future__
+    │   │       │   │   │   │       ├── torch.nn.utils.rnn
+    │   │       │   │   │   │       ├── torch.nn.utils.stateless
+    │   │       │   │   │   │       │   └── torch.nn.utils._named_member_accessor
+    │   │       │   │   │   │       ├── torch.nn.utils.clip_grad
+    │   │       │   │   │   │       │   └── torch.utils._foreach_utils
+    │   │       │   │   │   │       ├── torch.nn.utils.convert_parameters
+    │   │       │   │   │   │       ├── torch.nn.utils.fusion
+    │   │       │   │   │   │       ├── torch.nn.utils.init
+    │   │       │   │   │   │       ├── torch.nn.utils.memory_format
+    │   │       │   │   │   │       ├── torch.nn.utils.spectral_norm
+    │   │       │   │   │   │       └── torch.nn.utils.weight_norm
+    │   │       │   │   │   ├── torch.nn.modules.sparse
+    │   │       │   │   │   ├── torch.nn.modules.transformer
+    │   │       │   │   │   └── torch.nn.modules.upsampling
+    │   │       │   │   ├── torch.nn.attention
+    │   │       │   │   │   ├── torch.backends
+    │   │       │   │   │   │   ├── torch.backends.cpu
+    │   │       │   │   │   │   ├── torch.backends.cuda
+    │   │       │   │   │   │   ├── torch.backends.cudnn
+    │   │       │   │   │   │   │   └── torch.backends.cudnn.rnn
+    │   │       │   │   │   │   ├── torch.backends.cusparselt
+    │   │       │   │   │   │   ├── torch.backends.kleidiai
+    │   │       │   │   │   │   ├── torch.backends.mha
+    │   │       │   │   │   │   ├── torch.backends.miopen
+    │   │       │   │   │   │   ├── torch.backends.mkl
+    │   │       │   │   │   │   ├── torch.backends.mkldnn
+    │   │       │   │   │   │   ├── torch.backends.mps
+    │   │       │   │   │   │   │   └── torch.library
+    │   │       │   │   │   │   ├── torch.backends.nnpack
+    │   │       │   │   │   │   ├── torch.backends.openmp
+    │   │       │   │   │   │   ├── torch.backends.opt_einsum
+    │   │       │   │   │   │   ├── torch.backends.python_native
+    │   │       │   │   │   │   └── torch.backends.quantized
+    │   │       │   │   │   ├── torch.nn.attention._registry
+    │   │       │   │   │   ├── torch.nn.attention._fa3
+    │   │       │   │   │   └── torch.nn.attention._fa4
+    │   │       │   │   └── torch.nn.parallel
+    │   │       │   │       ├── torch.nn.parallel.data_parallel
+    │   │       │   │       │   ├── torch.nn.parallel.parallel_apply
+    │   │       │   │       │   ├── torch.nn.parallel.replicate
+    │   │       │   │       │   │   └── torch.nn.parallel.comm
+    │   │       │   │       │   │       └── torch.cuda.nccl
+    │   │       │   │       │   └── torch.nn.parallel.scatter_gather
+    │   │       │   │       │       └── torch.nn.parallel._functions
+    │   │       │   │       └── torch.nn.parallel.distributed
+    │   │       │   │           ├── torch.distributed.algorithms
+    │   │       │   │           │   └── torch.distributed.algorithms.join
+    │   │       │   │           └── torch.distributed.utils
+    │   │       │   └── torch._lowrank
+    │   │       │       └── torch._linalg_utils
+    │   │       ├── torch.__config__
+    │   │       ├── torch.accelerator
+    │   │       │   ├── torch.accelerator._utils
+    │   │       │   ├── torch.accelerator.graphs
+    │   │       │   └── torch.accelerator.memory
+    │   │       ├── torch.cpu
+    │   │       │   └── torch.cpu.amp
+    │   │       │       ├── torch.cpu.amp.autocast_mode
+    │   │       │       └── torch.cpu.amp.grad_scaler
+    │   │       ├── torch.distributions
+    │   │       │   ├── torch.distributions.transforms
+    │   │       │   │   ├── torch.distributions.constraints
+    │   │       │   │   └── torch.distributions.distribution
+    │   │       │   │       └── torch.distributions.utils
+    │   │       │   ├── torch.distributions.bernoulli
+    │   │       │   │   └── torch.distributions.exp_family
+    │   │       │   ├── torch.distributions.beta
+    │   │       │   │   └── torch.distributions.dirichlet
+    │   │       │   ├── torch.distributions.binomial
+    │   │       │   ├── torch.distributions.categorical
+    │   │       │   ├── torch.distributions.cauchy
+    │   │       │   ├── torch.distributions.chi2
+    │   │       │   │   └── torch.distributions.gamma
+    │   │       │   ├── torch.distributions.constraint_registry
+    │   │       │   ├── torch.distributions.continuous_bernoulli
+    │   │       │   ├── torch.distributions.exponential
+    │   │       │   ├── torch.distributions.fishersnedecor
+    │   │       │   ├── torch.distributions.generalized_pareto
+    │   │       │   ├── torch.distributions.geometric
+    │   │       │   ├── torch.distributions.gumbel
+    │   │       │   │   ├── torch.distributions.transformed_distribution
+    │   │       │   │   │   └── torch.distributions.independent
+    │   │       │   │   └── torch.distributions.uniform
+    │   │       │   ├── torch.distributions.half_cauchy
+    │   │       │   ├── torch.distributions.half_normal
+    │   │       │   │   └── torch.distributions.normal
+    │   │       │   ├── torch.distributions.inverse_gamma
+    │   │       │   ├── torch.distributions.kl
+    │   │       │   │   ├── torch.distributions.laplace
+    │   │       │   │   ├── torch.distributions.lowrank_multivariate_normal
+    │   │       │   │   │   └── torch.distributions.multivariate_normal
+    │   │       │   │   ├── torch.distributions.one_hot_categorical
+    │   │       │   │   ├── torch.distributions.pareto
+    │   │       │   │   └── torch.distributions.poisson
+    │   │       │   ├── torch.distributions.kumaraswamy
+    │   │       │   ├── torch.distributions.lkj_cholesky
+    │   │       │   ├── torch.distributions.log_normal
+    │   │       │   ├── torch.distributions.logistic_normal
+    │   │       │   ├── torch.distributions.mixture_same_family
+    │   │       │   ├── torch.distributions.multinomial
+    │   │       │   ├── torch.distributions.negative_binomial
+    │   │       │   ├── torch.distributions.relaxed_bernoulli
+    │   │       │   ├── torch.distributions.relaxed_categorical
+    │   │       │   ├── torch.distributions.studentT
+    │   │       │   ├── torch.distributions.von_mises
+    │   │       │   │   └── torch.jit
+    │   │       │   │       ├── torch.jit._async
+    │   │       │   │       │   └── torch.jit._builtins
+    │   │       │   │       ├── torch.jit._await
+    │   │       │   │       ├── torch.jit._decomposition_utils
+    │   │       │   │       ├── torch.jit._freeze
+    │   │       │   │       │   └── torch.jit._script
+    │   │       │   │       │       ├── torch._classes
+    │   │       │   │       │       ├── torch.jit._fuser
+    │   │       │   │       │       ├── torch.jit._monkeytype_config
+    │   │       │   │       │       ├── torch.jit._recursive
+    │   │       │   │       │       │   ├── torch.jit._check
+    │   │       │   │       │       │   ├── torch.jit._state
+    │   │       │   │       │       │   └── torch.jit.frontend
+    │   │       │   │       │       │       ├── torch.jit.annotations
+    │   │       │   │       │       │       └── torch.jit._dataclass_impls
+    │   │       │   │       │       └── torch.jit._serialization
+    │   │       │   │       ├── torch.jit._ir_utils
+    │   │       │   │       └── torch.jit._trace
+    │   │       │   ├── torch.distributions.weibull
+    │   │       │   └── torch.distributions.wishart
+    │   │       ├── torch.fft
+    │   │       ├── torch.hub
+    │   │       ├── torch.linalg
+    │   │       ├── torch.mps
+    │   │       │   ├── torch.mps.profiler
+    │   │       │   └── torch.mps.event
+    │   │       ├── torch.mtia
+    │   │       │   ├── torch._environment
+    │   │       │   ├── torch.mtia._utils
+    │   │       │   ├── torch.mtia.memory
+    │   │       │   └── torch.mtia.mtia_graph
+    │   │       ├── torch.multiprocessing
+    │   │       │   ├── torch.multiprocessing.reductions
+    │   │       │   │   ├── multiprocessing.util
+    │   │       │   │   └── multiprocessing.resource_sharer
+    │   │       │   ├── torch.multiprocessing.spawn
+    │   │       │   │   └── multiprocessing.connection
+    │   │       │   │       └── _multiprocessing
+    │   │       │   └── multiprocessing.resource_tracker
+    │   │       │       ├── multiprocessing.spawn
+    │   │       │       │   └── runpy
+    │   │       │       └── _posixshmem
+    │   │       ├── torch.nested
+    │   │       │   ├── torch.nested._internal
+    │   │       │   └── torch.nested._internal.nested_tensor
+    │   │       │       └── torch.nested._internal.nested_int
+    │   │       │           ├── torch.fx
+    │   │       │           │   ├── torch.fx.immutable_collections
+    │   │       │           │   │   └── torch.fx._compatibility
+    │   │       │           │   ├── torch.fx._symbolic_trace
+    │   │       │           │   │   ├── torch.fx._lazy_graph_module
+    │   │       │           │   │   │   └── torch.fx.graph_module
+    │   │       │           │   │   │       ├── torch.fx.experimental
+    │   │       │           │   │   │       ├── torch.fx.experimental._config
+    │   │       │           │   │   │       └── torch.fx.graph
+    │   │       │           │   │   │           ├── torch.utils._dtype_abbrs
+    │   │       │           │   │   │           ├── torch.fx._pytree
+    │   │       │           │   │   │           │   └── torch.return_types
+    │   │       │           │   │   │           ├── torch.fx.node
+    │   │       │           │   │   │           │   └── torch.fx.operator_schemas
+    │   │       │           │   │   │           │       └── torch.utils._inspect
+    │   │       │           │   │   │           └── torch.fx.tensor_type
+    │   │       │           │   │   │               └── torch.fx.experimental.unification
+    │   │       │           │   │   │                   ├── torch.fx.experimental.unification.core
+    │   │       │           │   │   │                   │   ├── torch.fx.experimental.unification.dispatch
+    │   │       │           │   │   │                   │   │   └── torch.fx.experimental.unification.multipledispatch
+    │   │       │           │   │   │                   │   │       └── torch.fx.experimental.unification.multipledispatch.core
+    │   │       │           │   │   │                   │   │           └── torch.fx.experimental.unification.multipledispatch.dispatcher
+    │   │       │           │   │   │                   │   │               └── torch.fx.experimental.unification.multipledispatch.conflict
+    │   │       │           │   │   │                   │   │                   ├── torch.fx.experimental.unification.multipledispatch.utils
+    │   │       │           │   │   │                   │   │                   └── torch.fx.experimental.unification.multipledispatch.variadic
+    │   │       │           │   │   │                   │   ├── torch.fx.experimental.unification.unification_tools
+    │   │       │           │   │   │                   │   ├── torch.fx.experimental.unification.utils
+    │   │       │           │   │   │                   │   └── torch.fx.experimental.unification.variable
+    │   │       │           │   │   │                   └── torch.fx.experimental.unification.more
+    │   │       │           │   │   └── torch.fx.proxy
+    │   │       │           │   │       ├── torch.fx.traceback
+    │   │       │           │   │       └── torch._logging
+    │   │       │           │   │           └── torch._logging._registrations
+    │   │       │           │   │               └── torch._logging._internal
+    │   │       │           │   │                   ├── pkgutil
+    │   │       │           │   │                   ├── torch._logging.structured
+    │   │       │           │   │                   └── torch._guards
+    │   │       │           │   │                       ├── unittest.mock
+    │   │       │           │   │                       ├── torch.utils._traceback
+    │   │       │           │   │                       └── torch.utils.weak
+    │   │       │           │   ├── torch.fx.interpreter
+    │   │       │           │   │   └── torch.fx.config
+    │   │       │           │   └── torch.fx.subgraph_rewriter
+    │   │       │           └── torch.fx.experimental._constant_symnode
+    │   │       ├── torch.optim
+    │   │       │   ├── torch.optim.lr_scheduler
+    │   │       │   │   └── torch.optim.optimizer
+    │   │       │   ├── torch.optim.swa_utils
+    │   │       │   ├── torch.optim._adafactor
+    │   │       │   ├── torch.optim._muon
+    │   │       │   ├── torch.optim._stateless
+    │   │       │   ├── torch.optim.adadelta
+    │   │       │   ├── torch.optim.adagrad
+    │   │       │   ├── torch.optim.adam
+    │   │       │   ├── torch.optim.adamax
+    │   │       │   ├── torch.optim.adamw
+    │   │       │   ├── torch.optim.asgd
+    │   │       │   ├── torch.optim.lbfgs
+    │   │       │   ├── torch.optim.nadam
+    │   │       │   ├── torch.optim.radam
+    │   │       │   ├── torch.optim.rmsprop
+    │   │       │   ├── torch.optim.rprop
+    │   │       │   ├── torch.optim.sgd
+    │   │       │   └── torch.optim.sparse_adam
+    │   │       │       └── torch.optim._functional
+    │   │       ├── torch.profiler
+    │   │       │   ├── torch.profiler.profiler
+    │   │       │   │   ├── gzip
+    │   │       │   │   └── torch.profiler._memory_profiler
+    │   │       │   │       └── torch.profiler._utils
+    │   │       │   └── torch.profiler.itt
+    │   │       ├── torch.special
+    │   │       ├── torch.xpu
+    │   │       │   ├── torch.xpu._utils
+    │   │       │   ├── torch.xpu.graphs
+    │   │       │   ├── torch.xpu.streams
+    │   │       │   ├── torch.xpu.memory
+    │   │       │   └── torch.xpu.random
+    │   │       ├── torch.signal
+    │   │       │   └── torch.signal.windows
+    │   │       │       └── torch.signal.windows.windows
+    │   │       ├── torch.ao
+    │   │       ├── torch.nn.intrinsic
+    │   │       │   ├── torch.ao.nn
+    │   │       │   ├── torch.ao.nn.intrinsic
+    │   │       │   │   └── torch.ao.nn.intrinsic.modules
+    │   │       │   │       └── torch.ao.nn.intrinsic.modules.fused
+    │   │       │   ├── torch.nn.intrinsic.modules
+    │   │       │   │   └── torch.nn.intrinsic.modules.fused
+    │   │       │   ├── torch.nn.intrinsic.qat
+    │   │       │   │   └── torch.nn.intrinsic.qat.modules
+    │   │       │   │       ├── torch.nn.intrinsic.qat.modules.conv_fused
+    │   │       │   │       │   └── torch.ao.nn.intrinsic.qat
+    │   │       │   │       │       └── torch.ao.nn.intrinsic.qat.modules
+    │   │       │   │       │           ├── torch.ao.nn.intrinsic.qat.modules.conv_fused
+    │   │       │   │       │           │   └── torch.ao.nn.qat
+    │   │       │   │       │           │       └── torch.ao.nn.qat.modules
+    │   │       │   │       │           │           ├── torch.ao.nn.qat.modules.conv
+    │   │       │   │       │           │           ├── torch.ao.nn.qat.modules.embedding_ops
+    │   │       │   │       │           │           └── torch.ao.nn.qat.modules.linear
+    │   │       │   │       │           ├── torch.ao.nn.intrinsic.qat.modules.linear_fused
+    │   │       │   │       │           └── torch.ao.nn.intrinsic.qat.modules.linear_relu
+    │   │       │   │       ├── torch.nn.intrinsic.qat.modules.linear_fused
+    │   │       │   │       └── torch.nn.intrinsic.qat.modules.linear_relu
+    │   │       │   └── torch.nn.intrinsic.quantized
+    │   │       │       ├── torch.nn.intrinsic.quantized.dynamic
+    │   │       │       │   └── torch.nn.intrinsic.quantized.dynamic.modules
+    │   │       │       │       └── torch.nn.intrinsic.quantized.dynamic.modules.linear_relu
+    │   │       │       │           ├── torch.ao.nn.intrinsic.quantized
+    │   │       │       │           │   └── torch.ao.nn.intrinsic.quantized.modules
+    │   │       │       │           │       ├── torch.ao.nn.intrinsic.quantized.modules.bn_relu
+    │   │       │       │           │       │   └── torch.ao.nn.quantized
+    │   │       │       │           │       │       └── torch.ao.nn.quantized.functional
+    │   │       │       │           │       │           └── torch.ao.nn.quantized.modules
+    │   │       │       │           │       │               ├── torch.ao.nn.quantizable
+    │   │       │       │           │       │               │   └── torch.ao.nn.quantizable.modules
+    │   │       │       │           │       │               │       ├── torch.ao.nn.quantizable.modules.activation
+    │   │       │       │           │       │               │       └── torch.ao.nn.quantizable.modules.rnn
+    │   │       │       │           │       │               ├── torch.ao.nn.quantized.modules.activation
+    │   │       │       │           │       │               ├── torch.ao.nn.quantized.modules.batchnorm
+    │   │       │       │           │       │               ├── torch.ao.nn.quantized.modules.conv
+    │   │       │       │           │       │               │   └── torch.ao.nn.quantized.modules.utils
+    │   │       │       │           │       │               ├── torch.ao.nn.quantized.modules.dropout
+    │   │       │       │           │       │               ├── torch.ao.nn.quantized.modules.embedding_ops
+    │   │       │       │           │       │               ├── torch.ao.nn.quantized.modules.functional_modules
+    │   │       │       │           │       │               ├── torch.ao.nn.quantized.modules.linear
+    │   │       │       │           │       │               ├── torch.ao.nn.quantized.modules.normalization
+    │   │       │       │           │       │               └── torch.ao.nn.quantized.modules.rnn
+    │   │       │       │           │       ├── torch.ao.nn.intrinsic.quantized.modules.conv_add
+    │   │       │       │           │       ├── torch.ao.nn.intrinsic.quantized.modules.conv_relu
+    │   │       │       │           │       └── torch.ao.nn.intrinsic.quantized.modules.linear_relu
+    │   │       │       │           └── torch.ao.nn.intrinsic.quantized.dynamic
+    │   │       │       │               └── torch.ao.nn.intrinsic.quantized.dynamic.modules
+    │   │       │       │                   └── torch.ao.nn.intrinsic.quantized.dynamic.modules.linear_relu
+    │   │       │       │                       └── torch.ao.nn.quantized.dynamic
+    │   │       │       │                           └── torch.ao.nn.quantized.dynamic.modules
+    │   │       │       │                               ├── torch.ao.nn.quantized.dynamic.modules.conv
+    │   │       │       │                               ├── torch.ao.nn.quantized.dynamic.modules.linear
+    │   │       │       │                               └── torch.ao.nn.quantized.dynamic.modules.rnn
+    │   │       │       └── torch.nn.intrinsic.quantized.modules
+    │   │       │           ├── torch.nn.intrinsic.quantized.modules.bn_relu
+    │   │       │           ├── torch.nn.intrinsic.quantized.modules.conv_relu
+    │   │       │           └── torch.nn.intrinsic.quantized.modules.linear_relu
+    │   │       ├── torch.nn.qat
+    │   │       │   ├── torch.nn.qat.dynamic
+    │   │       │   │   └── torch.nn.qat.dynamic.modules
+    │   │       │   │       └── torch.nn.qat.dynamic.modules.linear
+    │   │       │   │           └── torch.ao.nn.qat.dynamic
+    │   │       │   │               └── torch.ao.nn.qat.dynamic.modules
+    │   │       │   │                   └── torch.ao.nn.qat.dynamic.modules.linear
+    │   │       │   └── torch.nn.qat.modules
+    │   │       │       ├── torch.nn.qat.modules.conv
+    │   │       │       ├── torch.nn.qat.modules.embedding_ops
+    │   │       │       └── torch.nn.qat.modules.linear
+    │   │       ├── torch.nn.quantizable
+    │   │       │   └── torch.nn.quantizable.modules
+    │   │       ├── torch.nn.quantized
+    │   │       │   ├── torch.nn.quantized.dynamic
+    │   │       │   ├── torch.nn.quantized.functional
+    │   │       │   └── torch.nn.quantized.modules
+    │   │       ├── torch._size_docs
+    │   │       ├── torch._storage_docs
+    │   │       ├── torch._tensor_docs
+    │   │       ├── torch.quantization
+    │   │       │   ├── torch.quantization.fake_quantize
+    │   │       │   │   └── torch.ao.quantization
+    │   │       │   │       ├── torch.ao.quantization.fake_quantize
+    │   │       │   │       │   └── torch.ao.quantization.observer
+    │   │       │   │       │       └── torch.ao.quantization.utils
+    │   │       │   │       │           └── torch.ao.quantization.quant_type
+    │   │       │   │       ├── torch.ao.quantization.fuse_modules
+    │   │       │   │       │   └── torch.ao.quantization.fuser_method_mappings
+    │   │       │   │       ├── torch.ao.quantization.qconfig
+    │   │       │   │       ├── torch.ao.quantization.qconfig_mapping
+    │   │       │   │       ├── torch.ao.quantization.quantization_mappings
+    │   │       │   │       │   ├── torch.ao.nn.quantized.reference
+    │   │       │   │       │   │   └── torch.ao.nn.quantized.reference.modules
+    │   │       │   │       │   │       ├── torch.ao.nn.quantized.reference.modules.conv
+    │   │       │   │       │   │       │   └── torch.ao.nn.quantized.reference.modules.utils
+    │   │       │   │       │   │       ├── torch.ao.nn.quantized.reference.modules.linear
+    │   │       │   │       │   │       ├── torch.ao.nn.quantized.reference.modules.rnn
+    │   │       │   │       │   │       └── torch.ao.nn.quantized.reference.modules.sparse
+    │   │       │   │       │   ├── torch.ao.nn.sparse
+    │   │       │   │       │   │   └── torch.ao.nn.sparse.quantized
+    │   │       │   │       │   │       └── torch.ao.nn.sparse.quantized.dynamic
+    │   │       │   │       │   │           └── torch.ao.nn.sparse.quantized.dynamic.linear
+    │   │       │   │       │   │               ├── torch.ao.nn.sparse.quantized.linear
+    │   │       │   │       │   │               └── torch.ao.nn.sparse.quantized.utils
+    │   │       │   │       │   └── torch.ao.quantization.stubs
+    │   │       │   │       ├── torch.ao.quantization.quantize
+    │   │       │   │       └── torch.ao.quantization.quantize_jit
+    │   │       │   ├── torch.quantization.fuse_modules
+    │   │       │   ├── torch.quantization.fuser_method_mappings
+    │   │       │   ├── torch.quantization.observer
+    │   │       │   ├── torch.quantization.qconfig
+    │   │       │   ├── torch.quantization.quant_type
+    │   │       │   ├── torch.quantization.quantization_mappings
+    │   │       │   ├── torch.quantization.quantize
+    │   │       │   ├── torch.quantization.quantize_jit
+    │   │       │   └── torch.quantization.stubs
+    │   │       ├── torch.quasirandom
+    │   │       ├── torch.multiprocessing._atfork
+    │   │       ├── torch._lobpcg
+    │   │       ├── torch.masked
+    │   │       │   └── torch.masked._ops
+    │   │       │       ├── torch.masked._docs
+    │   │       │       └── torch.masked.maskedtensor
+    │   │       │           ├── torch.masked.maskedtensor.binary
+    │   │       │           │   └── torch.masked.maskedtensor.core
+    │   │       │           ├── torch.masked.maskedtensor.passthrough
+    │   │       │           ├── torch.masked.maskedtensor.reductions
+    │   │       │           │   └── torch.masked.maskedtensor.creation
+    │   │       │           └── torch.masked.maskedtensor.unary
+    │   │       ├── torch.utils.dlpack
+    │   │       ├── torch.export
+    │   │       │   ├── torch.fx.passes
+    │   │       │   │   ├── torch.fx.passes.graph_drawer
+    │   │       │   │   │   └── torch.fx.passes.shape_prop
+    │   │       │   │   │       ├── torch._dispatch
+    │   │       │   │   │       ├── torch._dispatch.python
+    │   │       │   │   │       └── torch._subclasses
+    │   │       │   │   │           ├── torch._subclasses.fake_tensor
+    │   │       │   │   │           │   ├── torch._library.fake_profile
+    │   │       │   │   │           │   ├── torch._subclasses.meta_utils
+    │   │       │   │   │           │   │   └── torch.utils._mode_utils
+    │   │       │   │   │           │   ├── torch.utils._stats
+    │   │       │   │   │           │   ├── torch._subclasses._fake_tensor_utils
+    │   │       │   │   │           │   │   └── torch.fx.experimental.sym_node
+    │   │       │   │   │           │   └── torch._subclasses.fake_impls
+    │   │       │   │   │           │       └── torch._custom_op
+    │   │       │   │   │           └── torch._subclasses.fake_utils
+    │   │       │   │   ├── torch.fx.passes.graph_manipulation
+    │   │       │   │   ├── torch.fx.passes.net_min_base
+    │   │       │   │   │   └── torch.fx.passes.split_utils
+    │   │       │   │   │       ├── torch.fx.passes.utils
+    │   │       │   │   │       │   └── torch.fx.passes.utils.common
+    │   │       │   │   │       │       └── torch.fx.passes.utils.matcher_utils
+    │   │       │   │   │       └── torch.fx.passes.tools_common
+    │   │       │   │   ├── torch.fx.passes.operator_support
+    │   │       │   │   ├── torch.fx.passes.param_fetch
+    │   │       │   │   ├── torch.fx.passes.regional_inductor
+    │   │       │   │   ├── torch.fx.passes.reinplace
+    │   │       │   │   ├── torch.fx.passes.runtime_assert
+    │   │       │   │   │   ├── torch.fx._utils
+    │   │       │   │   │   └── torch.fx.experimental.proxy_tensor
+    │   │       │   │   │       ├── torch._subclasses.functional_tensor
+    │   │       │   │   │       ├── torch.utils._thunk
+    │   │       │   │   │       └── torch.fx.experimental._backward_state
+    │   │       │   │   ├── torch.fx.passes.split_module
+    │   │       │   │   └── torch.fx.passes.splitter_base
+    │   │       │   ├── torch.fx.passes.infra
+    │   │       │   │   └── torch.fx.passes.infra.pass_manager
+    │   │       │   │       └── torch.fx.passes.infra.pass_base
+    │   │       │   ├── torch.export.custom_ops
+    │   │       │   ├── torch.export._state_dict_utils
+    │   │       │   ├── torch.export.decomp_utils
+    │   │       │   │   └── torch._export
+    │   │       │   │       ├── torch.export._tree_utils
+    │   │       │   │       ├── torch.export.graph_signature
+    │   │       │   │       ├── torch._export.wrappers
+    │   │       │   │       │   ├── torch._custom_ops
+    │   │       │   │       │   │   └── torch._custom_op.impl
+    │   │       │   │       │   │       └── torch._custom_op.autograd
+    │   │       │   │       │   ├── torch._export.utils
+    │   │       │   │       │   └── torch._higher_order_ops
+    │   │       │   │       │       ├── torch._higher_order_ops._invoke_quant
+    │   │       │   │       │       │   └── torch._higher_order_ops.base_hop
+    │   │       │   │       │       │       └── torch._higher_order_ops.auto_functionalize
+    │   │       │   │       │       │           └── torch._higher_order_ops.utils
+    │   │       │   │       │       │               └── torch._higher_order_ops.schema
+    │   │       │   │       │       ├── torch._higher_order_ops.aoti_call_delegate
+    │   │       │   │       │       ├── torch._higher_order_ops.associative_scan
+    │   │       │   │       │       ├── torch._higher_order_ops.cond
+    │   │       │   │       │       ├── torch._higher_order_ops.effects
+    │   │       │   │       │       │   ├── torch._higher_order_ops.invoke_leaf_function
+    │   │       │   │       │       │   ├── torch._higher_order_ops.print
+    │   │       │   │       │       │   └── torch._higher_order_ops.torchbind
+    │   │       │   │       │       │       ├── torch._functorch._aot_autograd
+    │   │       │   │       │       │       └── torch._functorch._aot_autograd.utils
+    │   │       │   │       │       ├── torch._higher_order_ops.executorch_call_delegate
+    │   │       │   │       │       ├── torch._higher_order_ops.flat_apply
+    │   │       │   │       │       ├── torch._higher_order_ops.flex_attention
+    │   │       │   │       │       │   └── torch.utils.checkpoint
+    │   │       │   │       │       │       ├── torch.testing._internal
+    │   │       │   │       │       │       └── torch.testing._internal.logging_tensor
+    │   │       │   │       │       ├── torch._higher_order_ops.foreach_map
+    │   │       │   │       │       ├── torch._higher_order_ops.hints_wrap
+    │   │       │   │       │       ├── torch._higher_order_ops.inline_asm_elementwise
+    │   │       │   │       │       ├── torch._higher_order_ops.invoke_subgraph
+    │   │       │   │       │       │   └── torch.utils._debug_mode
+    │   │       │   │       │       │       ├── torch.utils._debug_mode._calls
+    │   │       │   │       │       │       │   └── torch.utils._debug_mode._utils
+    │   │       │   │       │       │       └── torch.utils._debug_mode._mode
+    │   │       │   │       │       ├── torch._higher_order_ops.local_map
+    │   │       │   │       │       ├── torch._higher_order_ops.map
+    │   │       │   │       │       ├── torch._higher_order_ops.out_dtype
+    │   │       │   │       │       ├── torch._higher_order_ops.run_const_graph
+    │   │       │   │       │       ├── torch._higher_order_ops.scan
+    │   │       │   │       │       │   └── torch._higher_order_ops.partitioner
+    │   │       │   │       │       ├── torch._higher_order_ops.strict_mode
+    │   │       │   │       │       ├── torch._higher_order_ops.while_loop
+    │   │       │   │       │       └── torch._higher_order_ops.wrap
+    │   │       │   │       └── torch._export.config
+    │   │       │   ├── torch.export.dynamic_shapes
+    │   │       │   │   └── torch.export.exported_program
+    │   │       │   │       └── torch._export.verifier
+    │   │       │   └── torch.export.unflatten
+    │   │       │       └── torch.export._remove_effect_tokens_pass
+    │   │       ├── torch.func
+    │   │       │   ├── torch._functorch.batch_norm_replacement
+    │   │       │   ├── torch._functorch.eager_transforms
+    │   │       │   │   └── torch.fx.experimental.const_fold
+    │   │       │   ├── torch._functorch.einops
+    │   │       │   └── torch._functorch.functional_call
+    │   │       ├── torch.distributed._meta_registrations
+    │   │       ├── torch._meta_registrations
+    │   │       │   └── torch._decomp
+    │   │       │       ├── torch._decomp.decompositions
+    │   │       │       │   └── torch._prims
+    │   │       │       │       ├── torch._prims.debug_prims
+    │   │       │       │       │   └── torch.utils._content_store
+    │   │       │       │       ├── torch._prims.rng_prims
+    │   │       │       │       └── torch._prims_common.wrappers
+    │   │       │       └── torch._refs
+    │   │       │           ├── torch.testing._internal.common_dtype
+    │   │       │           ├── torch._refs._conversions
+    │   │       │           ├── torch._refs.fft
+    │   │       │           ├── torch._refs.linalg
+    │   │       │           ├── torch._refs.nn
+    │   │       │           ├── torch._refs.nn.functional
+    │   │       │           └── torch._refs.special
+    │   │       ├── torch.compiler
+    │   │       │   ├── torch.compiler.config
+    │   │       │   └── torch.compiler._cache
+    │   │       │       └── torch.utils._appending_byte_serializer
+    │   │       ├── torch._native
+    │   │       │   ├── torch._native.cutedsl_utils
+    │   │       │   │   ├── torch._native.common_utils
+    │   │       │   │   └── torch._native.dsl_registry
+    │   │       │   │       └── torch._native.registry
+    │   │       │   └── torch._native.ops
+    │   │       │       ├── torch._native.ops.bmm_outer_product
+    │   │       │       │   └── torch._native.ops.bmm_outer_product.triton_impl
+    │   │       │       │       └── torch._native.triton_utils
+    │   │       │       ├── torch._native.ops.foreach_mm
+    │   │       │       │   └── torch._native.ops.foreach_mm.impl
+    │   │       │       ├── torch._native.ops.norm
+    │   │       │       │   └── torch._native.ops.norm.rmsnorm_impl
+    │   │       │       ├── torch._native.ops.scatter_add
+    │   │       │       │   └── torch._native.ops.scatter_add.cutedsl_impl
+    │   │       │       │       └── torch._tensor_iterator
+    │   │       │       └── torch._native.ops.topk
+    │   │       │           └── torch._native.ops.topk.cutedsl_impl
+    │   │       │               └── torch._native.ops.topk._common
+    │   │       ├── pydantic
+    │   │       │   ├── pydantic._migration
+    │   │       │   │   └── pydantic.warnings
+    │   │       │   │       └── pydantic.version
+    │   │       │   │           └── pydantic_core
+    │   │       │   │               ├── pydantic_core._pydantic_core
+    │   │       │   │               └── pydantic_core.core_schema
+    │   │       │   └── pydantic.errors
+    │   │       │       ├── typing_inspection
+    │   │       │       ├── typing_inspection.introspection
+    │   │       │       │   └── typing_inspection.typing_objects
+    │   │       │       ├── pydantic._internal
+    │   │       │       └── pydantic._internal._repr
+    │   │       │           └── pydantic._internal._typing_extra
+    │   │       │               └── pydantic._internal._namespace_utils
+    │   │       ├── pydantic.main
+    │   │       │   ├── pydantic._internal._config
+    │   │       │   │   ├── pydantic.aliases
+    │   │       │   │   │   └── pydantic._internal._internal_dataclass
+    │   │       │   │   └── pydantic.config
+    │   │       │   ├── pydantic._internal._decorators
+    │   │       │   │   ├── pydantic._internal._core_utils
+    │   │       │   │   └── pydantic._internal._utils
+    │   │       │   │       └── pydantic._internal._import_utils
+    │   │       │   ├── pydantic._internal._fields
+    │   │       │   │   ├── pydantic._internal._generics
+    │   │       │   │   │   └── pydantic._internal._forward_ref
+    │   │       │   │   └── pydantic._internal._docs_extraction
+    │   │       │   ├── pydantic._internal._mock_val_ser
+    │   │       │   │   ├── pydantic.plugin
+    │   │       │   │   └── pydantic.plugin._schema_validator
+    │   │       │   └── pydantic._internal._model_construction
+    │   │       │       ├── pydantic._internal._generate_schema
+    │   │       │       │   ├── zoneinfo
+    │   │       │       │   │   ├── zoneinfo._tzpath
+    │   │       │       │   │   │   ├── sysconfig
+    │   │       │       │   │   │   ├── _sysconfigdata__darwin_darwin
+    │   │       │       │   │   │   └── _osx_support
+    │   │       │       │   │   ├── zoneinfo._common
+    │   │       │       │   │   └── _zoneinfo
+    │   │       │       │   ├── pydantic.annotated_handlers
+    │   │       │       │   ├── pydantic.functional_validators
+    │   │       │       │   ├── pydantic.json_schema
+    │   │       │       │   │   ├── pydantic._internal._core_metadata
+    │   │       │       │   │   └── pydantic._internal._schema_generation_shared
+    │   │       │       │   ├── pydantic._internal._discriminated_union
+    │   │       │       │   ├── pydantic._internal._known_annotated_metadata
+    │   │       │       │   └── pydantic._internal._schema_gather
+    │   │       │       └── pydantic._internal._signature
+    │   │       ├── pydantic.fields
+    │   │       │   ├── annotated_types
+    │   │       │   ├── pydantic._internal._validators
+    │   │       │   └── pydantic.types
+    │   │       └── pydantic.plugin._loader
+    │   ├── transformers.utils.versions
+    │   ├── tokenizers
+    │   └── accelerate
+    ├── transformers.utils.dummy_sentencepiece_and_tokenizers_objects
+    └── torchvision
+
+Total modules imported: 1403

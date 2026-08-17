@@ -327,9 +327,16 @@ _import_structure = {
         "metal_bitnet_matmul",
         "metal_fp8_matmul",
     ],
+    "integrations.flashinfer_split_kv": ["split_kv_decode_attention"],
     "generation.cuda_graph_runner": ["CUDAGraphFastRunner", "is_cuda_graph_available"],
     "generation.fused_sampler": ["FusedLogitsSampler", "fused_sample_next_token"],
     "generation.speculative_fast_runner": ["SpeculativeFastRunner", "SpeculativeStepResult"],
+    "generation.medusa_tree_runner": [
+        "MedusaTreeFastRunner",
+        "MedusaTreePath",
+        "MedusaTreeStepResult",
+        "MedusaTreeTopology",
+    ],
     "video_utils": [],
 }
 

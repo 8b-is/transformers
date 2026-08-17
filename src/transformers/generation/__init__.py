@@ -99,6 +99,12 @@ else:
         "SpeculativeFastRunner",
         "SpeculativeStepResult",
     ]
+    _import_structure["medusa_tree_runner"] = [
+        "MedusaTreeFastRunner",
+        "MedusaTreeTopology",
+        "MedusaTreeStepResult",
+        "MedusaTreePath",
+    ]
     _import_structure["continuous_batching"] = [
         "ContinuousBatchingManager",
         "ContinuousMixin",

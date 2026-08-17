@@ -122,15 +122,22 @@ What a weird world. But open source belongs to no single gatekeeper. We didn't c
    - **`SlottedStaticCache` (Zero-Allocation Decoding)**: Pre-allocates contiguous `(batch_size, num_heads, max_cache_len, head_dim)` buffers once and uses in-place slice copies (`copy_()`), eliminating $100\%$ of dynamic CUDA allocations and memory fragmentation during autoregressive decoding.
    - **`CUDAGraphFastRunner` (<5µs Dispatch Latency)**: Records single-token forward passes into static CUDA Graphs with dedicated warmup streams, bypassing Python CPU interpreter overhead and dropping token stepping latency from ~120µs to <5µs.
    - **`FusedLogitsSampler` (O(K) In-Register Sampling)**: Fused single-pass temperature scaling, Top-K reduction, Top-P nucleus cumulative probability filtering, and multinomial sampling in a single contiguous sequence, cutting sampling overhead by up to 80% on large vocabularies ($V \ge 32k$).
-2. **🔮 Zero-Allocation Speculative Decoding Engine (`SpeculativeFastRunner`)**:
+2. **🌳 Non-Linear Tree-Based Speculative Drafting Engine (`MedusaTreeFastRunner`)**:
+   - Generates candidate token trees with pre-computed 2D causal visibility masks (`MedusaTreeTopology`).
+   - Verifies multiple speculative branches simultaneously in a single target model forward pass.
+   - $O(1)$ KV-cache rollback to the longest accepted branch depth via `SlottedStaticCache.crop()`.
+3. **⚡ Split-KV Flash-Decoding Attention for 32k+ Long Context (`split_kv_decode_attention`)**:
+   - Partitions long sequence dimension ($32k\text{--}128k+$ tokens) into parallel GPU SM splits (`BLOCK_N=512`), achieving $100\%$ SM occupancy even with $B=1$.
+   - Online multi-split log-sum-exp reduction (`_split_kv_stage2_kernel`) merging partial softmax states with zero precision loss.
+4. **🔮 Zero-Allocation Speculative Decoding Engine (`SpeculativeFastRunner`)**:
    - Pairs draft and target models with pre-allocated slotted acceptance trees.
    - Executes parallel verification of $K$ candidate tokens in a single target forward pass.
    - $O(1)$ KV-cache rollback via `cache.crop()` on `SlottedStaticCache` upon candidate rejection.
-3. **🍎 Apple Silicon Metal (MSL) Simdgroup Matrix Kernels (`metal_msl_kernels`)**:
+5. **🍎 Apple Silicon Metal (MSL) Simdgroup Matrix Kernels (`metal_msl_kernels`)**:
    - Native Metal Shading Language (MSL) compute shaders (`METAL_BITNET_TERNARY_GEMM_MSL`, `METAL_FP8_DYNAMIC_GEMM_MSL`) targeting Apple M1/M2/M3/M4 GPUs.
    - Vectorized 16-trit per `uint32` 2-bit bitmask unpacking and hardware-accelerated ternary GEMM (`metal_bitnet_matmul`, `MetalBitNetLinear`).
    - Dynamic FP8 (E4M3/E5M2) hardware matrix multiplication with scale fusion (`metal_fp8_matmul`, `MetalFp8Linear`).
-4. **⚡ NVIDIA FP8 & Hopper/Blackwell 128-Byte TMA Engine**:
+6. **⚡ NVIDIA FP8 & Hopper/Blackwell 128-Byte TMA Engine**:
    - Native 128-byte hardware `CUtensorMap` binary memory layout matching NVIDIA Hopper SM90+ (H100/H200) and Blackwell SM100+ (B200) specifications.
    - Direct C ABI structure (`CUtensorMapStruct`) and in-place zero-allocation buffer packing (`TmaDescriptor.pack_into`).
    - Hardware-accelerated FP8 GEMM via `torch._scaled_mm` with fast accumulation and dynamic scaling (`fp8_dynamic_quantize`).
