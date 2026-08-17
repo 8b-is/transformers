@@ -32,19 +32,20 @@ limitations under the License.
 - [🛡️ Sovereign Hard Fork & Downstream Upgrades](#️-sovereign-hard-fork--downstream-upgrades)
 - [🚀 What's New in `transformers-ultra`](#-whats-new-in-transformers-ultra)
   - [1. 🏎️ 1+2+3 Ultra-Hot-Path Inference Acceleration Trio](#1-️-123-ultra-hot-path-inference-acceleration-trio)
-  - [2. 🔄 Continuous Chunked Prefill & Multi-Stream Asynchronous Decode Engine (`ChunkedPrefillDecodeEngine`)](#2--continuous-chunked-prefill--multi-stream-asynchronous-decode-engine-chunkedprefilldecodeengine)
-  - [3. 🌉 Apple Silicon Zero-Copy MPS ↔ MLX UMA Memory Bridge (`mlx_mps_bridge`)](#3--apple-silicon-zero-copy-mps--mlx-uma-memory-bridge-mlx_mps_bridge)
-  - [4. 🌳 Non-Linear Tree-Based Speculative Drafting Engine (`MedusaTreeFastRunner`)](#4--non-linear-tree-based-speculative-drafting-engine-medusatreefastrunner)
-  - [5. ⚡ Split-KV Flash-Decoding for 32k+ Long Context (`split_kv_decode_attention`)](#5--split-kv-flash-decoding-attention-for-32k-long-context-split_kv_decode_attention)
-  - [6. 🔮 Zero-Allocation Speculative Fast Runner (`SpeculativeFastRunner`)](#6--zero-allocation-speculative-decoding-engine-speculativefastrunner)
-  - [7. 🍎 Apple Silicon Metal (MSL) Simdgroup Matrix Kernels (`metal_msl_kernels`)](#7--apple-silicon-metal-msl-simdgroup-matrix-kernels-metal_msl_kernels)
-  - [8. ⚡ NVIDIA FP8 & Hopper/Blackwell 128-Byte TMA Engine](#8--nvidia-fp8--hopperblackwell-128-byte-tma-engine)
-  - [9. 🍏 Apple Silicon UMA & Top Hugging Face GPU Matrix](#7--apple-silicon-uma--top-hugging-face-gpu-fleet-intelligence)
-  - [10. 🚀 High-Throughput Memory Allocators & Zero-Pause GC Tuning](#8--high-throughput-memory-allocators--zero-pause-gc-tuning-memory_tuning)
-  - [11. 💎 2-Bit / 1.58-Bit Ternary Packing (`MLX-QUANT`)](#9-2-bit--158-bit-ternary-packing-mlx-quant)
-  - [12. 🌊 MEM8 Wave-Interference Associative Memory (`hf-mac`)](#10-mem8-wave-interference-associative-memory-hf-mac)
-  - [13. 🏎️ Hot Path Zero-Overhead Generation (>2.2× Speedup)](#11-hot-path-zero-overhead-generation-22-speedup)
-  - [14. 🐍 Modern Python 3.11+ / 3.12+ / 3.13 Runtime Architecture](#12-modern-python-311--312--313-runtime-architecture)
+  - [2. 🧬 DYAD Asymmetric Loss Modulation Dual-Head Context & KV Pruner (`dyad_compressor`)](#2--dyad-asymmetric-loss-modulation-dual-head-context--kv-pruner-dyad_compressor)
+  - [3. 🔄 Continuous Chunked Prefill & Multi-Stream Asynchronous Decode Engine (`ChunkedPrefillDecodeEngine`)](#3--continuous-chunked-prefill--multi-stream-asynchronous-decode-engine-chunkedprefilldecodeengine)
+  - [4. 🌉 Apple Silicon Zero-Copy MPS ↔ MLX UMA Memory Bridge (`mlx_mps_bridge`)](#4--apple-silicon-zero-copy-mps--mlx-uma-memory-bridge-mlx_mps_bridge)
+  - [5. 🌳 Non-Linear Tree-Based Speculative Drafting Engine (`MedusaTreeFastRunner`)](#5--non-linear-tree-based-speculative-drafting-engine-medusatreefastrunner)
+  - [6. ⚡ Split-KV Flash-Decoding for 32k+ Long Context (`split_kv_decode_attention`)](#6--split-kv-flash-decoding-attention-for-32k-long-context-split_kv_decode_attention)
+  - [7. 🔮 Zero-Allocation Speculative Fast Runner (`SpeculativeFastRunner`)](#7--zero-allocation-speculative-decoding-engine-speculativefastrunner)
+  - [8. 🍎 Apple Silicon Metal (MSL) Simdgroup Matrix Kernels (`metal_msl_kernels`)](#8--apple-silicon-metal-msl-simdgroup-matrix-kernels-metal_msl_kernels)
+  - [9. ⚡ NVIDIA FP8 & Hopper/Blackwell 128-Byte TMA Engine](#9--nvidia-fp8--hopperblackwell-128-byte-tma-engine)
+  - [10. 🍏 Apple Silicon UMA & Top Hugging Face GPU Matrix](#10--apple-silicon-uma--top-hugging-face-gpu-fleet-intelligence)
+  - [11. 🚀 High-Throughput Memory Allocators & Zero-Pause GC Tuning](#11--high-throughput-memory-allocators--zero-pause-gc-tuning-memory_tuning)
+  - [12. 💎 2-Bit / 1.58-Bit Ternary Packing (`MLX-QUANT`)](#12-2-bit--158-bit-ternary-packing-mlx-quant)
+  - [13. 🌊 MEM8 Wave-Interference Associative Memory (`hf-mac`)](#13-mem8-wave-interference-associative-memory-hf-mac)
+  - [14. 🏎️ Hot Path Zero-Overhead Generation (>2.2× Speedup)](#14-hot-path-zero-overhead-generation-22-speedup)
+  - [15. 🐍 Modern Python 3.11+ / 3.12+ / 3.13 Runtime Architecture](#15-modern-python-311--312--313-runtime-architecture)
 - [📦 Quick Installation](#-quick-installation)
 - [🧪 Verifying the Test Suite](#-verifying-the-test-suite)
 - [📜 License & Sovereign Heritage](#-license--sovereign-heritage)
@@ -151,10 +152,14 @@ What a weird world. But open source belongs to no single gatekeeper. We didn't c
    - **`SlottedStaticCache` (Zero-Allocation Decoding)**: Pre-allocates contiguous `(batch_size, num_heads, max_cache_len, head_dim)` buffers once and uses in-place slice copies (`copy_()`), eliminating $100\%$ of dynamic CUDA allocations and memory fragmentation during autoregressive decoding.
    - **`CUDAGraphFastRunner` (<5µs Dispatch Latency)**: Records single-token forward passes into static CUDA Graphs with dedicated warmup streams, bypassing Python CPU interpreter overhead and dropping token stepping latency from ~120µs to <5µs.
    - **`FusedLogitsSampler` (O(K) In-Register Sampling)**: Fused single-pass temperature scaling, Top-K reduction, Top-P nucleus cumulative probability filtering, and multinomial sampling in a single contiguous sequence, cutting sampling overhead by up to 80% on large vocabularies ($V \ge 32k$).
-2. **🔄 Continuous Chunked Prefill & Multi-Stream Asynchronous Decode Engine (`ChunkedPrefillDecodeEngine`)**:
+2. **🧬 DYAD Asymmetric Loss Modulation Dual-Head Context & KV Pruner (`dyad_compressor`)**:
+   - Implements the [DYAD / kompress-v8](https://kompress.vaked.dev/paper/main.pdf) dual-head architecture (`TokenClassifierHead` + `SpanCNNHead`) coupled via the asymmetric modulation gate $\tilde{I}_i(x) = \sigma(\text{logit}_{\text{tok}}(x) - \gamma \cdot \text{ReLU}(\text{logit}_{\text{span}}(x)))$.
+   - Resolves the **Voting Ensemble Paradox** and protects critical syntactic anchor tokens (signal names, file paths, exit codes, CLI flags, hex pointers).
+   - Mechanism B sliding-window subword regex safety net (`MUST_KEEP_PATTERN`) and in-place $O(1)$ `SlottedStaticCache` KV slot compaction.
+3. **🔄 Continuous Chunked Prefill & Multi-Stream Asynchronous Decode Engine (`ChunkedPrefillDecodeEngine`)**:
    - Slices long prompt prefills into bounded chunks (e.g. 512 tokens) and interleaves them with active sequence decode steps.
    - Eliminates time-to-first-token (TTFT) stalls and prevents inter-token decode latency spikes (jitter).
-3. **🌉 Apple Silicon Zero-Copy MPS ↔ MLX UMA Memory Bridge (`mlx_mps_bridge`)**:
+4. **🌉 Apple Silicon Zero-Copy MPS ↔ MLX UMA Memory Bridge (`mlx_mps_bridge`)**:
    - Direct unified memory pointer aliasing via DLPack (`torch_to_mlx`, `mlx_to_torch`) with zero system RAM copies.
    - `MlxMpsHybridLinear`: Executes MLX Metal SIMD matrix multiplication directly on PyTorch MPS activation tensors.
 4. **🌳 Non-Linear Tree-Based Speculative Drafting Engine (`MedusaTreeFastRunner`)**:

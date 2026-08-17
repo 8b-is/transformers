@@ -896,3 +896,69 @@ class UltraUpstreamFixesTest(unittest.TestCase):
         x = torch.randn(2, 4, 16)
         y = layer(x)
         self.assertEqual(y.shape, (2, 4, 8))
+
+    def test_dyad_dual_head_pruner_and_asymmetric_modulation(self):
+        """DYAD Feature: Asymmetric Loss Modulation Gate & Dual-Head Context/KV Pruning."""
+        import torch
+        from transformers.integrations.dyad_compressor import (
+            AsymmetricModulationGate,
+            DyadContextPruner,
+            DyadDualHeadPruner,
+            MUST_KEEP_PATTERN,
+        )
+        from transformers.integrations.slotted_cache import SlottedStaticCache
+
+        # 1. Asymmetric Modulation Gate verification
+        gate = AsymmetricModulationGate(gamma=0.5)
+        tok_logits = torch.tensor([[2.0, 2.0]])
+        # When span coherence is high (> 0), it inhibits eviction (reduces keep_score)
+        span_logits = torch.tensor([[0.0, 4.0]])
+        probs = gate(tok_logits, span_logits)
+        # Position 0: 2.0 - 0.0 = 2.0 -> sigmoid(2.0) ~ 0.8808
+        # Position 1: 2.0 - 0.5*4.0 = 0.0 -> sigmoid(0.0) = 0.5
+        self.assertAlmostEqual(probs[0, 1].item(), 0.5, places=3)
+        self.assertGreater(probs[0, 0].item(), probs[0, 1].item())
+
+        # 2. Dual Head Pruner Module forward pass
+        pruner_head = DyadDualHeadPruner(hidden_size=64, gamma=0.5)
+        hidden = torch.randn(2, 16, 64)
+        res = pruner_head(hidden)
+        self.assertIn("keep_probs", res)
+        self.assertEqual(res["keep_probs"].shape, (2, 16))
+
+        # 3. Mechanism B: Regex pattern matching on critical tokens
+        self.assertTrue(MUST_KEEP_PATTERN.search("0x7ffeefbff480"))
+        self.assertTrue(MUST_KEEP_PATTERN.search("--max-tokens"))
+        self.assertTrue(MUST_KEEP_PATTERN.search("src/transformers/cache.py"))
+        self.assertTrue(MUST_KEEP_PATTERN.search("SIGSEGV"))
+        self.assertTrue(MUST_KEEP_PATTERN.search("SlottedStaticCache"))
+
+        # 4. Context Pruner with Regex Override and KV Cache Compaction
+        pruner = DyadContextPruner(pruner_model=pruner_head, gamma=0.5, keep_threshold=0.5)
+        input_ids = torch.tensor([[101, 2054, 1037, 102]])
+        # Mock decode function where token 2054 is a file path
+        def mock_decode(ids):
+            return "model.safetensors" if 2054 in ids else "word"
+
+        pruned = pruner.prune(input_ids, hidden_states=hidden[:1, :4, :], decode_fn=mock_decode)
+        self.assertIn("keep_mask", pruned)
+        self.assertTrue(pruned["keep_mask"][0, 1].item()) # Protected by Mechanism B
+
+        # 5. Slotted KV Cache Compaction
+        cache = SlottedStaticCache(
+            batch_size=1,
+            num_key_value_heads=2,
+            max_cache_len=8,
+            head_dim=4,
+            num_layers=1,
+            dtype=torch.float32,
+            device=torch.device("cpu"),
+        )
+        cache.layers[0].keys[0, :, :4, :] = torch.arange(1, 5, dtype=torch.float32).view(1, 4, 1).expand(2, 4, 4)
+        cache.layers[0].cumulative_length = 4
+        keep_mask = torch.tensor([[True, False, True, False]])
+        new_len = pruner.compact_slotted_cache(cache, keep_mask)
+        self.assertEqual(new_len, 2)
+        self.assertEqual(cache.layers[0].cumulative_length, 2)
+        # Verify compaction moved index 2 (val 3.0) to index 1
+        self.assertEqual(cache.layers[0].keys[0, 0, 1, 0].item(), 3.0)

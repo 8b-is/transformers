@@ -744,6 +744,11 @@
             <span class="toc-name">1+2+3 Inference Trio</span>
             <span class="toc-desc">&lt;5µs CUDA Graphs, Slotted KV Cache, Fused Sampling</span>
           </a>
+          <a href="#dyad-pruner" class="toc-item">
+            <span class="toc-tag" style="color: var(--accent-rose)">DYAD / KOMPRESS</span>
+            <span class="toc-name">Dual-Head KV Pruner</span>
+            <span class="toc-desc">Asymmetric Modulation & Syntax Safety</span>
+          </a>
           <a href="#chunked-prefill" class="toc-item">
             <span class="toc-tag" style="color: var(--accent-emerald)">MULTI-STREAM</span>
             <span class="toc-name">Chunked Prefill Engine</span>
@@ -782,7 +787,7 @@
           <a href="#ledger" class="toc-item">
             <span class="toc-tag" style="color: var(--accent-emerald)">RELEASE LEDGER</span>
             <span class="toc-name">Commit Ledger</span>
-            <span class="toc-desc">v4.58.0.post14 & Append-Only Log</span>
+            <span class="toc-desc">v4.58.0.post15 & Append-Only Log</span>
           </a>
         </div>
       </nav>
@@ -835,6 +840,11 @@
           <div class="feature-icon">🏎️</div>
           <h3>1+2+3 Hot-Path Inference Trio</h3>
           <p><code>SlottedStaticCache</code> for zero-allocation in-place slice KV caching, <code>CUDAGraphFastRunner</code> for &lt;5µs token forward dispatch, and <code>FusedLogitsSampler</code> for $O(K)$ in-register sampling.</p>
+        </div>
+        <div class="feature-card" id="dyad-pruner">
+          <div class="feature-icon">🧬</div>
+          <h3>DYAD Dual-Head Context & KV Pruner</h3>
+          <p>Derived from the <a href="https://kompress.vaked.dev/paper/main.pdf" target="_blank" style="color: var(--accent-rose)">DYAD Research Paper</a>. Uses <code>TokenClassifierHead</code> + <code>SpanCNNHead</code> coupled via asymmetric modulation gating $\sigma(\text{logit}_{\text{tok}} - \gamma \text{ReLU}(\text{logit}_{\text{span}}))$ and Mechanism B subword sliding-window regex overrides (<code>MUST_KEEP_PATTERN</code>) for zero syntax corruption and in-place <code>SlottedStaticCache</code> compaction.</p>
         </div>
         <div class="feature-card" id="chunked-prefill">
           <div class="feature-icon">🔄</div>
@@ -915,6 +925,24 @@
           <input type="text" class="search-input" id="ledger-search" placeholder="Search commits, issues, tags..." onkeyup="filterLedger()">
         </div>
         <div class="commit-timeline" id="commit-list">
+          
+          <!-- Release v4.58.0.post15 -->
+          <div class="commit-row" data-search="release v4.58.0.post15 dyad dyadcontextpruner dyaddualheadpruner asymmetricmodulationgate kompress-v8 voting ensemble paradox span cnn head slotted kv compaction">
+            <div class="commit-meta">
+              <span class="commit-hash" style="color: var(--accent-emerald)">v4.58.0.post15</span>
+              <span class="commit-tag tag-security">Backyard Ultra Lap 130+</span>
+              <span class="commit-tag tag-perf">DYAD Asymmetric KV Pruner</span>
+              <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-mono)">2026-08-17</span>
+            </div>
+            <div class="commit-title">feat(dyad): Asymmetric Loss Modulation Dual-Head Context & KV Pruner (DYAD Paper / kompress-v8)</div>
+            <div class="commit-details">
+              Ported the mathematical foundation of the DYAD research paper: Dual-Head ModernBERT architecture (`TokenClassifierHead` + `SpanCNNHead`) coupled via asymmetric modulation gating $\sigma(\text{logit}_{\text{tok}} - \gamma \text{ReLU}(\text{logit}_{\text{span}}))$, Mechanism B subword sliding-window regex overrides (`MUST_KEEP_PATTERN`) to resolve the Voting Ensemble Paradox, and in-place $O(1)$ `SlottedStaticCache` slot compaction.
+            </div>
+            <div class="commit-links">
+              <a href="https://kompress.vaked.dev/paper/main.pdf" target="_blank">DYAD Research Paper</a> ·
+              <a href="https://github.com/8b-is/transformers/blob/main/tests/utils/test_ultra_upstream_fixes.py" target="_blank">Test Suite (37/37 Passed)</a>
+            </div>
+          </div>
           
           <!-- Release v4.58.0.post14 -->
           <div class="commit-row" data-search="release v4.58.0.post14 chunkedprefilldecodeengine mlx_mps_bridge mlxmpshybridlinear chunked prefill decode overlap dlpack uma zero copy apple silicon">
